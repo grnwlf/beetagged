@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "LIALinkedInApplication.h"
+#import "LIALinkedInHttpClient.h"
 
 @interface ViewController ()
 
@@ -17,6 +19,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    LIALinkedInApplication *application = [LIALinkedInApplication applicationWithRedirectURL:@"http://www.ancientprogramming.com"
+                                                                                    clientId:@"clientId"
+                                                                                clientSecret:@"clientSecret"
+                                                                                       state:@"DCEEFWF45453sdffef424"
+                                                                               grantedAccess:@[@"r_fullprofile", @"r_network"]];
+    LIALinkedInHttpClient *client = [LIALinkedInHttpClient clientForApplication:application presentingViewController:nil];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
