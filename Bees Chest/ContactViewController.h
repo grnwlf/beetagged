@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Contact.h"
 @interface ContactViewController : UIViewController
+
+@property (nonatomic, strong) Contact *contact;
 
 @end

@@ -7,11 +7,12 @@
 //
 
 #import "LinkedInManager.h"
-#import "Constants.h"
-#import "Contact.h"
 
-#define kLIToken @"litoken"
-#define kLICurUser @"licuruser"
+@interface LinkedInManager()
+@property (nonatomic, assign, readwrite) BOOL isSearching;
+@property (nonatomic, assign, readwrite) BOOL hasContacts;
+@property (strong, nonatomic, readwrite) NSFetchedResultsController *fetchedResultsController;
+@end
 
 @implementation LinkedInManager
 
@@ -29,13 +30,8 @@ static LinkedInManager *li = nil;
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
-- (NSArray*)getContacts
-{
-    if (!self.contacts || self.contacts.count == 0) {
-        [self fetchContacts];
-    }
-    
-    return self.contacts;
+- (void)refreshContacts {
+    [self fetchContacts];
 }
 
 - (id)init
@@ -62,7 +58,9 @@ static LinkedInManager *li = nil;
             self.managedObjectContext = [[NSManagedObjectContext alloc] init];
             [self.managedObjectContext setPersistentStoreCoordinator:self.persistentStoreCoordinator];
         }
-
+        self.isSearching = NO;
+        self.searchArray = [[NSMutableArray alloc] init];
+        self.hasContacts = NO;
     }
     return self;
 }
@@ -75,15 +73,37 @@ static LinkedInManager *li = nil;
     }
 }
 
-- (void)fetchContacts
-{
+
+
+// This function gives the sort descriptors that allow group the contacts by
+// lastName and sort the contacts by lastName
+-(NSArray *)getSortDescriptors {
+    NSSortDescriptor *groupByLastName = [[NSSortDescriptor alloc] initWithKey:kContactGroupByLastName ascending:YES];
+    NSSortDescriptor *sortByLastName = [[NSSortDescriptor alloc] initWithKey:kContactLastName ascending:YES];
+    return @[groupByLastName, sortByLastName];
+}
+
+
+- (void)fetchContacts {
     NSFetchRequest *req = [[NSFetchRequest alloc] init];
     NSEntityDescription *desc = [NSEntityDescription entityForName:@"Contact" inManagedObjectContext:self.managedObjectContext];
     [req setEntity:desc];
+    [req setSortDescriptors:[self getSortDescriptors]];
     NSError *error;
-    self.contacts = [self.managedObjectContext executeFetchRequest:req error:&error];
-    for (Contact *c in self.contacts) {
-        [c loadImage];
+    
+    
+    self.fetchedResultsController = [[NSFetchedResultsController alloc]
+                                     initWithFetchRequest:req
+                                     managedObjectContext:self.managedObjectContext
+                                     sectionNameKeyPath:kContactGroupByLastName
+                                     cacheName:kCacheAllContacts];
+    
+    BOOL success = [self.fetchedResultsController performFetch:&error];
+    if (success) {
+        self.hasContacts = YES;
+        NSLog(@"The fetch from Core Data was succcessful");
+    } else {
+        NSLog(@"Error fetching contacts from Core Data: %@", [error localizedDescription]);
     }
 }
 

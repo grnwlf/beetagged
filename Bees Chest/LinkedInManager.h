@@ -10,18 +10,23 @@
 #import <LIALinkedInApplication.h>
 #import <LIALinkedInHttpClient.h>
 #import <CoreData/CoreData.h>
+#import "Constants.h"
+#import "Contact.h"
 
 @interface LinkedInManager : NSObject
 @property (strong, nonatomic) LIALinkedInApplication *app;
 @property (strong, nonatomic) LIALinkedInHttpClient *client;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
+@property (strong, nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (strong, nonatomic) NSArray *contacts;
+@property (strong, nonatomic) NSMutableArray *searchArray;
+@property (nonatomic, assign, readonly) BOOL isSearching;
+@property (nonatomic, assign, readonly) BOOL hasContacts;
 
 + (LinkedInManager*)singleton;
 
-- (NSArray*)getContacts;
+- (void)refreshContacts;
 - (BOOL)loggedIn;
 - (void)setToken:(NSString*)token;
 - (NSString*)token;

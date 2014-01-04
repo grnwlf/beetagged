@@ -19,7 +19,7 @@
 @property (nonatomic, retain) NSString * industry;
 @property (nonatomic, retain) NSString * pictureUrl;
 @property (nonatomic, retain) NSString * linkedInUrl;
-
+@property (nonatomic, retain) NSString * groupByLastName;
 @property (strong, nonatomic) UIImage * profileImage;
 
 + (Contact*)createContactFromLinkedIn:(NSDictionary*)user;

@@ -31,6 +31,10 @@
     [super viewDidLoad];
     self.ContactTableView.delegate = self;
     self.ContactTableView.dataSource = self;
+    LinkedInManager *lim = [LinkedInManager singleton];
+    if (!lim.hasContacts) {
+        [lim refreshContacts];
+    }
     [self.ContactTableView reloadData];
     
     self.navigationController.navigationBar.hidden = YES;
@@ -54,22 +58,66 @@
 
 #pragma mark - Table view data source
 
+// returns the number of groupings in the table view if the user is not searching,
+// but returns 1 if the user is searching
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    NSInteger numberOfSections = 1;
+    LinkedInManager *lim = [LinkedInManager singleton];
+    if (!lim.isSearching) {
+        numberOfSections = [lim.fetchedResultsController.sections count];
+    }
+    return numberOfSections;
 }
 
--(NSInteger)tableView:(UITableView *)table numberOfRowsInSection:(NSInteger)section
-{
-    int x = [[[LinkedInManager singleton] getContacts] count];
-    NSLog(@"%i", x);
-    return x;
+// returns the number of rows in the given section based on whether or not
+// we are searching or not.
+-(NSInteger)tableView:(UITableView *)table numberOfRowsInSection:(NSInteger)section {
+    LinkedInManager *lim = [LinkedInManager singleton];
+    NSInteger numberOfRows = 0;
+    if (lim.isSearching) {
+        numberOfRows = lim.searchArray.count;
+    } else {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [[lim.fetchedResultsController sections] objectAtIndex:section];
+        numberOfRows = [sectionInfo numberOfObjects];
+    }
+    return numberOfRows;
 }
 
+// returns the title for the header in the section. It will not give a header
+// (because title is nil) if the tableView is searching
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    LinkedInManager *lim = [LinkedInManager singleton];
+    NSString *title = nil;
+    
+    if (!lim.isSearching &&  [[lim.fetchedResultsController sections] count] > 0) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [[lim.fetchedResultsController sections] objectAtIndex:section];
+        title = [sectionInfo name];
+    }
+    return title;
+}
 
+// shows the sectionIndexTitles if the tableView is grouped.
+-(NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+    LinkedInManager *lim = [LinkedInManager singleton];
+    NSArray *sectionIndexTitles = nil;
+    if (!lim.isSearching) {
+        sectionIndexTitles = [lim.fetchedResultsController sectionIndexTitles];
+    }
+    return sectionIndexTitles;
+}
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+// tells the tableView which section to jump to when the index side bar is clicked.
+-(NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
+    LinkedInManager *lim = [LinkedInManager singleton];
+    NSInteger section = 0;
+    if (!lim.isSearching) {
+        section = [lim.fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
+    }
+    return section;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return kCellHeight;
 }
 
@@ -81,13 +129,15 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kContactCell];
     }
+    LinkedInManager *lim = [LinkedInManager singleton];
+    Contact *contact = [lim.fetchedResultsController objectAtIndexPath:indexPath];
+    
     
     UILabel *label = (UILabel*)[cell viewWithTag:1];
-    Contact *c = [[[LinkedInManager singleton] getContacts] objectAtIndex:indexPath.row];
-    label.text = [NSString stringWithFormat:@"%@ %@", c.firstName, c.lastName];
     
+    label.text = [NSString stringWithFormat:@"%@ %@", contact.firstName, contact.lastName];
     UIImageView *imageView = (UIImageView*)[cell viewWithTag:2];
-    imageView.image = c.profileImage;
+    imageView.image = contact.profileImage;
     return cell;
 }
 
@@ -96,4 +146,20 @@
     [self performSegueWithIdentifier:kShowContactSegue sender:self];
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:kShowContactSegue]) {
+        
+        LinkedInManager *lim = [LinkedInManager singleton];
+//        NSIndexPath *indexPath = [self.ContactTableView indexPathsForSelectedRows];
+//        Contact *contact =
+        
+        
+//        ContactViewController *contactViewController = (ContactViewController *)[segue destinationViewController];
+//        [contactViewController setContact:;]
+        
+        
+        
+        
+    }
+}
 @end
