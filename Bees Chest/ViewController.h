@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BATypeAheadViewController.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <BATypeAheadDelegate>
+
+@property (strong, nonatomic) BATypeAheadViewController *b;
+
+- (IBAction)login:(id)sender;
+- (IBAction)loginWithLinkedIn:(id)sender;
 
 @end

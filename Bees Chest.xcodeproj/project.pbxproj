@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		282F2F231877AC81004566D0 /* BeesChestData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 282F2F211877AC81004566D0 /* BeesChestData.xcdatamodeld */; };
+		282F2F251877AD7F004566D0 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 282F2F241877AD7F004566D0 /* CoreData.framework */; };
+		282F2F281877AD9A004566D0 /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 282F2F271877AD9A004566D0 /* Contact.m */; };
 		2889B0301870651700CF8580 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2889B02F1870651700CF8580 /* Foundation.framework */; };
 		2889B0321870651700CF8580 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2889B0311870651700CF8580 /* CoreGraphics.framework */; };
 		2889B0341870651700CF8580 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2889B0331870651700CF8580 /* UIKit.framework */; };
@@ -22,6 +25,12 @@
 		2889B0591870651700CF8580 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2889B0571870651700CF8580 /* InfoPlist.strings */; };
 		2889B05B1870651700CF8580 /* Bees_ChestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B05A1870651700CF8580 /* Bees_ChestTests.m */; };
 		2889B06618706EAE00CF8580 /* LinkedInManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06518706EAE00CF8580 /* LinkedInManager.m */; };
+		2889B06A187456AA00CF8580 /* BATypeAheadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B069187456AA00CF8580 /* BATypeAheadView.m */; };
+		2889B06D187456D200CF8580 /* BATypeAheadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06C187456D200CF8580 /* BATypeAheadViewController.m */; };
+		2889B0701874991500CF8580 /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06F1874991500CF8580 /* ProfileViewController.m */; };
+		2889B0731874992200CF8580 /* ContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0721874992200CF8580 /* ContactsViewController.m */; };
+		2889B0761874992C00CF8580 /* ContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0751874992C00CF8580 /* ContactViewController.m */; };
+		2889B0791874993500CF8580 /* BeesChestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0781874993500CF8580 /* BeesChestViewController.m */; };
 		8A0B0C4F5E9443E9999A1150 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AB626A38B19406BB8FD1558 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +46,10 @@
 
 /* Begin PBXFileReference section */
 		0AB626A38B19406BB8FD1558 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		282F2F221877AC81004566D0 /* BeesChestData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BeesChestData.xcdatamodel; sourceTree = "<group>"; };
+		282F2F241877AD7F004566D0 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		282F2F261877AD9A004566D0 /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
+		282F2F271877AD9A004566D0 /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contact.m; sourceTree = "<group>"; };
 		2889B02C1870651700CF8580 /* Bees Chest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bees Chest.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2889B02F1870651700CF8580 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2889B0311870651700CF8580 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -59,6 +72,18 @@
 		2889B06418706EAE00CF8580 /* LinkedInManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkedInManager.h; sourceTree = "<group>"; };
 		2889B06518706EAE00CF8580 /* LinkedInManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkedInManager.m; sourceTree = "<group>"; };
 		2889B06718706F8400CF8580 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		2889B068187456AA00CF8580 /* BATypeAheadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BATypeAheadView.h; sourceTree = "<group>"; };
+		2889B069187456AA00CF8580 /* BATypeAheadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BATypeAheadView.m; sourceTree = "<group>"; };
+		2889B06B187456D200CF8580 /* BATypeAheadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BATypeAheadViewController.h; sourceTree = "<group>"; };
+		2889B06C187456D200CF8580 /* BATypeAheadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BATypeAheadViewController.m; sourceTree = "<group>"; };
+		2889B06E1874991500CF8580 /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
+		2889B06F1874991500CF8580 /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
+		2889B0711874992200CF8580 /* ContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsViewController.h; sourceTree = "<group>"; };
+		2889B0721874992200CF8580 /* ContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsViewController.m; sourceTree = "<group>"; };
+		2889B0741874992C00CF8580 /* ContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactViewController.h; sourceTree = "<group>"; };
+		2889B0751874992C00CF8580 /* ContactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactViewController.m; sourceTree = "<group>"; };
+		2889B0771874993500CF8580 /* BeesChestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeesChestViewController.h; sourceTree = "<group>"; };
+		2889B0781874993500CF8580 /* BeesChestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeesChestViewController.m; sourceTree = "<group>"; };
 		AEA705BE07BD482FBA74034C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,6 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				282F2F251877AD7F004566D0 /* CoreData.framework in Frameworks */,
 				2889B0321870651700CF8580 /* CoreGraphics.framework in Frameworks */,
 				2889B0341870651700CF8580 /* UIKit.framework in Frameworks */,
 				2889B0301870651700CF8580 /* Foundation.framework in Frameworks */,
@@ -110,6 +136,7 @@
 		2889B02E1870651700CF8580 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				282F2F241877AD7F004566D0 /* CoreData.framework */,
 				2889B02F1870651700CF8580 /* Foundation.framework */,
 				2889B0311870651700CF8580 /* CoreGraphics.framework */,
 				2889B0331870651700CF8580 /* UIKit.framework */,
@@ -129,9 +156,24 @@
 				2889B0451870651700CF8580 /* ViewController.m */,
 				2889B06418706EAE00CF8580 /* LinkedInManager.h */,
 				2889B06518706EAE00CF8580 /* LinkedInManager.m */,
+				2889B068187456AA00CF8580 /* BATypeAheadView.h */,
+				2889B069187456AA00CF8580 /* BATypeAheadView.m */,
+				2889B06B187456D200CF8580 /* BATypeAheadViewController.h */,
+				2889B06C187456D200CF8580 /* BATypeAheadViewController.m */,
+				2889B06E1874991500CF8580 /* ProfileViewController.h */,
+				2889B06F1874991500CF8580 /* ProfileViewController.m */,
+				2889B0711874992200CF8580 /* ContactsViewController.h */,
+				2889B0721874992200CF8580 /* ContactsViewController.m */,
+				2889B0741874992C00CF8580 /* ContactViewController.h */,
+				2889B0751874992C00CF8580 /* ContactViewController.m */,
+				2889B0771874993500CF8580 /* BeesChestViewController.h */,
+				2889B0781874993500CF8580 /* BeesChestViewController.m */,
+				282F2F261877AD9A004566D0 /* Contact.h */,
+				282F2F271877AD9A004566D0 /* Contact.m */,
 				2889B06718706F8400CF8580 /* Constants.h */,
 				2889B0471870651700CF8580 /* Images.xcassets */,
 				2889B0361870651700CF8580 /* Supporting Files */,
+				282F2F211877AC81004566D0 /* BeesChestData.xcdatamodeld */,
 			);
 			path = "Bees Chest";
 			sourceTree = "<group>";
@@ -298,7 +340,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				2889B0461870651700CF8580 /* ViewController.m in Sources */,
+				2889B0791874993500CF8580 /* BeesChestViewController.m in Sources */,
+				2889B0731874992200CF8580 /* ContactsViewController.m in Sources */,
+				2889B06D187456D200CF8580 /* BATypeAheadViewController.m in Sources */,
+				282F2F281877AD9A004566D0 /* Contact.m in Sources */,
+				2889B06A187456AA00CF8580 /* BATypeAheadView.m in Sources */,
+				2889B0761874992C00CF8580 /* ContactViewController.m in Sources */,
 				2889B06618706EAE00CF8580 /* LinkedInManager.m in Sources */,
+				2889B0701874991500CF8580 /* ProfileViewController.m in Sources */,
+				282F2F231877AC81004566D0 /* BeesChestData.xcdatamodeld in Sources */,
 				2889B0401870651700CF8580 /* AppDelegate.m in Sources */,
 				2889B03C1870651700CF8580 /* main.m in Sources */,
 			);
@@ -523,6 +573,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		282F2F211877AC81004566D0 /* BeesChestData.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				282F2F221877AC81004566D0 /* BeesChestData.xcdatamodel */,
+			);
+			currentVersion = 282F2F221877AC81004566D0 /* BeesChestData.xcdatamodel */;
+			path = BeesChestData.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 2889B0241870651700CF8580 /* Project object */;
 }
