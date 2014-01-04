@@ -7,6 +7,7 @@
 //
 
 #import "ContactsViewController.h"
+#import "Contact.h"
 
 @interface ContactsViewController ()
 
@@ -46,6 +47,7 @@
 {
     [super viewWillAppear:animated];
     NSLog(@"showing contacts view");
+    [self.ContactTableView reloadData];
     self.navigationController.navigationBar.hidden = YES;
 }
 
@@ -59,7 +61,9 @@
 
 -(NSInteger)tableView:(UITableView *)table numberOfRowsInSection:(NSInteger)section
 {
-    return 30;
+    int x = [[[LinkedInManager singleton] getContacts] count];
+    NSLog(@"%i", x);
+    return x;
 }
 
 
@@ -79,7 +83,11 @@
     }
     
     UILabel *label = (UILabel*)[cell viewWithTag:1];
-    label.text = @"Billy Irwin";
+    Contact *c = [[[LinkedInManager singleton] getContacts] objectAtIndex:indexPath.row];
+    label.text = [NSString stringWithFormat:@"%@ %@", c.firstName, c.lastName];
+    
+    UIImageView *imageView = (UIImageView*)[cell viewWithTag:2];
+    imageView.image = c.profileImage;
     return cell;
 }
 

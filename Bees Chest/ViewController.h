@@ -14,5 +14,6 @@
 @property (strong, nonatomic) BATypeAheadViewController *b;
 
 - (IBAction)login:(id)sender;
+- (IBAction)loginWithLinkedIn:(id)sender;
 
 @end

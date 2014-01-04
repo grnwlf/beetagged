@@ -23,6 +23,13 @@
 
 #define kContactCell @"ContactCell"
 
+#define kContactFirstName @"firstName"
+#define kContactLastName @"lastName"
+#define kContactHeadline @"headline"
+#define kContactLinkedInId @"id"
+#define kContactIndustry @"industry"
+#define kContactPicUrl @"pictureUrl"
+
 
 
 
