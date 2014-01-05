@@ -71,6 +71,27 @@
 //********************************************************************//
 #define kCacheAllContacts @"allContactsCache"
 
+//********************************************************************//
+//    Tags //
+//********************************************************************//
+#define kTagsNumberOfSections 3
+#define kTagClass @"Tag"
+#define kTagObjectId @"objectId"
+#define kTagAttributeName @"attributeName"
+#define kTagTaggedBy @"taggedBy"
+#define kTagUserId @"userId"
+#define kTagOptionId @"tagOptionId"
+#define kTagCreatedAt @"createdAt"
+#define kTagUpdatedAt @"updatedAt"
+
+
+//********************************************************************//
+//    Tag Option //
+//********************************************************************//
+#define kTagOptionClass @"TagOption"
+#define kTagOptionAttributeName @"attributeName"
+#define kTagOptionCreatedAt @"createdAt"
+#define kTagOptionUpdatedAt @"updatedAt"
 
 
 #endif

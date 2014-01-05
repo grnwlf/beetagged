@@ -62,8 +62,25 @@ static LinkedInManager *li = nil;
         self.isSearching = NO;
         self.searchArray = [[NSMutableArray alloc] init];
         self.hasContacts = NO;
+        [self fetchTagOptions];
     }
     return self;
+}
+
+// grab all of the contact options from the server
+- (void)fetchTagOptions {
+    PFQuery *query = [PFQuery queryWithClassName:kTagOptionClass];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (error) {
+            NSLog(@"Error fetching TagOptions: %@", error);
+            self.tagOptions = [@[] mutableCopy]; // set tag options to empty array
+        } else {
+            self.tagOptions = [NSMutableArray arrayWithCapacity:objects.count];
+            for (PFObject *object in objects) {
+                [self.tagOptions addObject:[TagOption tagOptionFromParse:object]];
+            }
+        }
+    }];
 }
 
 - (void)importContacts:(NSArray*)contacts {

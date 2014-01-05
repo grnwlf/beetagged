@@ -27,7 +27,6 @@
     [super viewDidLoad];
     self.tagsCollectionView.delegate = self;
     self.tagsCollectionView.dataSource = self;
-//    self.tagsCollectionView.
     self.contactTags = [@[@"tag1", @"tag2", @"tag3", @"tag4", @"tag5", @"tag6", @"tag7", @"tag8", @"tag9", @"tag9"] mutableCopy];
     [self formatLayout];
 }
@@ -42,7 +41,6 @@
 }
 
 #pragma mark View Logic
-
 // encapsulating function that writes text in all of the fields and moves the view
 // up if no text exists.
 - (void)formatLayout {
@@ -136,7 +134,7 @@
 }
 
 
-#define kTagsNumberOfSections 3
+
 #pragma mark CollectionView
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     
@@ -169,8 +167,6 @@
     UICollectionViewCell *cell = [cv dequeueReusableCellWithReuseIdentifier:tagCellIdentifier forIndexPath:indexPath];
     cell.backgroundColor = [UIColor whiteColor];
     
-    
-    
     UILabel *label = (UILabel *)[cell viewWithTag:1];
     NSInteger i = [self indexFromIndexPath:indexPath];
     label.text = self.contactTags[i];
@@ -179,69 +175,28 @@
 }
 
 #pragma mark Moving Delegate Functions
+// make the chance in the Tag Array
 - (void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath {
-    NSLog(@"moved");
-//    PlayingCard *playingCard = [self.deck objectAtIndex:fromIndexPath.item];
-//    
-//    [self.deck removeObjectAtIndex:fromIndexPath.item];
-//    [self.deck insertObject:playingCard atIndex:toIndexPath.item];
+    NSString *tag = [self.contactTags objectAtIndex:fromIndexPath.item];
+    [self.contactTags removeObjectAtIndex:fromIndexPath.item];
+    [self.contactTags insertObject:tag atIndex:toIndexPath.item];
 }
 
+// don't let you move the last item
 - (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
-        NSLog(@"YES");
+    if (indexPath.item == self.contactTags.count - 1) {
+        return NO;
+    }
     return YES;
-//#if LX_LIMITED_MOVEMENT == 1
-//    PlayingCard *playingCard = [deck objectAtIndex:indexPath.item];
-//    
-//    switch (playingCard.suit) {
-//        case PlayingCardSuitSpade:
-//        case PlayingCardSuitClub:
-//            return YES;
-//        default:
-//            return NO;
-//    }
-//#else
-//    return YES;
-//#endif
 }
 
+// can't make anything last in the indexPath
 - (BOOL)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath canMoveToIndexPath:(NSIndexPath *)toIndexPath {
-    
-    NSLog(@"YES");
+    if (toIndexPath.item == self.contactTags.count - 1) {
+        return NO;
+    }
     return YES;
-//#if LX_LIMITED_MOVEMENT == 1
-//    PlayingCard *fromPlayingCard = [deck objectAtIndex:fromIndexPath.item];
-//    PlayingCard *toPlayingCard = [deck objectAtIndex:toIndexPath.item];
-//    
-//    switch (toPlayingCard.suit) {
-//        case PlayingCardSuitSpade:
-//        case PlayingCardSuitClub:
-//            return fromPlayingCard.rank == toPlayingCard.rank;
-//        default:
-//            return NO;
-//    }
-//#else
-//    return YES;
-//#endif
 }
-
-#pragma mark Moving Callbacks
-- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout willBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"will begin drag");
-}
-
-- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"did begin drag");
-}
-
-- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout willEndDraggingItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"will end drag");
-}
-
-- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didEndDraggingItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"did end drag");
-}
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

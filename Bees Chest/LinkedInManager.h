@@ -9,9 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <LIALinkedInApplication.h>
 #import <LIALinkedInHttpClient.h>
+#import <Parse/Parse.h>
 #import <CoreData/CoreData.h>
 #import "Constants.h"
 #import "Contact.h"
+#import "TagOption.h"
 
 @interface LinkedInManager : NSObject
 @property (strong, nonatomic) LIALinkedInApplication *app;
@@ -23,6 +25,7 @@
 @property (strong, nonatomic) NSMutableArray *searchArray;
 @property (nonatomic, assign, readonly) BOOL isSearching;
 @property (nonatomic, assign, readonly) BOOL hasContacts;
+@property (nonatomic, strong) NSMutableArray *tagOptions;
 
 + (LinkedInManager*)singleton;
 
