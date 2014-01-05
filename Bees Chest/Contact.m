@@ -17,8 +17,7 @@
 @dynamic industry;
 @dynamic pictureUrl;
 @dynamic linkedInUrl;
-
-@synthesize profileImage;
+@dynamic groupByLastName;
 
 + (Contact*)createContactFromLinkedIn:(NSDictionary*)user {
     LinkedInManager *li = [LinkedInManager singleton];
@@ -40,20 +39,53 @@
     c.industry = user[kContactIndustry];
     c.headline = user[kContactHeadline];
     c.pictureUrl = user[kContactPicUrl];
+    [c addToCache];
     return c;
 }
 
-- (void)loadImage
-{
-    if (!self.profileImage) {
-        dispatch_async(dispatch_get_global_queue(0,0), ^{
-            NSLog(@"%@", self.pictureUrl);
-            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: self.pictureUrl]];
-            if ( data == nil )
-                return;
-            self.profileImage = [UIImage imageWithData:data];
-        });
-    }
+- (void)addToCache {
+    SDWebImageDownloader *downloader = [SDWebImageDownloader sharedDownloader];
+    NSURL *url = [NSURL URLWithString:self.pictureUrl];
+    __weak NSURL *weakUrl = url;
+    [downloader downloadImageWithURL:url options:SDWebImageDownloaderContinueInBackground progress:nil completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+        NSString *key = [self cacheKeyForURL:weakUrl];
+        SDImageCache *imageCache = [SDImageCache sharedImageCache];
+        [imageCache storeImage:image forKey:key toDisk:YES];
+    }];
 }
+
+- (NSString *)cacheKeyForURL:(NSURL *)url {
+    return [url absoluteString];
+}
+
+
+//apiStandardProfileRequest =             {
+//    headers =                 {
+//        "_total" = 1;
+//        values =                     (
+//                                      {
+//                                          name = "x-li-auth-token";
+//                                          value = "name:FFci";
+//                                      }
+//                                      );
+//    };
+//    url = "http://api.linkedin.com/v1/people/btkEInCrdT";
+//};
+//firstName = Pavitra;
+//headline = "Student at The University of Michigan";
+//id = btkEInCrdT;
+//industry = "Political Organization";
+//lastName = Abraham;
+//location =             {
+//    country =                 {
+//        code = us;
+//    };
+//    name = "Greater Detroit Area";
+//};
+//pictureUrl = "http://m.c.lnkd.licdn.com/mpr/mprx/0_OPQTE-kC1IiOYrjkOB9OEl8G1Hc7yvukpctOElFO2DiY_AUXtvnSXAPrjQBl0tSe0Kkx59MZ5YzX";
+//siteStandardProfileRequest =             {
+//    url = "http://www.linkedin.com/profile/view?id=218395364&authType=name&authToken=FFci&trk=api*a3118083*s3192683*";
+//};
+//},
 
 @end

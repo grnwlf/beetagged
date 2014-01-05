@@ -131,35 +131,33 @@
     }
     LinkedInManager *lim = [LinkedInManager singleton];
     Contact *contact = [lim.fetchedResultsController objectAtIndexPath:indexPath];
+    UILabel *nameLabel = (UILabel*)[cell viewWithTag:1];
+    nameLabel.text = [NSString stringWithFormat:@"%@ %@", contact.firstName, contact.lastName];
     
+    UILabel *industryLabel = (UILabel *)[cell viewWithTag:3];
+    industryLabel.text = contact.industry;
     
-    UILabel *label = (UILabel*)[cell viewWithTag:1];
-    
-    label.text = [NSString stringWithFormat:@"%@ %@", contact.firstName, contact.lastName];
     UIImageView *imageView = (UIImageView*)[cell viewWithTag:2];
-    imageView.image = contact.profileImage;
+    [imageView setImageWithURL:[NSURL URLWithString:contact.pictureUrl] placeholderImage:kContactCellPlaceholderImage];
+//    imageView.image = [contact getProfileImage];
+//    
+    
+    
+//    [imageView setImageWithURL:[NSURL URLWithString:contact.pictureUrl] placeholderImage:kContactCellPlaceholderImage options:SDWebImageContinueInBackground];
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self performSegueWithIdentifier:kShowContactSegue sender:self];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:kShowContactSegue]) {
-        
         LinkedInManager *lim = [LinkedInManager singleton];
-//        NSIndexPath *indexPath = [self.ContactTableView indexPathsForSelectedRows];
-//        Contact *contact =
-        
-        
-//        ContactViewController *contactViewController = (ContactViewController *)[segue destinationViewController];
-//        [contactViewController setContact:;]
-        
-        
-        
-        
+        NSIndexPath *indexPath = [self.ContactTableView indexPathForSelectedRow];
+        Contact *contact = [lim.fetchedResultsController objectAtIndexPath:indexPath];
+        ContactViewController *cvc = (ContactViewController *)[segue destinationViewController];
+        [cvc setContact:contact];
     }
 }
 @end

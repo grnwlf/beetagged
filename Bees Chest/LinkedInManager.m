@@ -32,7 +32,17 @@ static LinkedInManager *li = nil;
 
 - (void)refreshContacts {
     [self fetchContacts];
+//    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"hasImages"]) {
+//        [self getContactImages];
+//        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"hasImages"];
+//    }
 }
+
+//- (void)getContactImages {
+//    for (Contact *contact in [self.fetchedResultsController fetchedObjects]) {
+//        [contact loadImage];
+//    }
+//}
 
 - (id)init
 {
@@ -43,6 +53,7 @@ static LinkedInManager *li = nil;
                                                         clientSecret:kLinkedInSecretKey
                                                                state:@"DCEEFWF45453sdffef424"
                                                        grantedAccess:@[@"r_fullprofile", @"r_network"]];
+        
         NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"BeesChestData" withExtension:@"momd"];
         self.managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
         NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Tag.sqlite"];
@@ -65,8 +76,7 @@ static LinkedInManager *li = nil;
     return self;
 }
 
-- (void)importContacts:(NSArray*)contacts
-{
+- (void)importContacts:(NSArray*)contacts {
     for (NSDictionary *c in contacts) {
         Contact *contact = [Contact createContactFromLinkedIn:c];
         [self.managedObjectContext save:nil];
@@ -83,12 +93,20 @@ static LinkedInManager *li = nil;
     return @[groupByLastName, sortByLastName];
 }
 
+// This returns the predicate that doesn't get all of the private private
+// users that linkedin doesn't allow you to grab.
+-(NSPredicate *)getPredicate {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"firstName != %@ AND lastName != %@", @"private", @"private"];
+    return predicate;
+}
+
 
 - (void)fetchContacts {
     NSFetchRequest *req = [[NSFetchRequest alloc] init];
     NSEntityDescription *desc = [NSEntityDescription entityForName:@"Contact" inManagedObjectContext:self.managedObjectContext];
     [req setEntity:desc];
     [req setSortDescriptors:[self getSortDescriptors]];
+    [req setPredicate:[self getPredicate]];
     NSError *error;
     
     

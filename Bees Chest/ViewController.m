@@ -72,6 +72,8 @@
                 NSLog(@"current user %@", result);
                 [li setCurrentUser:result];
                 [li.client getPath:[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~/connections?oauth2_access_token=%@&format=json", accessToken] parameters:nil success:^(AFHTTPRequestOperation * operation, NSDictionary *result) {
+                    
+                    
                     NSLog(@"connections %@", result);
                     [[LinkedInManager singleton] importContacts:result[@"values"]];
                     [self performSegueWithIdentifier:kLoginSegue sender:self];

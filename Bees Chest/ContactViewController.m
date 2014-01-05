@@ -26,7 +26,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+	NSLog(@"Contact = %@", self.contact);
 }
 
 - (void)viewDidAppear:(BOOL)animated

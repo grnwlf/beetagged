@@ -36,6 +36,7 @@
 //    ContactCell //
 //********************************************************************//
 #define kContactCell @"ContactCell"
+#define kContactCellPlaceholderImage [UIImage imageNamed:@"Bees Chest Placeholder.png"]
 
 //********************************************************************//
 //    Contact //
