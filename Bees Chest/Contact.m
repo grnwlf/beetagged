@@ -10,39 +10,91 @@
 
 @implementation Contact
 
-@dynamic lastName;
-@dynamic headline;
-@dynamic firstName;
 @dynamic linkedInId;
+@dynamic firstName;
+@dynamic lastName;
+@dynamic formattedName;
+@dynamic headline;
+@dynamic locationName;
+@dynamic positionIndustry;
+@dynamic positionName;
+@dynamic positionSize;
+@dynamic positionIsCurrent;
+@dynamic positionSummary;
+@dynamic positionTitle;
 @dynamic industry;
 @dynamic pictureUrl;
 @dynamic linkedInUrl;
 @dynamic groupByLastName;
 
+
 + (Contact*)createContactFromLinkedIn:(NSDictionary*)user {
     LinkedInManager *li = [LinkedInManager singleton];
     Contact *c = [NSEntityDescription insertNewObjectForEntityForName:@"Contact" inManagedObjectContext:li.managedObjectContext];
+    c.linkedInId = user[kContactLinkedInId];
     c.firstName = user[kContactFirstName];
     c.lastName = user[kContactLastName];
+    c.formattedName = user[kContactFormattedName];
+    c.headline = user[kContactHeadline];
+    [c getLocationFromJSON:user];
+    [c getPositionFromJSON:user];
+    c.industry = user[kContactIndustry];
     
+    c.pictureUrl = user[kContactPicUrl];
+    c.linkedInUrl = user[kContactLinkedInGetUrl][kContactLinkedInUrl];
+
     // This is where they will appear in the grouping.
     if (c.lastName && c.lastName.length > 0) {
         c.groupByLastName = [[c.lastName substringToIndex:1] uppercaseString];
     } else if (c.firstName && c.firstName.length > 0) {
         c.groupByLastName = [[c.firstName substringToIndex:1] uppercaseString];
     } else {
-        // if they don't have a name, make them appear last.
         c.groupByLastName = @"Z";
     }
     
-    c.linkedInId = user[kContactLinkedInId];
-    c.industry = user[kContactIndustry];
-    c.headline = user[kContactHeadline];
-    c.pictureUrl = user[kContactPicUrl];
+    
     [c addToCache];
     return c;
 }
 
+// adds the location json to the model file.
+-(void)getLocationFromJSON:(NSDictionary *)json {
+    NSString *location = @"";
+    NSDictionary * locationJSON = json[kContactLocation];
+    if (locationJSON) {
+        NSString *temp = locationJSON[kContactLocationName];
+        if (temp) {
+            location = temp;
+        }
+    }
+    self.locationName = location;
+}
+
+// adds the positions JSON to model.
+-(void)getPositionFromJSON:(NSDictionary *)json {
+    
+    if (json[kContactPosition] && json[kContactPosition][kContactPositionValues] && json[kContactPosition][kContactPositionValues][0]) {
+        NSDictionary *position = json[kContactPosition][kContactPositionValues][0];
+        
+        self.positionIsCurrent = [position[kContactPositionIsCurrent] boolValue];
+        self.positionSummary = position[kContactPositionSummary];
+        self.positionTitle = position[kContactPositionTitle];
+        
+        NSDictionary *company = position[kContactPositionCompany];
+        if (company) {
+            self.positionIndustry = company[kContactPositionIndustry];
+            self.positionName = company[kContactPositionName];
+            self.positionSize = company[kContactPositionSize];
+        } else {
+            self.positionIndustry = @"";
+            self.positionName = @"";
+            self.positionSize = @"";
+        }
+    }
+}
+
+
+// add the picture to the image cache asynchronously
 - (void)addToCache {
     SDWebImageDownloader *downloader = [SDWebImageDownloader sharedDownloader];
     NSURL *url = [NSURL URLWithString:self.pictureUrl];
@@ -54,38 +106,10 @@
     }];
 }
 
+
 - (NSString *)cacheKeyForURL:(NSURL *)url {
     return [url absoluteString];
 }
 
-
-//apiStandardProfileRequest =             {
-//    headers =                 {
-//        "_total" = 1;
-//        values =                     (
-//                                      {
-//                                          name = "x-li-auth-token";
-//                                          value = "name:FFci";
-//                                      }
-//                                      );
-//    };
-//    url = "http://api.linkedin.com/v1/people/btkEInCrdT";
-//};
-//firstName = Pavitra;
-//headline = "Student at The University of Michigan";
-//id = btkEInCrdT;
-//industry = "Political Organization";
-//lastName = Abraham;
-//location =             {
-//    country =                 {
-//        code = us;
-//    };
-//    name = "Greater Detroit Area";
-//};
-//pictureUrl = "http://m.c.lnkd.licdn.com/mpr/mprx/0_OPQTE-kC1IiOYrjkOB9OEl8G1Hc7yvukpctOElFO2DiY_AUXtvnSXAPrjQBl0tSe0Kkx59MZ5YzX";
-//siteStandardProfileRequest =             {
-//    url = "http://www.linkedin.com/profile/view?id=218395364&authType=name&authToken=FFci&trk=api*a3118083*s3192683*";
-//};
-//},
 
 @end

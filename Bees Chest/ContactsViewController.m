@@ -13,8 +13,6 @@
 
 @end
 
-#define kCellHeight 60
-
 @implementation ContactsViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -117,11 +115,6 @@
     return section;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return kCellHeight;
-}
-
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell;
@@ -139,11 +132,7 @@
     
     UIImageView *imageView = (UIImageView*)[cell viewWithTag:2];
     [imageView setImageWithURL:[NSURL URLWithString:contact.pictureUrl] placeholderImage:kContactCellPlaceholderImage];
-//    imageView.image = [contact getProfileImage];
-//    
     
-    
-//    [imageView setImageWithURL:[NSURL URLWithString:contact.pictureUrl] placeholderImage:kContactCellPlaceholderImage options:SDWebImageContinueInBackground];
     return cell;
 }
 

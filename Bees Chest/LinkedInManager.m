@@ -9,17 +9,18 @@
 #import "LinkedInManager.h"
 
 @interface LinkedInManager()
+
 @property (nonatomic, assign, readwrite) BOOL isSearching;
 @property (nonatomic, assign, readwrite) BOOL hasContacts;
 @property (strong, nonatomic, readwrite) NSFetchedResultsController *fetchedResultsController;
+
 @end
 
 @implementation LinkedInManager
 
 static LinkedInManager *li = nil;
 
-+ (LinkedInManager*)singleton
-{
++ (LinkedInManager*)singleton {
     if (!li) {
         li = [[LinkedInManager alloc] init];
     }
@@ -32,20 +33,9 @@ static LinkedInManager *li = nil;
 
 - (void)refreshContacts {
     [self fetchContacts];
-//    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"hasImages"]) {
-//        [self getContactImages];
-//        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"hasImages"];
-//    }
 }
 
-//- (void)getContactImages {
-//    for (Contact *contact in [self.fetchedResultsController fetchedObjects]) {
-//        [contact loadImage];
-//    }
-//}
-
-- (id)init
-{
+- (id)init {
     self = [super init];
     if (self) {
         self.app = [LIALinkedInApplication applicationWithRedirectURL:@"http://www.ancientprogramming.com"
@@ -108,7 +98,6 @@ static LinkedInManager *li = nil;
     [req setSortDescriptors:[self getSortDescriptors]];
     [req setPredicate:[self getPredicate]];
     NSError *error;
-    
     
     self.fetchedResultsController = [[NSFetchedResultsController alloc]
                                      initWithFetchRequest:req

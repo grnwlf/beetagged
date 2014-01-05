@@ -9,7 +9,6 @@
 #ifndef Bees_Chest_Constants_h
 #define Bees_Chest_Constants_h
 
-
 //********************************************************************//
 //    API Keys //
 //********************************************************************//
@@ -36,6 +35,7 @@
 //    ContactCell //
 //********************************************************************//
 #define kContactCell @"ContactCell"
+#define kContactCellHeight 70.0
 #define kContactCellPlaceholderImage [UIImage imageNamed:@"Bees Chest Placeholder.png"]
 
 //********************************************************************//
@@ -43,16 +43,34 @@
 //********************************************************************//
 #define kContactFirstName @"firstName"
 #define kContactLastName @"lastName"
+#define kContactFormattedName @"formattedName"
 #define kContactHeadline @"headline"
 #define kContactLinkedInId @"id"
 #define kContactIndustry @"industry"
 #define kContactPicUrl @"pictureUrl"
+#define kContactLocation @"location"
+#define kContactLocationName @"name"
+
+// Position
+#define kContactPosition @"positions"
+#define kContactPositionValues @"values"
+#define kContactPositionCompany @"company"
+#define kContactPositionIndustry @"industry"
+#define kContactPositionName @"name"
+#define kContactPositionSize @"size"
+#define kContactPositionIsCurrent @"isCurrent"
+#define kContactPositionSummary @"summary"
+#define kContactPositionTitle @"title"
+#define kContactLinkedInGetUrl @"siteStandardProfileRequest"
+#define kContactLinkedInUrl @"url"
 #define kContactGroupByLastName @"groupByLastName"
+
 
 //********************************************************************//
 //    Cache //
 //********************************************************************//
 #define kCacheAllContacts @"allContactsCache"
+
 
 
 #endif

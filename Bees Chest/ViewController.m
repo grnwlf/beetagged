@@ -71,9 +71,7 @@
             [li.client getPath:[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~?oauth2_access_token=%@&format=json", accessToken] parameters:nil success:^(AFHTTPRequestOperation * operation, NSDictionary *result) {
                 NSLog(@"current user %@", result);
                 [li setCurrentUser:result];
-                [li.client getPath:[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~/connections?oauth2_access_token=%@&format=json", accessToken] parameters:nil success:^(AFHTTPRequestOperation * operation, NSDictionary *result) {
-                    
-                    
+                      [li.client getPath:[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~/connections:(id,first-name,last-name,formatted-name,headline,location,industry,positions,picture-url,site-standard-profile-request)?oauth2_access_token=%@&format=json", accessToken] parameters:nil success:^(AFHTTPRequestOperation * operation, NSDictionary *result) {
                     NSLog(@"connections %@", result);
                     [[LinkedInManager singleton] importContacts:result[@"values"]];
                     [self performSegueWithIdentifier:kLoginSegue sender:self];
