@@ -48,7 +48,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    NSLog(@"showing contacts view");
     [self.ContactTableView reloadData];
     self.navigationController.navigationBar.hidden = YES;
 }
@@ -115,8 +114,7 @@
     return section;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell;
     cell = [tableView dequeueReusableCellWithIdentifier:kContactCell forIndexPath:indexPath];
     if (!cell) {

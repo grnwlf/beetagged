@@ -9,13 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "Contact.h"
 #import <SDWebImage/UIImageView+WebCache.h>
-@interface ContactViewController : UIViewController
+#import <QuartzCore/QuartzCore.h>
+#import "LXReorderableCollectionViewFlowLayout.h"
+@interface ContactViewController : UIViewController <LXReorderableCollectionViewDataSource, LXReorderableCollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) Contact *contact;
 @property (strong, nonatomic) IBOutlet UIImageView *contactImage;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
-@property (strong, nonatomic) IBOutlet UILabel *titleLabel;
-@property (strong, nonatomic) IBOutlet UILabel *companyLabel;
-@property (strong, nonatomic) IBOutlet UIButton *goToLinkedInButton;
+@property (strong, nonatomic) IBOutlet UILabel *headlineLabel;
+@property (strong, nonatomic) IBOutlet UILabel *positionTitleLabel;
+@property (strong, nonatomic) IBOutlet UILabel *positionNameLabel;
+@property (strong, nonatomic) IBOutlet UITextView *positionSummaryText;
+@property (strong, nonatomic) IBOutlet UICollectionView *tagsCollectionView;
+@property (strong, nonatomic) NSMutableArray *contactTags;
+
 
 @end
