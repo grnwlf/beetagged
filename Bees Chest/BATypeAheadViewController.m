@@ -37,6 +37,8 @@
     CGRect offscreen = CGRectMake(curFrame.origin.x, curFrame.origin.y - kHeight, curFrame.size.width, curFrame.size.height);
     
     if (animated) {
+
+        [self.view.inputTextField resignFirstResponder];
         [UIView animateWithDuration:.4 animations:^{
             self.view.frame = offscreen;
         } completion:^(BOOL finished) {
@@ -56,6 +58,8 @@
     CGRect onScreen = CGRectMake(curFrame.origin.x, curFrame.origin.y + kHeight, curFrame.size.width, curFrame.size.height);
     
     if (animated) {
+        
+        [self.view.inputTextField becomeFirstResponder];
         [UIView animateWithDuration:.4 animations:^{
             self.view.frame = onScreen;
         } completion:^(BOOL finished) {
@@ -66,9 +70,13 @@
     }
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
+    [self.view.exitButton addTarget:self action:@selector(dismissedView) forControlEvents:UIControlEventTouchDown];
+}
+
+-(void)dismissedView {
+    [self hideView:YES];
 }
 
 - (void)didReceiveMemoryWarning

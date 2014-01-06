@@ -12,6 +12,7 @@
 
 @property (strong, nonatomic) UITextField *inputTextField;
 @property (strong, nonatomic) UITableView *tableView;
+@property (strong, nonatomic) UIButton *exitButton;
 
 - (void)hideTableView;
 - (void)showTableViewWithHeight:(CGFloat)height;

@@ -26,7 +26,14 @@
         // Initialization code
         self.padding = 0.0;
         self.tableView = [[UITableView alloc] initWithFrame:[self getTableViewShownFrame:0] style:UITableViewStylePlain];
-        self.inputTextField = [[UITextField alloc] initWithFrame:CGRectMake(40, 0, self.frame.size.width - 80.0, kBATypeAheadTextLabelHeight)];
+        self.inputTextField = [[UITextField alloc] initWithFrame:CGRectMake(50, 0, self.frame.size.width - 100.0, kBATypeAheadTextLabelHeight)];
+        self.exitButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 50, 5.0, 25.0, 25.0)];
+        [self.exitButton setTitle:@"x" forState:UIControlStateNormal];
+        self.exitButton.titleLabel.textColor = [UIColor whiteColor];
+        self.exitButton.backgroundColor = [UIColor clearColor];
+        [self addSubview:self.exitButton];
+        
+        
         self.inputTextField.textAlignment = NSTextAlignmentCenter;
         self.inputTextField.backgroundColor = [UIColor clearColor];
         self.inputTextField.textColor = [UIColor whiteColor];
@@ -37,6 +44,7 @@
     }
     return self;
 }
+
 
 - (CGRect)getTableViewHiddenFrame {
     return CGRectMake(-kWidth, kBATypeAheadTextLabelHeight + self.padding, self.frame.size.width, self.frame.size.height - self.padding - kBATypeAheadTextLabelHeight);

@@ -9,16 +9,17 @@
 #import "ContactViewController.h"
 
 @interface ContactViewController ()
-@property (nonatomic, strong) ContactTransition *contactAnimationController;
+@property (nonatomic, strong) NSMutableArray *deleted;
+@property (nonatomic, strong) NSMutableArray *added;
 @end
 
 @implementation ContactViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.contactAnimationController = [[ContactTransition alloc] init];
+        self.deleted = [@[] mutableCopy];
+        self.added = [@[] mutableCopy];
     }
     return self;
 }
@@ -56,6 +57,14 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.hidden = NO;
+}
+
+// save the data to parse before we leave
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    // starfish -- make sure data is being updated in parse
+//    [PFObject saveAllInBackground:self.added];
+//    [PFObject deleteAllInBackground:self.deleted];
 }
 
 #pragma mark View Logic
@@ -191,7 +200,6 @@
 
 #pragma mark - Tag insert/remove
 // adds a Tag object at the indexPath
-// adds a Tag object from Parse
 // adds a Tag object from Core Data
 - (void)addTagToCollectionView:(Tag *)tag {
     
@@ -202,16 +210,51 @@
         }
     }
 
-    // starfish -- add contact to the model file and push additions or deltions to parse.
     [self.contactTags addObject:tag];
+    [self addedTag:tag];
+    [self resetContactTags];
     [self.tagsCollectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.contactTags.count - 1 inSection:0]]];
 }
 
+- (void)resetContactTags {
+    LinkedInManager *lim = [LinkedInManager singleton];
+    self.contact.tags_ = [self.contactTags copy];
+    [lim.managedObjectContext save:nil];
+}
+
+// adds the tag to the added changeList
+- (void)addedTag:(Tag *)tag {
+    for (Tag *t in self.deleted) {
+        NSInteger index = 0;
+        if ([t.attributeName isEqualToString:tag.attributeName]) {
+            [self.deleted removeObjectAtIndex:index];
+            return;
+        }
+        index++;
+    }
+    [self.added addObject:tag];
+}
+
+// adds the tag to the deleted changeList
+- (void)deletedTag:(Tag *)tag {
+    for (Tag *t in self.added) {
+        NSInteger index = 0;
+        if ([t.attributeName isEqualToString:tag.attributeName]) {
+            [self.added removeObjectAtIndex:index];
+            return;
+        }
+        index++;
+    }
+    [self.deleted addObject:tag];
+}
+
 // deletes a Tag object at the indexPath
-// deletes a Tag object from Parse
 // deletes a Tag object from Core Data
 - (void)deleteTagAtIndexPath:(NSIndexPath *)indexPath {
+    Tag *tag = [self.contactTags objectAtIndex:indexPath.item];
     [self.contactTags removeObjectAtIndex:indexPath.item];
+    [self deletedTag:tag];
+    [self resetContactTags];
     [self.tagsCollectionView deleteItemsAtIndexPaths:@[indexPath]];
 }
 
@@ -219,7 +262,6 @@
 // the keyboard
 - (void)showAddTagView {
     [self.typeAheadViewController showView:YES];
-    [self.typeAheadViewController.view.inputTextField becomeFirstResponder];
 }
 
 // This is the delegate method that is called when on of the items from the
@@ -228,14 +270,11 @@
 - (void)cellClickedWithData:(id)data {
     LinkedInManager *lim = [LinkedInManager singleton];
     Tag *t = [Tag tagFromTagOption:(TagOption *)data taggedUser:self.contact.linkedInId byUser:[lim currenUserId]];
-    
-    // 1. make the label not the first responder
-    [self.typeAheadViewController.view.inputTextField resignFirstResponder];
-    
-    // 2. make the view go away.
+
+    // 1. make the view go away.
     [self.typeAheadViewController hideView:YES];
     
-    // 3. add the Tag
+    // 2. add the Tag
     [self addTagToCollectionView:t];
 }
 
