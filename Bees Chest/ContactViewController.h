@@ -12,8 +12,10 @@
 #import <QuartzCore/QuartzCore.h>
 #import "LXReorderableCollectionViewFlowLayout.h"
 #import "TagCell.h"
+#import "BATypeAheadViewController.h"
+#import "LinkedInManager.h"
 
-@interface ContactViewController : UIViewController <LXReorderableCollectionViewDataSource, LXReorderableCollectionViewDelegateFlowLayout>
+@interface ContactViewController : UIViewController <LXReorderableCollectionViewDataSource, UICollectionViewDelegate, LXReorderableCollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) Contact *contact;
 @property (strong, nonatomic) IBOutlet UIImageView *contactImage;

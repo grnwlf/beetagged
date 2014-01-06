@@ -32,10 +32,10 @@
 		2889B0761874992C00CF8580 /* ContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0751874992C00CF8580 /* ContactViewController.m */; };
 		2889B0791874993500CF8580 /* BeesChestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0781874993500CF8580 /* BeesChestViewController.m */; };
 		8A0B0C4F5E9443E9999A1150 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AB626A38B19406BB8FD1558 /* libPods.a */; };
-		9D08A2B018795A5D00B058DA /* LXReorderableCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D08A2AE18795A5D00B058DA /* LXReorderableCollectionViewFlowLayout.m */; };
 		9D2C71321879DEFC0022CE5F /* TagOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C71311879DEFC0022CE5F /* TagOption.m */; };
 		9D2C71351879DF170022CE5F /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C71341879DF170022CE5F /* Tag.m */; };
 		9D2C713C187A496C0022CE5F /* TagCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C713B187A496C0022CE5F /* TagCell.m */; };
+		9D2C713F187A6EE00022CE5F /* LessBoringFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C713D187A6EE00022CE5F /* LessBoringFlowLayout.m */; };
 		9D3792E41878D0D6003955EF /* Bees Chest Placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D3792E31878D0D6003955EF /* Bees Chest Placeholder.png */; };
 /* End PBXBuildFile section */
 
@@ -89,14 +89,14 @@
 		2889B0751874992C00CF8580 /* ContactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactViewController.m; sourceTree = "<group>"; };
 		2889B0771874993500CF8580 /* BeesChestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeesChestViewController.h; sourceTree = "<group>"; };
 		2889B0781874993500CF8580 /* BeesChestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeesChestViewController.m; sourceTree = "<group>"; };
-		9D08A2AE18795A5D00B058DA /* LXReorderableCollectionViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LXReorderableCollectionViewFlowLayout.m; sourceTree = "<group>"; };
-		9D08A2AF18795A5D00B058DA /* LXReorderableCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LXReorderableCollectionViewFlowLayout.h; sourceTree = "<group>"; };
 		9D2C71301879DEFC0022CE5F /* TagOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagOption.h; sourceTree = "<group>"; };
 		9D2C71311879DEFC0022CE5F /* TagOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagOption.m; sourceTree = "<group>"; };
 		9D2C71331879DF170022CE5F /* Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tag.h; sourceTree = "<group>"; };
 		9D2C71341879DF170022CE5F /* Tag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tag.m; sourceTree = "<group>"; };
 		9D2C713A187A496C0022CE5F /* TagCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagCell.h; sourceTree = "<group>"; };
 		9D2C713B187A496C0022CE5F /* TagCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagCell.m; sourceTree = "<group>"; };
+		9D2C713D187A6EE00022CE5F /* LessBoringFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LessBoringFlowLayout.m; sourceTree = "<group>"; };
+		9D2C713E187A6EE00022CE5F /* LessBoringFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LessBoringFlowLayout.h; sourceTree = "<group>"; };
 		9D3792E31878D0D6003955EF /* Bees Chest Placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bees Chest Placeholder.png"; sourceTree = "<group>"; };
 		AEA705BE07BD482FBA74034C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -233,10 +233,10 @@
 		9D3792E11878BCDF003955EF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				9D2C713D187A6EE00022CE5F /* LessBoringFlowLayout.m */,
+				9D2C713E187A6EE00022CE5F /* LessBoringFlowLayout.h */,
 				9D2C713A187A496C0022CE5F /* TagCell.h */,
 				9D2C713B187A496C0022CE5F /* TagCell.m */,
-				9D08A2AE18795A5D00B058DA /* LXReorderableCollectionViewFlowLayout.m */,
-				9D08A2AF18795A5D00B058DA /* LXReorderableCollectionViewFlowLayout.h */,
 				2889B068187456AA00CF8580 /* BATypeAheadView.h */,
 				2889B069187456AA00CF8580 /* BATypeAheadView.m */,
 			);
@@ -404,11 +404,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D2C713C187A496C0022CE5F /* TagCell.m in Sources */,
+				9D2C713F187A6EE00022CE5F /* LessBoringFlowLayout.m in Sources */,
 				2889B0461870651700CF8580 /* ViewController.m in Sources */,
 				2889B0791874993500CF8580 /* BeesChestViewController.m in Sources */,
 				2889B0731874992200CF8580 /* ContactsViewController.m in Sources */,
 				2889B06D187456D200CF8580 /* BATypeAheadViewController.m in Sources */,
-				9D08A2B018795A5D00B058DA /* LXReorderableCollectionViewFlowLayout.m in Sources */,
 				282F2F281877AD9A004566D0 /* Contact.m in Sources */,
 				2889B06A187456AA00CF8580 /* BATypeAheadView.m in Sources */,
 				9D2C71321879DEFC0022CE5F /* TagOption.m in Sources */,

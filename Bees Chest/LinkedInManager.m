@@ -146,6 +146,17 @@ static LinkedInManager *li = nil;
     }
 }
 
+
+- (NSArray *)tagOptionsArray {
+    NSMutableArray *tagOptions = [[NSMutableArray alloc] initWithCapacity:self.tagOptions.count];
+    NSArray *keys = [self.tagOptions allKeys];
+    
+    for (NSString *key in keys) {
+        [tagOptions addObject:self.tagOptions[key]];
+    }
+    return tagOptions;
+}
+
 - (void)setToken:(NSString*)token {
     [[NSUserDefaults standardUserDefaults] setObject:token forKey:kLIToken];
 }

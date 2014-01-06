@@ -37,7 +37,7 @@
 - (NSString*)currentUser;
 - (NSString *)currenUserId;
 - (NSDictionary *)currentUserAsDictionary;
-
+- (NSArray *)tagOptionsArray;
 - (void)importContacts:(NSArray*)contacts;
 
 

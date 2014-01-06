@@ -140,25 +140,26 @@
     return self.contactTags.count + 1;
 }
 
-// converts an indexPath into an index (like index of an array)
--(NSInteger)indexFromIndexPath:(NSIndexPath *)indexPath {
-    NSInteger row = indexPath.row, section = indexPath.section;
-    return row + section * kTagsNumberOfSections;
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     
+    // if it's the last item, add a new item
+    if (indexPath.item == self.contactTags.count) {
+        [self addTagToCollectionView:nil]; // starfish -- fix this shit.
+    }
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *tagCellIdentifier = @"TagCollectionCell";
     TagCell *cell = (TagCell *)[cv dequeueReusableCellWithReuseIdentifier:tagCellIdentifier forIndexPath:indexPath];
-
+    cell.layer.cornerRadius = cell.frame.size.height / 4;
     UILabel *label = (UILabel *)[cell viewWithTag:1];
-    NSInteger i = [self indexFromIndexPath:indexPath];
+    NSInteger i = indexPath.item;
     if (i < self.contactTags.count) {
         Tag *tag = self.contactTags[i];
         label.text = tag.attributeName;
         label.textColor = [UIColor yellowColor];
     } else {
-        
         label.text = @"+";
         label.font = [UIFont fontWithName:@"Helvetica-Bold" size:50.0];
         float cellHeight = cell.frame.size.height, labelHeight = label.frame.size.height;
@@ -166,38 +167,69 @@
         label.frame = CGRectMake(0, offset, cell.frame.size.width, labelHeight);
         label.textColor = [UIColor whiteColor];
     }
-//    cell.alpha = .6;
     return cell;
 }
 
-#pragma mark Moving Delegate Functions
-// make the chance in the Tag Array
-- (void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath {
-    NSString *tag = [self.contactTags objectAtIndex:fromIndexPath.item];
-    [self.contactTags removeObjectAtIndex:fromIndexPath.item];
-    [self.contactTags insertObject:tag atIndex:toIndexPath.item];
+#pragma mark - Tag insert/remove
+- (void)addTagToCollectionView:(Tag *)tag {
+    
+    [self showAddTagView];
+    
+//    Tag *t = [[Tag alloc] init];
+//    t.attributeName = @"Cock";
+//    
+//    [self.contactTags addObject:t];
+//    [self.tagsCollectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.contactTags.count - 1 inSection:0]]];
 }
 
-// don't let you move the add item
-- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.item == self.contactTags.count) {
-        return NO;
-    }
-    return YES;
+- (void)deleteTagAtIndexPath:(NSIndexPath *)indexPath {
+    [self.contactTags removeObjectAtIndex:indexPath.item];
+    [self.tagsCollectionView deleteItemsAtIndexPaths:@[indexPath]];
 }
 
-// can't make anything move behind the add item
-- (BOOL)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath canMoveToIndexPath:(NSIndexPath *)toIndexPath {
-    if (toIndexPath.item == self.contactTags.count) {
-        return NO;
-    }
-    return YES;
+- (void)showAddTagView {
+    
+    float paddingX = 60.0, paddingY = 80.0;
+    float width = self.view.frame.size.width - (paddingX * 2);
+    float height = self.view.frame.size.height - (paddingY * 2);
+    BATypeAheadViewController *typeAhead = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(paddingX, paddingY, width, height) andData:[[LinkedInManager singleton] tagOptionsArray]];
+    typeAhead.delegate = self;
+    
+    [self presentViewController:typeAhead animated:YES completion:nil];
 }
+
+- (void)cellClickedWithData:(id)data {
+    Tag *t = (Tag *)data;
+    NSLog(@"Clicked %@", t.attributeName);
+}
+
+
+//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+//    
+//    // Upon tapping an item, delete it. If it's the last item (the add cell), add a new one
+//    NSArray *colorNames = self.sectionedColorNames[indexPath.section];
+//    
+//    if (indexPath.item == colorNames.count)
+//    {
+//        [self addNewItemInSection:indexPath.section];
+//    }
+//    else
+//    {
+//        [self deleteItemAtIndexPath:indexPath];
+//    }
+//}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+
+
 
 
 @end

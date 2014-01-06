@@ -11,7 +11,7 @@
 
 @protocol BATypeAheadDelegate <NSObject>
 
-- (void)cellClickedWithData:(NSString*)data;
+- (void)cellClickedWithData:(id)data;
 
 @end
 

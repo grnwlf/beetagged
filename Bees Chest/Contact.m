@@ -35,7 +35,6 @@
     self = [super init];
     if (self) {
         self.hasGeneratedTags = NO;
-//        tags = nil;
     }
     return self;
 }

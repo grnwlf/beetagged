@@ -55,8 +55,6 @@
     return self.searchData.count;
 }
 
-
-
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return kCellHeight;
@@ -71,7 +69,8 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    cell.textLabel.text = self.searchData[indexPath.row];
+    Tag *tag = self.searchData[indexPath.row];
+    cell.textLabel.text = tag.attributeName;
     return cell;
 }
 
@@ -81,15 +80,14 @@
 }
 
 #pragma mark UITextField Delegate
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     NSLog(@"%@", string);
     NSString *query = [NSString stringWithFormat:@"%@%@", self.view.inputTextField.text, string];
     if ([string isEqualToString:@""]) {
         NSLog(@"backspace");
         query = [query substringToIndex:query.length-1];
     }
-    query = [query stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    query = [[query stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] lowercaseString];
     NSLog(@"%@", query);
     
     if (query.length == 0) {
@@ -97,8 +95,11 @@
         [self hideAndClearTableView];
     } else {
         self.isTyping = true;
-        NSPredicate *queryNames = [NSPredicate predicateWithFormat:@"SELF CONTAINS[c] %@", query];
-        self.searchData = (NSMutableArray*)[self.data filteredArrayUsingPredicate:queryNames];
+
+        NSPredicate *queryName = [NSPredicate predicateWithBlock:^BOOL(Tag *evaluatedObject, NSDictionary *bindings) {
+            return [[evaluatedObject.attributeName lowercaseString] rangeOfString:query].location != NSNotFound;
+        }];
+        self.searchData = (NSMutableArray*)[self.data filteredArrayUsingPredicate:queryName];
         NSLog(@"search data: %@", self.searchData);
         [self showTableView];
     }
@@ -107,7 +108,7 @@
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
-    self.searchData = @[];
+    self.searchData = [@[] mutableCopy];
     [self.view.tableView reloadData];
     return YES;
 }
@@ -121,7 +122,7 @@
 - (void)hideAndClearTableView
 {
     [self.view hideTableView];
-    self.searchData = @[];
+    self.searchData = [@[] mutableCopy];
     [self.view.tableView reloadData];
 }
 
