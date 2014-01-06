@@ -42,6 +42,7 @@
         } completion:^(BOOL finished) {
             self.view.inputTextField.text = @"";
             self.searchData = [@[] mutableCopy];
+            [self.view hideTableView];
             [self.view.tableView reloadData];
         }];
     } else {

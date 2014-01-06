@@ -35,10 +35,11 @@
     self.contactTags = [self.contact.tags_ mutableCopy];
 }
 
+// style the typeahead view
 - (void)typeahead {
     float top = 70.0, left = 20.0, height = 180.0;
 
-    self.typeAheadViewController = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(left, top, self.view.frame.size.width - left, height) andData:[[LinkedInManager singleton] tagOptionsArray]];
+    self.typeAheadViewController = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(left, top, self.view.frame.size.width - left * 2, height) andData:[[LinkedInManager singleton] tagOptionsArray]];
     self.typeAheadViewController.delegate = self;
     self.typeAheadViewController.view.layer.cornerRadius = 40.0;
     self.typeAheadViewController.view.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:.6];
@@ -155,6 +156,8 @@
     return self.contactTags.count + 1;
 }
 
+// called when the item is selected - will only do anything if the add button
+// is selected
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     
@@ -164,6 +167,7 @@
     }
 }
 
+// style the collectionView cell at the indexPath
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *tagCellIdentifier = @"TagCollectionCell";
     TagCell *cell = (TagCell *)[cv dequeueReusableCellWithReuseIdentifier:tagCellIdentifier forIndexPath:indexPath];
@@ -186,9 +190,13 @@
 }
 
 #pragma mark - Tag insert/remove
+// adds a Tag object at the indexPath
+// adds a Tag object from Parse
+// adds a Tag object from Core Data
 - (void)addTagToCollectionView:(Tag *)tag {
+    
     for (Tag *check in self.contactTags) {
-        // make sure that there is no duplicates
+        // make sure that there are no duplicates
         if ([check.attributeName isEqualToString:tag.attributeName]) {
             return;
         }
@@ -199,16 +207,24 @@
     [self.tagsCollectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.contactTags.count - 1 inSection:0]]];
 }
 
+// deletes a Tag object at the indexPath
+// deletes a Tag object from Parse
+// deletes a Tag object from Core Data
 - (void)deleteTagAtIndexPath:(NSIndexPath *)indexPath {
     [self.contactTags removeObjectAtIndex:indexPath.item];
     [self.tagsCollectionView deleteItemsAtIndexPaths:@[indexPath]];
 }
 
+// This is is what brings the typeahead view onto the screen and shows the
+// the keyboard
 - (void)showAddTagView {
     [self.typeAheadViewController showView:YES];
     [self.typeAheadViewController.view.inputTextField becomeFirstResponder];
 }
 
+// This is the delegate method that is called when on of the items from the
+// typeahead is chosen.  It dimisses the keyboard, moves the view offscreen,
+// and adds the tag to the collectionView
 - (void)cellClickedWithData:(id)data {
     LinkedInManager *lim = [LinkedInManager singleton];
     Tag *t = [Tag tagFromTagOption:(TagOption *)data taggedUser:self.contact.linkedInId byUser:[lim currenUserId]];
