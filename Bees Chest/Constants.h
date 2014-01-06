@@ -102,5 +102,10 @@
 #define kUserImportedAllContacts @"importedContacts"
 
 
+//********************************************************************//
+//    BATypeAhead //
+//********************************************************************//
+#define kBATypeAheadCellHeight 40
+#define kBATypeAheadTextLabelHeight 45.0
 
 #endif

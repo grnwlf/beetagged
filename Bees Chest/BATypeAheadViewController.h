@@ -26,4 +26,8 @@
 - (id)initWithFrame:(CGRect)frame andData:(NSArray*)data;
 - (void)hideAndClearTableView;
 
+- (void)hideView:(BOOL)animated;
+- (void)showView:(BOOL)animated;
+
+
 @end

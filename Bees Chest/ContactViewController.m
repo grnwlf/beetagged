@@ -9,7 +9,7 @@
 #import "ContactViewController.h"
 
 @interface ContactViewController ()
-
+@property (nonatomic, strong) ContactTransition *contactAnimationController;
 @end
 
 @implementation ContactViewController
@@ -18,6 +18,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        self.contactAnimationController = [[ContactTransition alloc] init];
     }
     return self;
 }
@@ -30,7 +31,21 @@
     self.tagsCollectionView.backgroundColor = [UIColor clearColor];
     
     [self formatLayout];
+    [self typeahead];
     self.contactTags = [self.contact.tags_ mutableCopy];
+}
+
+- (void)typeahead {
+    float top = 70.0, left = 20.0, height = 180.0;
+
+    self.typeAheadViewController = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(left, top, self.view.frame.size.width - left, height) andData:[[LinkedInManager singleton] tagOptionsArray]];
+    self.typeAheadViewController.delegate = self;
+    self.typeAheadViewController.view.layer.cornerRadius = 40.0;
+    self.typeAheadViewController.view.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:.6];
+    self.typeAheadViewController.view.tableView.backgroundColor = [UIColor clearColor];
+    [self.typeAheadViewController hideView:NO];
+    [self addChildViewController:self.typeAheadViewController];
+    [self.view addSubview:self.typeAheadViewController.view];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -145,7 +160,7 @@
     
     // if it's the last item, add a new item
     if (indexPath.item == self.contactTags.count) {
-        [self addTagToCollectionView:nil]; // starfish -- fix this shit.
+        [self showAddTagView];
     }
 }
 
@@ -172,14 +187,16 @@
 
 #pragma mark - Tag insert/remove
 - (void)addTagToCollectionView:(Tag *)tag {
-    
-    [self showAddTagView];
-    
-//    Tag *t = [[Tag alloc] init];
-//    t.attributeName = @"Cock";
-//    
-//    [self.contactTags addObject:t];
-//    [self.tagsCollectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.contactTags.count - 1 inSection:0]]];
+    for (Tag *check in self.contactTags) {
+        // make sure that there is no duplicates
+        if ([check.attributeName isEqualToString:tag.attributeName]) {
+            return;
+        }
+    }
+
+    // starfish -- add contact to the model file and push additions or deltions to parse.
+    [self.contactTags addObject:tag];
+    [self.tagsCollectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.contactTags.count - 1 inSection:0]]];
 }
 
 - (void)deleteTagAtIndexPath:(NSIndexPath *)indexPath {
@@ -188,48 +205,27 @@
 }
 
 - (void)showAddTagView {
-    
-    float paddingX = 60.0, paddingY = 80.0;
-    float width = self.view.frame.size.width - (paddingX * 2);
-    float height = self.view.frame.size.height - (paddingY * 2);
-    BATypeAheadViewController *typeAhead = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(paddingX, paddingY, width, height) andData:[[LinkedInManager singleton] tagOptionsArray]];
-    typeAhead.delegate = self;
-    
-    [self presentViewController:typeAhead animated:YES completion:nil];
+    [self.typeAheadViewController showView:YES];
+    [self.typeAheadViewController.view.inputTextField becomeFirstResponder];
 }
 
 - (void)cellClickedWithData:(id)data {
-    Tag *t = (Tag *)data;
-    NSLog(@"Clicked %@", t.attributeName);
+    LinkedInManager *lim = [LinkedInManager singleton];
+    Tag *t = [Tag tagFromTagOption:(TagOption *)data taggedUser:self.contact.linkedInId byUser:[lim currenUserId]];
+    
+    // 1. make the label not the first responder
+    [self.typeAheadViewController.view.inputTextField resignFirstResponder];
+    
+    // 2. make the view go away.
+    [self.typeAheadViewController hideView:YES];
+    
+    // 3. add the Tag
+    [self addTagToCollectionView:t];
 }
-
-
-//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
-//    
-//    // Upon tapping an item, delete it. If it's the last item (the add cell), add a new one
-//    NSArray *colorNames = self.sectionedColorNames[indexPath.section];
-//    
-//    if (indexPath.item == colorNames.count)
-//    {
-//        [self addNewItemInSection:indexPath.section];
-//    }
-//    else
-//    {
-//        [self deleteItemAtIndexPath:indexPath];
-//    }
-//}
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
-
-
-
-
 
 
 @end

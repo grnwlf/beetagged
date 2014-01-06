@@ -10,14 +10,16 @@
 #import "Contact.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <QuartzCore/QuartzCore.h>
-#import "LXReorderableCollectionViewFlowLayout.h"
 #import "TagCell.h"
 #import "BATypeAheadViewController.h"
 #import "LinkedInManager.h"
+#import "ContactTransition.h"
 
-@interface ContactViewController : UIViewController <LXReorderableCollectionViewDataSource, UICollectionViewDelegate, LXReorderableCollectionViewDelegateFlowLayout>
+@interface ContactViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) Contact *contact;
+@property (nonatomic, strong) BATypeAheadViewController *typeAheadViewController;
+@property (nonatomic, strong) BATypeAheadView *typeAheadView;
 @property (strong, nonatomic) IBOutlet UIImageView *contactImage;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *headlineLabel;
@@ -26,6 +28,7 @@
 @property (strong, nonatomic) IBOutlet UITextView *positionSummaryText;
 @property (strong, nonatomic) IBOutlet UICollectionView *tagsCollectionView;
 @property (strong, nonatomic) NSMutableArray *contactTags;
+
 
 
 @end

@@ -36,6 +36,7 @@
 		9D2C71351879DF170022CE5F /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C71341879DF170022CE5F /* Tag.m */; };
 		9D2C713C187A496C0022CE5F /* TagCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C713B187A496C0022CE5F /* TagCell.m */; };
 		9D2C713F187A6EE00022CE5F /* LessBoringFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C713D187A6EE00022CE5F /* LessBoringFlowLayout.m */; };
+		9D2C7142187A8D0B0022CE5F /* ContactTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C7141187A8D0B0022CE5F /* ContactTransition.m */; };
 		9D3792E41878D0D6003955EF /* Bees Chest Placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D3792E31878D0D6003955EF /* Bees Chest Placeholder.png */; };
 /* End PBXBuildFile section */
 
@@ -97,6 +98,8 @@
 		9D2C713B187A496C0022CE5F /* TagCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagCell.m; sourceTree = "<group>"; };
 		9D2C713D187A6EE00022CE5F /* LessBoringFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LessBoringFlowLayout.m; sourceTree = "<group>"; };
 		9D2C713E187A6EE00022CE5F /* LessBoringFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LessBoringFlowLayout.h; sourceTree = "<group>"; };
+		9D2C7140187A8D0B0022CE5F /* ContactTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactTransition.h; sourceTree = "<group>"; };
+		9D2C7141187A8D0B0022CE5F /* ContactTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactTransition.m; sourceTree = "<group>"; };
 		9D3792E31878D0D6003955EF /* Bees Chest Placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bees Chest Placeholder.png"; sourceTree = "<group>"; };
 		AEA705BE07BD482FBA74034C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -246,6 +249,8 @@
 		9D3792E21878BCEC003955EF /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				9D2C7140187A8D0B0022CE5F /* ContactTransition.h */,
+				9D2C7141187A8D0B0022CE5F /* ContactTransition.m */,
 				2889B0441870651700CF8580 /* ViewController.h */,
 				2889B0451870651700CF8580 /* ViewController.m */,
 				2889B06B187456D200CF8580 /* BATypeAheadViewController.h */,
@@ -410,6 +415,7 @@
 				2889B0731874992200CF8580 /* ContactsViewController.m in Sources */,
 				2889B06D187456D200CF8580 /* BATypeAheadViewController.m in Sources */,
 				282F2F281877AD9A004566D0 /* Contact.m in Sources */,
+				9D2C7142187A8D0B0022CE5F /* ContactTransition.m in Sources */,
 				2889B06A187456AA00CF8580 /* BATypeAheadView.m in Sources */,
 				9D2C71321879DEFC0022CE5F /* TagOption.m in Sources */,
 				2889B0761874992C00CF8580 /* ContactViewController.m in Sources */,

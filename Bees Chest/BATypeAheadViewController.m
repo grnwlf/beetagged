@@ -9,10 +9,8 @@
 #import "BATypeAheadViewController.h"
 
 @interface BATypeAheadViewController ()
-
+@property (nonatomic, assign) CGRect customFrame;
 @end
-
-#define kCellHeight 50
 
 @implementation BATypeAheadViewController
 
@@ -20,10 +18,9 @@
 {
     self = [super init];
     if (self) {
-        self.view = [[BATypeAheadView alloc] initWithFrame:frame];
+        self.customFrame = frame;
         self.data = data;
         self.searchData = [[NSMutableArray alloc] init];
-        
         self.view.tableView.delegate = self;
         self.view.tableView.dataSource = self;
         self.view.inputTextField.delegate = self;
@@ -31,10 +28,46 @@
     return self;
 }
 
+- (void)loadView {
+    self.view = [[BATypeAheadView alloc] initWithFrame:self.customFrame];
+}
+
+- (void)hideView:(BOOL)animated {
+    CGRect curFrame = self.view.frame;
+    CGRect offscreen = CGRectMake(curFrame.origin.x, curFrame.origin.y - kHeight, curFrame.size.width, curFrame.size.height);
+    
+    if (animated) {
+        [UIView animateWithDuration:.4 animations:^{
+            self.view.frame = offscreen;
+        } completion:^(BOOL finished) {
+            self.view.inputTextField.text = @"";
+            self.searchData = [@[] mutableCopy];
+            [self.view.tableView reloadData];
+        }];
+    } else {
+        self.view.frame = offscreen;
+    }
+}
+
+
+- (void)showView:(BOOL)animated {
+    CGRect curFrame = self.view.frame;
+    CGRect onScreen = CGRectMake(curFrame.origin.x, curFrame.origin.y + kHeight, curFrame.size.width, curFrame.size.height);
+    
+    if (animated) {
+        [UIView animateWithDuration:.4 animations:^{
+            self.view.frame = onScreen;
+        } completion:^(BOOL finished) {
+            NSLog(@"Moved view");
+        }];
+    } else {
+        self.view.frame = onScreen;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning
@@ -57,7 +90,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return kCellHeight;
+    return kBATypeAheadCellHeight;
 }
 
 
@@ -70,12 +103,16 @@
     }
     
     Tag *tag = self.searchData[indexPath.row];
+    cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Thin" size:14.0];
+    cell.textLabel.textColor = [UIColor whiteColor];
+    cell.textLabel.backgroundColor = [UIColor clearColor];
+    cell.backgroundColor = [UIColor clearColor];
     cell.textLabel.text = tag.attributeName;
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     [self.delegate cellClickedWithData:self.searchData[indexPath.row]];
 }
 
@@ -103,6 +140,7 @@
         NSLog(@"search data: %@", self.searchData);
         [self showTableView];
     }
+    [self.view.tableView reloadData];
     return true;
 }
 
@@ -128,7 +166,7 @@
 
 - (void)showTableView
 {
-    [self.view showTableViewWithHeight:(self.searchData.count*kCellHeight)];
+    [self.view showTableViewWithHeight:(self.searchData.count*kBATypeAheadCellHeight)];
     [self.view.tableView reloadData];
 }
 
