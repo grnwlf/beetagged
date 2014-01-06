@@ -10,7 +10,6 @@
 
 @implementation Tag
 
-
 + (Tag *)tagFromParse:(PFObject *)pfObject {
     Tag *tag = [[Tag alloc] init];
     tag.objectId = [pfObject objectId];
@@ -21,6 +20,64 @@
     tag.createdAt = [pfObject objectForKey:kTagCreatedAt];
     tag.updatedAt = [pfObject objectForKey:kTagUpdatedAt];
     return tag;
+}
+
++ (Tag *)tagFromTagOption:(TagOption *)tagOption taggedUser:(NSString *)taggedUser byUser:(NSString *)byUser {
+    Tag *tag = [[Tag alloc] init];
+    tag.objectId = nil;
+    tag.attributeName = tagOption.attributeName;
+    tag.tagOptionId = tagOption.objectId;
+    tag.taggedBy = byUser;
+    tag.tagUserId = taggedUser;
+    tag.createdAt = nil;
+    tag.updatedAt = nil;
+    return tag;
+}
+
+-(PFObject *)pfObject {
+    PFObject *pfObject = [PFObject objectWithClassName:kTagClass];
+    if (self.objectId && self.objectId.length > 0) {
+        [pfObject setObjectId:self.objectId];
+    }
+    
+    [pfObject setObject:self.attributeName forKey:kTagAttributeName];
+    [pfObject setObject:self.taggedBy forKey:kTagTaggedBy];
+    [pfObject setObject:self.tagUserId forKey:kTagUserId];
+    [pfObject setObject:self.tagOptionId forKey:kTagOptionId];
+    
+    if (self.createdAt) {
+        [pfObject setObject:self.createdAt forKey:kTagCreatedAt];
+    }
+    
+    if (self.updatedAt) {
+        [pfObject setObject:self.updatedAt forKey:kTagUpdatedAt];
+    }
+    
+    return pfObject;
+}
+
+#pragma mark NSCoding
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    self.objectId = [decoder decodeObjectForKey:kTagObjectId]; // optional
+    self.attributeName = [decoder decodeObjectForKey:kTagAttributeName];
+    self.taggedBy = [decoder decodeObjectForKey:kTagTaggedBy];
+    self.tagOptionId = [decoder decodeObjectForKey:kTagOptionId];
+    self.createdAt = [decoder decodeObjectForKey:kTagCreatedAt]; // optional
+    self.updatedAt = [decoder decodeObjectForKey:kTagUpdatedAt]; // optional
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [encoder encodeObject:self.objectId forKey:kTagObjectId];
+    [encoder encodeObject:self.attributeName forKey:kTagAttributeName];
+    [encoder encodeObject:self.taggedBy forKey:kTagTaggedBy];
+    [encoder encodeObject:self.tagOptionId forKey:kTagOptionId];
+    [encoder encodeObject:self.createdAt forKey:kTagCreatedAt];
+    [encoder encodeObject:self.updatedAt forKey:kTagUpdatedAt];
 }
 
 @end

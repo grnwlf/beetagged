@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "BATypeAheadViewController.h"
+#import "Contact.h"
+#import <Parse/Parse.h>
 
 @interface ViewController : UIViewController <BATypeAheadDelegate>
 

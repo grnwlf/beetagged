@@ -4,6 +4,7 @@
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="formattedName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="groupByLastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hasGeneratedTags" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="headline" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="industry" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
@@ -17,6 +18,7 @@
         <attribute name="positionSize" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="positionSummary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="positionTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tagData" optional="YES" attributeType="Binary" syncable="YES"/>
     </entity>
     <elements>
         <element name="Contact" positionX="0" positionY="0" width="0" height="0"/>

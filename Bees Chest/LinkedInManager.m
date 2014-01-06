@@ -75,26 +75,28 @@ static LinkedInManager *li = nil;
             NSLog(@"Error fetching TagOptions: %@", error);
             self.tagOptions = [@[] mutableCopy]; // set tag options to empty array
         } else {
-            self.tagOptions = [NSMutableArray arrayWithCapacity:objects.count];
+            self.tagOptions = [NSMutableDictionary dictionaryWithCapacity:objects.count];
             for (PFObject *object in objects) {
-                [self.tagOptions addObject:[TagOption tagOptionFromParse:object]];
+                TagOption *t = [TagOption tagOptionFromParse:object];
+                [self.tagOptions setObject:t forKey:[t.attributeName lowercaseString]];
             }
         }
     }];
 }
 
 - (void)importContacts:(NSArray*)contacts {
+//    BOOL shouldSendTagsToParse = [[[PFUser user] objectForKey:kUserImportedAllContacts] boolValue];
     for (NSDictionary *c in contacts) {
-        Contact *contact = [Contact createContactFromLinkedIn:c];
+        Contact *contact = [Contact contactFromLinkedIn:c];
+        [contact generateTags:YES]; // generate tags upon launch
         [self.managedObjectContext save:nil];
     }
 }
 
 
-
 // This function gives the sort descriptors that allow group the contacts by
 // lastName and sort the contacts by lastName
--(NSArray *)getSortDescriptors {
+- (NSArray *)getSortDescriptors {
     NSSortDescriptor *groupByLastName = [[NSSortDescriptor alloc] initWithKey:kContactGroupByLastName ascending:YES];
     NSSortDescriptor *sortByLastName = [[NSSortDescriptor alloc] initWithKey:kContactLastName ascending:YES];
     return @[groupByLastName, sortByLastName];
@@ -102,7 +104,7 @@ static LinkedInManager *li = nil;
 
 // This returns the predicate that doesn't get all of the private private
 // users that linkedin doesn't allow you to grab.
--(NSPredicate *)getPredicate {
+- (NSPredicate *)getPredicate {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"firstName != %@ AND lastName != %@", @"private", @"private"];
     return predicate;
 }
@@ -131,8 +133,7 @@ static LinkedInManager *li = nil;
     }
 }
 
-- (void)saveContext
-{
+- (void)saveContext {
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     if (managedObjectContext != nil) {
@@ -145,28 +146,32 @@ static LinkedInManager *li = nil;
     }
 }
 
-- (void)setToken:(NSString*)token
-{
+- (void)setToken:(NSString*)token {
     [[NSUserDefaults standardUserDefaults] setObject:token forKey:kLIToken];
 }
 
-- (NSString*)token
-{
+- (NSString*)token {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kLIToken];
 }
 
-- (void)setCurrentUser:(NSDictionary*)user
-{
+- (void)setCurrentUser:(NSDictionary *)user {
     [[NSUserDefaults standardUserDefaults] setObject:user forKey:kLICurUser];
 }
 
-- (NSString*)currentUser
-{
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kLICurUser];
+- (NSString*)currentUser {
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kLICurUser];
 }
 
-- (BOOL)loggedIn
-{
+- (NSString *)currenUserId {
+    NSDictionary *currentUser = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kLICurUser];
+    return currentUser[kContactLinkedInId];
+}
+
+- (NSDictionary *)currentUserAsDictionary {
+    return [[NSUserDefaults standardUserDefaults] dictionaryForKey:kLICurUser];
+}
+
+- (BOOL)loggedIn {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kLIToken] != nil;
 }
 

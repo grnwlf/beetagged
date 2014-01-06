@@ -64,6 +64,7 @@
 #define kContactLinkedInGetUrl @"siteStandardProfileRequest"
 #define kContactLinkedInUrl @"url"
 #define kContactGroupByLastName @"groupByLastName"
+#define kContactTagData @"tagData"
 
 
 //********************************************************************//
@@ -84,7 +85,6 @@
 #define kTagCreatedAt @"createdAt"
 #define kTagUpdatedAt @"updatedAt"
 
-
 //********************************************************************//
 //    Tag Option //
 //********************************************************************//
@@ -92,6 +92,15 @@
 #define kTagOptionAttributeName @"attributeName"
 #define kTagOptionCreatedAt @"createdAt"
 #define kTagOptionUpdatedAt @"updatedAt"
+
+
+//********************************************************************//
+//    User //
+//********************************************************************//
+#define kUserLinkedInId @"id"
+#define kUserConnections @"connections"
+#define kUserImportedAllContacts @"importedContacts"
+
 
 
 #endif

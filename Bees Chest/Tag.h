@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
+#import "TagOption.h"
 
-@interface Tag : NSObject
+@interface Tag : NSObject <NSCoding>
 
 
 @property (nonatomic, strong) NSString *objectId;
@@ -21,5 +22,7 @@
 @property (nonatomic, strong) NSDate *createdAt;
 
 + (Tag *)tagFromParse:(PFObject *)pfObject;
++ (Tag *)tagFromTagOption:(TagOption *)tagOption taggedUser:(NSString *)taggedUser byUser:(NSString *)byUser;
+- (PFObject *)pfObject;
 
 @end

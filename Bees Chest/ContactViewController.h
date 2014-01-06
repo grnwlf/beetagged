@@ -11,6 +11,8 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <QuartzCore/QuartzCore.h>
 #import "LXReorderableCollectionViewFlowLayout.h"
+#import "TagCell.h"
+
 @interface ContactViewController : UIViewController <LXReorderableCollectionViewDataSource, LXReorderableCollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) Contact *contact;

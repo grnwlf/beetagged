@@ -27,8 +27,10 @@
     [super viewDidLoad];
     self.tagsCollectionView.delegate = self;
     self.tagsCollectionView.dataSource = self;
-    self.contactTags = [@[@"tag1", @"tag2", @"tag3", @"tag4", @"tag5", @"tag6", @"tag7", @"tag8", @"tag9", @"tag9"] mutableCopy];
+    self.tagsCollectionView.backgroundColor = [UIColor clearColor];
+    
     [self formatLayout];
+    self.contactTags = [self.contact.tags_ mutableCopy];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -133,25 +135,9 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.contact.linkedInUrl]];
 }
 
-
-
 #pragma mark CollectionView
 - (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    
-    return 10;
-    
-    int maxInCol = self.contactTags.count / kTagsNumberOfSections;
-    int rowsWithMax = self.contactTags.count % kTagsNumberOfSections;
-    
-    if (rowsWithMax == 0) {
-        return maxInCol;
-    } else {
-        if (rowsWithMax > section) {
-            return maxInCol;
-        } else {
-            return maxInCol - 1;
-        }
-    }
+    return self.contactTags.count + 1;
 }
 
 // converts an indexPath into an index (like index of an array)
@@ -162,15 +148,25 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
     static NSString *tagCellIdentifier = @"TagCollectionCell";
-    UICollectionViewCell *cell = [cv dequeueReusableCellWithReuseIdentifier:tagCellIdentifier forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor whiteColor];
-    
+    TagCell *cell = (TagCell *)[cv dequeueReusableCellWithReuseIdentifier:tagCellIdentifier forIndexPath:indexPath];
+
     UILabel *label = (UILabel *)[cell viewWithTag:1];
     NSInteger i = [self indexFromIndexPath:indexPath];
-    label.text = self.contactTags[i];
-    label.textColor = [UIColor blueColor];
+    if (i < self.contactTags.count) {
+        Tag *tag = self.contactTags[i];
+        label.text = tag.attributeName;
+        label.textColor = [UIColor yellowColor];
+    } else {
+        
+        label.text = @"+";
+        label.font = [UIFont fontWithName:@"Helvetica-Bold" size:50.0];
+        float cellHeight = cell.frame.size.height, labelHeight = label.frame.size.height;
+        float offset = cellHeight - labelHeight - 3.0;
+        label.frame = CGRectMake(0, offset, cell.frame.size.width, labelHeight);
+        label.textColor = [UIColor whiteColor];
+    }
+//    cell.alpha = .6;
     return cell;
 }
 
@@ -182,17 +178,17 @@
     [self.contactTags insertObject:tag atIndex:toIndexPath.item];
 }
 
-// don't let you move the last item
+// don't let you move the add item
 - (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.item == self.contactTags.count - 1) {
+    if (indexPath.item == self.contactTags.count) {
         return NO;
     }
     return YES;
 }
 
-// can't make anything last in the indexPath
+// can't make anything move behind the add item
 - (BOOL)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath canMoveToIndexPath:(NSIndexPath *)toIndexPath {
-    if (toIndexPath.item == self.contactTags.count - 1) {
+    if (toIndexPath.item == self.contactTags.count) {
         return NO;
     }
     return YES;
@@ -202,8 +198,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-
 
 
 @end

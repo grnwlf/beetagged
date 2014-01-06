@@ -26,9 +26,22 @@
 @dynamic pictureUrl;
 @dynamic linkedInUrl;
 @dynamic groupByLastName;
+@dynamic hasGeneratedTags;
+@dynamic tagData;
+@synthesize tags_;
 
 
-+ (Contact*)createContactFromLinkedIn:(NSDictionary*)user {
+-(id)init {
+    self = [super init];
+    if (self) {
+        self.hasGeneratedTags = NO;
+//        tags = nil;
+    }
+    return self;
+}
+
+#pragma mark JSON
++ (Contact*)contactFromLinkedIn:(NSDictionary*)user {
     LinkedInManager *li = [LinkedInManager singleton];
     Contact *c = [NSEntityDescription insertNewObjectForEntityForName:@"Contact" inManagedObjectContext:li.managedObjectContext];
     c.linkedInId = user[kContactLinkedInId];
@@ -52,9 +65,33 @@
         c.groupByLastName = @"Z";
     }
     
-    
     [c addToCache];
     return c;
+}
+
+-(NSArray *)getValidStrings {
+    NSMutableArray *v = [@[] mutableCopy];
+    
+    if (self.headline && self.headline.length > 0) {
+        [v addObject:self.headline];
+    }
+    
+    if (self.positionIndustry && self.positionIndustry.length > 0) {
+        [v addObject:self.positionIndustry];
+    }
+    
+    if (self.positionSummary && self.positionSummary.length > 0) {
+        [v addObject:self.positionSummary];
+    }
+    
+    if (self.positionTitle && self.positionTitle.length > 0) {
+        [v addObject:self.positionTitle];
+    }
+    
+    if (self.industry && self.industry.length > 0) {
+        [v addObject:self.industry];
+    }
+    return v;
 }
 
 // adds the location json to the model file.
@@ -93,7 +130,7 @@
     }
 }
 
-
+#pragma mark Image Cache
 // add the picture to the image cache asynchronously
 - (void)addToCache {
     SDWebImageDownloader *downloader = [SDWebImageDownloader sharedDownloader];
@@ -106,10 +143,101 @@
     }];
 }
 
-
 - (NSString *)cacheKeyForURL:(NSURL *)url {
     return [url absoluteString];
 }
 
+#pragma mark Parse
+// This function sets the parse user when signed up.  Make sure to set the parse
+// user differently if you are logging in rather than signing up for the first
+// time.
++ (void)setParseUser:(NSDictionary *)json andSave:(BOOL)save {
+    PFUser *user = [PFUser user];
+    [user setObject:json[kContactLinkedInId] forKey:kUserLinkedInId];
+    [user setObject:@NO forKey:kUserImportedAllContacts];
+    [user setObject:@[] forKey:kUserConnections];
+    if (save) {
+        [user saveInBackground];
+    }
+}
+
+
+// generates tags based on Tag Options that are retrieved from Parse upon launch
+// and
+- (void)generateTags:(BOOL)pushToParse {
+    LinkedInManager *lim = [LinkedInManager singleton];
+    NSMutableArray *generated = [[NSMutableArray alloc] init];
+    NSMutableDictionary *addedTags = [[NSMutableDictionary alloc] init];
+    NSCharacterSet *badCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"] invertedSet];
+    
+    // go through all attributes and look for TagOptions
+    // if there is a tag option, add it to the tags array for return.
+    // before we return the array, send all of the attributes to parses
+    NSArray *strings = [self getValidStrings];
+    for (NSString *string in strings) {
+        // make sure we don't deal with anything null or blank
+        if (!string || string.length < 1) {
+            continue;
+        }
+        
+        for (NSString *word in [self cleanseString:string dirtySet:badCharSet]) {
+            if (!word || word.length < 1 || addedTags[word] != nil) {
+                continue;
+            }
+            addedTags[word] = @YES; // don't add tags twice
+            TagOption *option = [lim.tagOptions objectForKey:word];
+            if (option) {
+                Tag *newTag = [Tag tagFromTagOption:option taggedUser:self.linkedInId byUser:[lim currenUserId]];
+                [generated addObject:newTag];
+            }
+        }
+    }
+    
+    if (pushToParse) {
+        NSMutableArray *parseGenerated = [NSMutableArray arrayWithCapacity:generated.count];
+        for (Tag *t in generated) {
+            [parseGenerated addObject:[t pfObject]];
+        }
+        [PFObject saveAllInBackground:parseGenerated];
+    }
+    self.hasGeneratedTags = YES;
+    self.tagData = [NSKeyedArchiver archivedDataWithRootObject:generated];
+}
+
+#pragma mark Tags Override setter
+- (NSArray *)tags_ {
+    return [NSKeyedUnarchiver unarchiveObjectWithData:self.tagData];
+}
+
+- (void)setTags_:(NSArray *)tags_ {
+    self.tagData = [NSKeyedArchiver archivedDataWithRootObject:tags_];
+}
+
+// Makes sure that there are no special characters include when we are looking
+// to guess tags.
+-(NSArray *)cleanseString:(NSString *)dirtyString dirtySet:(NSCharacterSet *)dirtySet {
+    return [dirtyString componentsSeparatedByCharactersInSet:dirtySet];
+}
+
+
+- (void)tagsFromServerWitBlock:(void (^)(BOOL success))callback {
+    LinkedInManager *lim = [LinkedInManager singleton];
+    PFQuery *query = [PFQuery queryWithClassName:kTagClass];
+    [query whereKey:kTagTaggedBy equalTo:[lim currenUserId]];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (error) {
+            NSLog(@"Error getting tags %@", error);
+            if (callback) callback(NO);
+        } else {
+            
+            NSMutableArray *arr = [NSMutableArray arrayWithCapacity:objects.count];
+            for (PFObject *obj in objects) {
+                [arr addObject:[Tag tagFromParse:obj]];
+            }
+            self.tags_ = arr;
+            if (callback) callback(YES);
+        }
+    }];
+}
 
 @end

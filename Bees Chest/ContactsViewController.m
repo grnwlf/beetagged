@@ -45,8 +45,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.ContactTableView reloadData];
     self.navigationController.navigationBar.hidden = YES;
@@ -57,8 +56,7 @@
 
 // returns the number of groupings in the table view if the user is not searching,
 // but returns 1 if the user is searching
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     NSInteger numberOfSections = 1;
     LinkedInManager *lim = [LinkedInManager singleton];
     if (!lim.isSearching) {

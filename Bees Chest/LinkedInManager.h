@@ -25,7 +25,7 @@
 @property (strong, nonatomic) NSMutableArray *searchArray;
 @property (nonatomic, assign, readonly) BOOL isSearching;
 @property (nonatomic, assign, readonly) BOOL hasContacts;
-@property (nonatomic, strong) NSMutableArray *tagOptions;
+@property (nonatomic, strong) NSMutableDictionary *tagOptions;
 
 + (LinkedInManager*)singleton;
 
@@ -35,6 +35,9 @@
 - (NSString*)token;
 - (void)setCurrentUser:(NSDictionary*)user;
 - (NSString*)currentUser;
+- (NSString *)currenUserId;
+- (NSDictionary *)currentUserAsDictionary;
+
 - (void)importContacts:(NSArray*)contacts;
 
 

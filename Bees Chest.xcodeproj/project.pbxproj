@@ -35,6 +35,7 @@
 		9D08A2B018795A5D00B058DA /* LXReorderableCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D08A2AE18795A5D00B058DA /* LXReorderableCollectionViewFlowLayout.m */; };
 		9D2C71321879DEFC0022CE5F /* TagOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C71311879DEFC0022CE5F /* TagOption.m */; };
 		9D2C71351879DF170022CE5F /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C71341879DF170022CE5F /* Tag.m */; };
+		9D2C713C187A496C0022CE5F /* TagCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C713B187A496C0022CE5F /* TagCell.m */; };
 		9D3792E41878D0D6003955EF /* Bees Chest Placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D3792E31878D0D6003955EF /* Bees Chest Placeholder.png */; };
 /* End PBXBuildFile section */
 
@@ -94,6 +95,8 @@
 		9D2C71311879DEFC0022CE5F /* TagOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagOption.m; sourceTree = "<group>"; };
 		9D2C71331879DF170022CE5F /* Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tag.h; sourceTree = "<group>"; };
 		9D2C71341879DF170022CE5F /* Tag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tag.m; sourceTree = "<group>"; };
+		9D2C713A187A496C0022CE5F /* TagCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagCell.h; sourceTree = "<group>"; };
+		9D2C713B187A496C0022CE5F /* TagCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagCell.m; sourceTree = "<group>"; };
 		9D3792E31878D0D6003955EF /* Bees Chest Placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bees Chest Placeholder.png"; sourceTree = "<group>"; };
 		AEA705BE07BD482FBA74034C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -230,6 +233,8 @@
 		9D3792E11878BCDF003955EF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				9D2C713A187A496C0022CE5F /* TagCell.h */,
+				9D2C713B187A496C0022CE5F /* TagCell.m */,
 				9D08A2AE18795A5D00B058DA /* LXReorderableCollectionViewFlowLayout.m */,
 				9D08A2AF18795A5D00B058DA /* LXReorderableCollectionViewFlowLayout.h */,
 				2889B068187456AA00CF8580 /* BATypeAheadView.h */,
@@ -398,6 +403,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D2C713C187A496C0022CE5F /* TagCell.m in Sources */,
 				2889B0461870651700CF8580 /* ViewController.m in Sources */,
 				2889B0791874993500CF8580 /* BeesChestViewController.m in Sources */,
 				2889B0731874992200CF8580 /* ContactsViewController.m in Sources */,
