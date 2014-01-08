@@ -14,8 +14,9 @@
 #import "BATypeAheadViewController.h"
 #import "LinkedInManager.h"
 #import "ContactTransition.h"
+#import "TagCell.h"
 
-@interface ContactViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+@interface ContactViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, TagCellDelegate>
 
 @property (nonatomic, strong) Contact *contact;
 @property (nonatomic, strong) BATypeAheadViewController *typeAheadViewController;

@@ -9,8 +9,11 @@
 #import "ContactViewController.h"
 
 @interface ContactViewController ()
+
 @property (nonatomic, strong) NSMutableArray *deleted;
 @property (nonatomic, strong) NSMutableArray *added;
+@property (nonatomic, assign) NSInteger itemToDelete;
+
 @end
 
 @implementation ContactViewController
@@ -18,8 +21,6 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.deleted = [@[] mutableCopy];
-        self.added = [@[] mutableCopy];
     }
     return self;
 }
@@ -33,6 +34,9 @@
     
     [self formatLayout];
     [self typeahead];
+    self.deleted = [@[] mutableCopy];
+    self.added = [@[] mutableCopy];
+    self.itemToDelete = -1;
     self.contactTags = [self.contact.tags_ mutableCopy];
 }
 
@@ -62,10 +66,80 @@
 // save the data to parse before we leave
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    // starfish -- make sure data is being updated in parse
-//    [PFObject saveAllInBackground:self.added];
-//    [PFObject deleteAllInBackground:self.deleted];
+    
+    [self updateAddedTagsInParse];
+    [self updatedDeletedTagsInParse];
 }
+
+
+// delete on parse (everything else should be taken care of)
+- (void)updatedDeletedTagsInParse {
+    NSLog(@"deleting %@", self.deleted);
+    
+    NSMutableArray *parseTags = [self makeParseTags:self.deleted];
+    [PFObject deleteAllInBackground:parseTags block:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", [error localizedDescription]);
+        }
+        if (succeeded) {
+            self.deleted = [@[] mutableCopy];
+        }
+    }];
+}
+
+
+// 1. add to parse
+// 2. update the objects in the db and save to core data
+- (void)updateAddedTagsInParse {
+    NSLog(@"adding %@", self.added);
+    NSMutableArray *parseTags = [self makeParseTags:self.added];
+    [PFObject saveAllInBackground:parseTags block:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        }
+        if (succeeded) {
+            NSLog(@"save in background succeeeded");
+            NSLog(@"%@", parseTags);
+            [self replaceParseTags:parseTags];
+            self.added = [@[] mutableCopy];
+        }
+    }];
+}
+
+- (NSMutableArray *)makeParseTags:(NSMutableArray *)ts {
+    NSMutableArray *parseTags = [[NSMutableArray alloc] initWithCapacity:self.added.count];
+    // make all of the array objects a PFObject
+    for (Tag *t in ts) {
+        [parseTags addObject:[t pfObject]];
+    }
+    return parseTags;
+}
+
+- (void)replaceParseTags:(NSArray *)parseTags {
+    NSLog(@"replaceParseTags");
+    NSMutableDictionary *tagDictionary = [NSMutableDictionary dictionaryWithCapacity:parseTags.count];
+    
+    for (PFObject *parseTag in parseTags) {
+        Tag *tag = [Tag tagFromParse:parseTag];
+        tagDictionary[tag.attributeName] = tag;
+    }
+    
+    NSMutableArray *cts = [self.contact.tags_ mutableCopy];
+    NSInteger i = 0;
+    for (Tag *ct in cts) {
+        if (tagDictionary[ct.attributeName] != nil) {
+            cts[i] = tagDictionary[ct.attributeName];
+        }
+        i++;
+    }
+    
+    NSLog(@"updating in core data");
+    // update in core data
+    LinkedInManager *lim = [LinkedInManager singleton];
+    self.contact.tags_ = [cts copy];
+    [lim.managedObjectContext save:nil];
+}
+
 
 #pragma mark View Logic
 // encapsulating function that writes text in all of the fields and moves the view
@@ -165,42 +239,100 @@
     return self.contactTags.count + 1;
 }
 
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    // if it's the last item, you can select it
+    if (indexPath.item == self.contactTags.count) {
+        return YES;
+    } else if (indexPath.item == self.itemToDelete) {
+        return YES;
+    }
+    return NO;
+}
+
 // called when the item is selected - will only do anything if the add button
 // is selected
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
-    
     // if it's the last item, add a new item
     if (indexPath.item == self.contactTags.count) {
-        [self showAddTagView];
+        if (self.itemToDelete != -1) {
+            NSInteger hold = self.itemToDelete;
+            [self clearDeleteViewAtIndex:hold];
+        } else {
+            [self showAddTagView];
+        }
+    } else if (indexPath.item == self.itemToDelete) {
+        NSInteger hold = self.itemToDelete;
+        [self deleteTagAtIndexPath:indexPath];
+        [self clearDeleteViewAtIndex:hold];
     }
 }
+
+- (void)clearDeleteViewAtIndex:(NSInteger)index {
+    self.itemToDelete = -1;
+    [UIView animateWithDuration:.3 animations:^{
+        [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
+    }];
+}
+
 
 // style the collectionView cell at the indexPath
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *tagCellIdentifier = @"TagCollectionCell";
     TagCell *cell = (TagCell *)[cv dequeueReusableCellWithReuseIdentifier:tagCellIdentifier forIndexPath:indexPath];
-    cell.layer.cornerRadius = cell.frame.size.height / 4;
     UILabel *label = (UILabel *)[cell viewWithTag:1];
     NSInteger i = indexPath.item;
-    if (i < self.contactTags.count) {
-        Tag *tag = self.contactTags[i];
-        label.text = tag.attributeName;
-        label.textColor = [UIColor yellowColor];
+    cell.layer.cornerRadius = cell.frame.size.height / 4;
+    cell.itemIndex = i;
+    cell.delegate = self;
+    
+    BOOL isReloadingForDelete = (self.itemToDelete != -1);
+    // 1. There is no cell being deleted
+    if (!isReloadingForDelete) {
+        if (i < self.contactTags.count) {
+            [cell addLongPress];
+            Tag *tag = self.contactTags[i];
+            label.text = tag.attributeName;
+            label.textColor = [UIColor yellowColor];
+        } else {
+            label.text = @"+";
+            label.font = [UIFont fontWithName:@"Helvetica-Bold" size:50.0];
+            float cellHeight = cell.frame.size.height, labelHeight = label.frame.size.height;
+            float offset = cellHeight - labelHeight - 3.0;
+            label.frame = CGRectMake(0, offset, cell.frame.size.width, labelHeight);
+            label.textColor = [UIColor whiteColor];
+        }
     } else {
-        label.text = @"+";
-        label.font = [UIFont fontWithName:@"Helvetica-Bold" size:50.0];
-        float cellHeight = cell.frame.size.height, labelHeight = label.frame.size.height;
-        float offset = cellHeight - labelHeight - 3.0;
-        label.frame = CGRectMake(0, offset, cell.frame.size.width, labelHeight);
-        label.textColor = [UIColor whiteColor];
+        if (i < self.contactTags.count) {
+            [cell turnOnDelete];
+        } else {
+            label.text = @"Back";
+            label.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+            label.textColor = [UIColor whiteColor];
+        }
     }
     return cell;
 }
 
+
 #pragma mark - Tag insert/remove
 // adds a Tag object at the indexPath
 // adds a Tag object from Core Data
+
+
+// This is the callback function for the long press on the cell.  Basically,
+// it's job is to notify the view controller that someone is trying to delete
+// one of the cells.
+- (void)didPressCellAtItemIndex:(NSInteger)itemIndex {
+    // 1. set the deleted item to the itemIndex
+    if (itemIndex != self.contactTags.count && self.itemToDelete == -1) {
+        self.itemToDelete = itemIndex;
+        [UIView animateWithDuration:.3 animations:^{
+            [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:itemIndex inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
+        }];
+    }
+}
+
 - (void)addTagToCollectionView:(Tag *)tag {
     
     for (Tag *check in self.contactTags) {
@@ -269,6 +401,12 @@
 // and adds the tag to the collectionView
 - (void)cellClickedWithData:(id)data {
     LinkedInManager *lim = [LinkedInManager singleton];
+    
+    if (self.contact.linkedInId == nil) {
+        [NSException raise:@"Contact has no id" format:@"%@ has no linkedinId", self.contact.formattedName];
+//        assert(false);
+    }
+    
     Tag *t = [Tag tagFromTagOption:(TagOption *)data taggedUser:self.contact.linkedInId byUser:[lim currenUserId]];
 
     // 1. make the view go away.

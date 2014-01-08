@@ -21,6 +21,7 @@
 @property (strong, nonatomic) NSArray *data;
 @property (strong, nonatomic) NSMutableArray *searchData;
 @property (nonatomic) BOOL isTyping;
+@property (nonatomic, assign, readonly) BOOL isOnScreen;
 @property (weak, nonatomic) id delegate;
 
 - (id)initWithFrame:(CGRect)frame andData:(NSArray*)data;

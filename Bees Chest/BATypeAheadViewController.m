@@ -10,6 +10,7 @@
 
 @interface BATypeAheadViewController ()
 @property (nonatomic, assign) CGRect customFrame;
+@property (nonatomic, assign, readwrite) BOOL isOnScreen;
 @end
 
 @implementation BATypeAheadViewController
@@ -24,6 +25,7 @@
         self.view.tableView.delegate = self;
         self.view.tableView.dataSource = self;
         self.view.inputTextField.delegate = self;
+        self.isOnScreen = YES;
     }
     return self;
 }
@@ -33,6 +35,10 @@
 }
 
 - (void)hideView:(BOOL)animated {
+    if (!self.isOnScreen) {
+        return;
+    }
+    self.isOnScreen = NO;
     CGRect curFrame = self.view.frame;
     CGRect offscreen = CGRectMake(curFrame.origin.x, curFrame.origin.y - kHeight, curFrame.size.width, curFrame.size.height);
     
@@ -54,6 +60,11 @@
 
 
 - (void)showView:(BOOL)animated {
+    if (self.isOnScreen) {
+        return;
+    }
+    
+    self.isOnScreen = YES;
     CGRect curFrame = self.view.frame;
     CGRect onScreen = CGRectMake(curFrame.origin.x, curFrame.origin.y + kHeight, curFrame.size.width, curFrame.size.height);
     

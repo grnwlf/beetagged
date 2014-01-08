@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TagCell : UICollectionViewCell
+@protocol TagCellDelegate <NSObject>
+- (void)didPressCellAtItemIndex:(NSInteger)itemIndex;
+@end
+
+@interface TagCell : UICollectionViewCell <UIGestureRecognizerDelegate>
+@property (nonatomic, assign) NSInteger itemIndex;
+@property (nonatomic, weak) id delegate;
+- (void)addLongPress;
+- (void)turnOnDelete;
 
 @end

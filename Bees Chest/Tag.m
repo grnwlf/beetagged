@@ -65,6 +65,7 @@
     self.objectId = [decoder decodeObjectForKey:kTagObjectId]; // optional
     self.attributeName = [decoder decodeObjectForKey:kTagAttributeName];
     self.taggedBy = [decoder decodeObjectForKey:kTagTaggedBy];
+    self.tagUserId = [decoder decodeObjectForKey:kTagUserId];
     self.tagOptionId = [decoder decodeObjectForKey:kTagOptionId];
     self.createdAt = [decoder decodeObjectForKey:kTagCreatedAt]; // optional
     self.updatedAt = [decoder decodeObjectForKey:kTagUpdatedAt]; // optional
@@ -75,6 +76,7 @@
     [encoder encodeObject:self.objectId forKey:kTagObjectId];
     [encoder encodeObject:self.attributeName forKey:kTagAttributeName];
     [encoder encodeObject:self.taggedBy forKey:kTagTaggedBy];
+    [encoder encodeObject:self.tagUserId forKey:kTagUserId];
     [encoder encodeObject:self.tagOptionId forKey:kTagOptionId];
     [encoder encodeObject:self.createdAt forKey:kTagCreatedAt];
     [encoder encodeObject:self.updatedAt forKey:kTagUpdatedAt];
