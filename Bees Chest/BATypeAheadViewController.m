@@ -15,8 +15,7 @@
 
 @implementation BATypeAheadViewController
 
-- (id)initWithFrame:(CGRect)frame andData:(NSArray *)data
-{
+- (id)initWithFrame:(CGRect)frame andData:(NSArray *)data {
     self = [super init];
     if (self) {
         self.customFrame = frame;
