@@ -235,20 +235,113 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bees Chest" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="de6-Xh-MRg">
-                                <rect key="frame" x="139" y="137" width="89" height="21"/>
+                            <view contentMode="scaleToFill" id="GeV-TC-K5u" customClass="UIControl">
+                                <rect key="frame" x="0.0" y="317" width="320" height="203"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="uVx-a2-rfz">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="197"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="chooseP2:" destination="XWK-RE-0Gy" eventType="touchUpInside" id="i5f-77-K8n"/>
+                                        </connections>
+                                    </button>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="F0p-Pa-Gfx">
+                                        <rect key="frame" x="120" y="59" width="80" height="80"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="tln-lG-6pm">
+                                        <rect key="frame" x="31" y="153" width="258" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.57103507723064162" green="0.57490048248698367" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="choosePlayer2:" destination="XWK-RE-0Gy" eventType="valueChanged" id="PfL-SC-8rx"/>
+                                </connections>
+                            </view>
+                            <view contentMode="scaleToFill" id="0BM-1T-5PU" customClass="UIControl">
+                                <rect key="frame" x="0.0" y="107" width="320" height="210"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="eeW-Iw-TJk">
+                                        <rect key="frame" x="0.0" y="5" width="320" height="205"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="chooseP1:" destination="XWK-RE-0Gy" eventType="touchUpInside" id="jR6-Wd-UHE"/>
+                                        </connections>
+                                    </button>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="kL6-WX-oPi">
+                                        <rect key="frame" x="120" y="65" width="80" height="80"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KZB-DT-CDn">
+                                        <rect key="frame" x="27" y="162" width="265" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.59826036671544447" blue="0.63562133545327004" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="choosePlayer1:" destination="XWK-RE-0Gy" eventType="valueChanged" id="Q5l-Ji-b1E"/>
+                                </connections>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="EuU-Yo-nyH">
+                                <rect key="frame" x="221" y="9" width="33" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Stop">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="stopGame:" destination="XWK-RE-0Gy" eventType="touchUpInside" id="4Ba-Dw-6Qp"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="63i-XW-roo">
+                                <rect key="frame" x="123" y="269" width="75" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Play Game">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="playGame:" destination="XWK-RE-0Gy" eventType="touchUpInside" id="mig-Ud-5Qq"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="iWe-rq-vX1">
+                                <rect key="frame" x="30" y="13" width="168" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Bees Chest" id="qz7-vB-oQi"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <connections>
+                        <outlet property="gameLabel" destination="iWe-rq-vX1" id="L80-04-8X1"/>
+                        <outlet property="p1ImageView" destination="kL6-WX-oPi" id="dIp-Ae-yKn"/>
+                        <outlet property="p1NameLabel" destination="KZB-DT-CDn" id="8Pw-uS-Bu8"/>
+                        <outlet property="p1View" destination="0BM-1T-5PU" id="aHR-3n-jgl"/>
+                        <outlet property="p2ImageView" destination="F0p-Pa-Gfx" id="xe0-qC-d6c"/>
+                        <outlet property="p2NameLabel" destination="tln-lG-6pm" id="jxw-Of-Vn7"/>
+                        <outlet property="p2View" destination="GeV-TC-K5u" id="CuD-y5-8tM"/>
+                        <outlet property="playGameBtn" destination="63i-XW-roo" id="tGL-cE-KsI"/>
+                        <outlet property="stopBtn" destination="EuU-Yo-nyH" id="Yxf-3u-CDO"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Ay-hX-zPh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1596" y="651"/>
+            <point key="canvasLocation" x="1596" y="640"/>
         </scene>
         <!--Profile View Controller - Profile-->
         <scene sceneID="pYa-To-nsv">
