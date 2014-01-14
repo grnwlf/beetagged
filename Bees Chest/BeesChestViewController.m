@@ -78,7 +78,7 @@
 - (void)typeahead {
     float top = 70.0, left = 20.0, height = 180.0;
     
-    self.typeAheadViewController = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(left, top, self.view.frame.size.width - left * 2, height) andData:[[LinkedInManager singleton] tagOptionsArray]];
+    self.typeAheadViewController = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(left, top, self.view.frame.size.width - left * 2, height) andData:[[FBManager singleton] tagOptionsArray]];
     self.typeAheadViewController.delegate = self;
     self.typeAheadViewController.view.layer.cornerRadius = 40.0;
     self.typeAheadViewController.view.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:.6];
@@ -93,8 +93,8 @@
     [self chooseTwoContacts];
     [self.p1ImageView setImageWithURL:[NSURL URLWithString:self.p1.pictureUrl] placeholderImage:kContactCellPlaceholderImage];
     [self.p2ImageView setImageWithURL:[NSURL URLWithString:self.p2.pictureUrl] placeholderImage:kContactCellPlaceholderImage];
-    self.p1NameLabel.text = self.p1.formattedName;
-    self.p2NameLabel.text = self.p2.formattedName;
+    self.p1NameLabel.text = self.p1.name;
+    self.p2NameLabel.text = self.p2.name;
     [UIView animateWithDuration:0.3 delay:0.3 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         self.p1View.frame = kP1ScreenOn;
         self.p2View.frame = kP2ScreenOn;
@@ -120,7 +120,7 @@
 
 - (void)chooseTwoContacts
 {
-    LinkedInManager *li = [LinkedInManager singleton];
+    FBManager *li = [FBManager singleton];
 
     int i = rand() % self.players.count;
     int j = i;
@@ -137,7 +137,7 @@
     [self.typeAheadViewController hideView:YES];
     [self.players removeAllObjects];
     TagOption *t = (TagOption*)data;
-    LinkedInManager *li = [LinkedInManager singleton];
+    FBManager *li = [FBManager singleton];
     for (Contact *c in li.fetchedResultsController.fetchedObjects) {
         for (Tag *tag in c.tags_) {
             NSLog(@"%@ %@", tag.attributeName, t.attributeName);
@@ -150,7 +150,7 @@
     
     NSLog(@"here are the players");
     for (Contact *c in self.players) {
-        NSLog(@"%@", c.formattedName);
+        NSLog(@"%@", c.name);
         for (Tag *t in c.tags_) {
             NSLog(@"%@", t.attributeName);
         }

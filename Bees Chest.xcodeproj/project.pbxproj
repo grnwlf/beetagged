@@ -24,7 +24,7 @@
 		2889B0511870651700CF8580 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2889B0331870651700CF8580 /* UIKit.framework */; };
 		2889B0591870651700CF8580 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2889B0571870651700CF8580 /* InfoPlist.strings */; };
 		2889B05B1870651700CF8580 /* Bees_ChestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B05A1870651700CF8580 /* Bees_ChestTests.m */; };
-		2889B06618706EAE00CF8580 /* LinkedInManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06518706EAE00CF8580 /* LinkedInManager.m */; };
+		2889B06618706EAE00CF8580 /* FBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06518706EAE00CF8580 /* FBManager.m */; };
 		2889B06A187456AA00CF8580 /* BATypeAheadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B069187456AA00CF8580 /* BATypeAheadView.m */; };
 		2889B06D187456D200CF8580 /* BATypeAheadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06C187456D200CF8580 /* BATypeAheadViewController.m */; };
 		2889B0701874991500CF8580 /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06F1874991500CF8580 /* ProfileViewController.m */; };
@@ -75,8 +75,8 @@
 		2889B0561870651700CF8580 /* Bees ChestTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Bees ChestTests-Info.plist"; sourceTree = "<group>"; };
 		2889B0581870651700CF8580 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2889B05A1870651700CF8580 /* Bees_ChestTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Bees_ChestTests.m; sourceTree = "<group>"; };
-		2889B06418706EAE00CF8580 /* LinkedInManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkedInManager.h; sourceTree = "<group>"; };
-		2889B06518706EAE00CF8580 /* LinkedInManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkedInManager.m; sourceTree = "<group>"; };
+		2889B06418706EAE00CF8580 /* FBManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBManager.h; sourceTree = "<group>"; };
+		2889B06518706EAE00CF8580 /* FBManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBManager.m; sourceTree = "<group>"; };
 		2889B06718706F8400CF8580 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		2889B068187456AA00CF8580 /* BATypeAheadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BATypeAheadView.h; sourceTree = "<group>"; };
 		2889B069187456AA00CF8580 /* BATypeAheadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BATypeAheadView.m; sourceTree = "<group>"; };
@@ -214,8 +214,8 @@
 		9D3792DF1878BCC3003955EF /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				2889B06418706EAE00CF8580 /* LinkedInManager.h */,
-				2889B06518706EAE00CF8580 /* LinkedInManager.m */,
+				2889B06418706EAE00CF8580 /* FBManager.h */,
+				2889B06518706EAE00CF8580 /* FBManager.m */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -420,7 +420,7 @@
 				9D2C71321879DEFC0022CE5F /* TagOption.m in Sources */,
 				2889B0761874992C00CF8580 /* ContactViewController.m in Sources */,
 				9D2C71351879DF170022CE5F /* Tag.m in Sources */,
-				2889B06618706EAE00CF8580 /* LinkedInManager.m in Sources */,
+				2889B06618706EAE00CF8580 /* FBManager.m in Sources */,
 				2889B0701874991500CF8580 /* ProfileViewController.m in Sources */,
 				282F2F231877AC81004566D0 /* BeesChestData.xcdatamodeld in Sources */,
 				2889B0401870651700CF8580 /* AppDelegate.m in Sources */,

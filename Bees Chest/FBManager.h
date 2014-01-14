@@ -1,5 +1,5 @@
 //
-//  LinkedInManager.h
+//  FBManager.h
 //  Bees Chest
 //
 //  Created by Billy Irwin on 12/29/13.
@@ -7,17 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <LIALinkedInApplication.h>
-#import <LIALinkedInHttpClient.h>
 #import <Parse/Parse.h>
 #import <CoreData/CoreData.h>
 #import "Constants.h"
 #import "Contact.h"
 #import "TagOption.h"
 
-@interface LinkedInManager : NSObject
-@property (strong, nonatomic) LIALinkedInApplication *app;
-@property (strong, nonatomic) LIALinkedInHttpClient *client;
+@interface FBManager : NSObject
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (strong, nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
@@ -27,7 +23,7 @@
 @property (nonatomic, assign, readonly) BOOL hasContacts;
 @property (nonatomic, strong) NSMutableDictionary *tagOptions;
 
-+ (LinkedInManager*)singleton;
++ (FBManager*)singleton;
 
 - (void)refreshContacts;
 - (BOOL)loggedIn;

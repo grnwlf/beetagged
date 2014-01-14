@@ -11,11 +11,10 @@
 #import "Contact.h"
 #import <Parse/Parse.h>
 
-@interface ViewController : UIViewController <BATypeAheadDelegate>
+@interface ViewController : UIViewController
 
-@property (strong, nonatomic) BATypeAheadViewController *b;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 
-- (IBAction)login:(id)sender;
-- (IBAction)loginWithLinkedIn:(id)sender;
+- (IBAction)loginButtonTouchHandler:(id)sender;
 
 @end

@@ -44,7 +44,7 @@
 - (void)typeahead {
     float top = 70.0, left = 20.0, height = 180.0;
 
-    self.typeAheadViewController = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(left, top, self.view.frame.size.width - left * 2, height) andData:[[LinkedInManager singleton] tagOptionsArray]];
+    self.typeAheadViewController = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(left, top, self.view.frame.size.width - left * 2, height) andData:[[FBManager singleton] tagOptionsArray]];
     self.typeAheadViewController.delegate = self;
     self.typeAheadViewController.view.layer.cornerRadius = 40.0;
     self.typeAheadViewController.view.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:.6];
@@ -135,7 +135,7 @@
     
     NSLog(@"updating in core data");
     // update in core data
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     self.contact.tags_ = [cts copy];
     [lim.managedObjectContext save:nil];
 }
@@ -153,7 +153,7 @@
 	[self.contactImage setImageWithURL:[NSURL URLWithString:self.contact.pictureUrl] placeholderImage:kContactCellPlaceholderImage];
     
     // 2. set the name
-    self.nameLabel.text = self.contact.formattedName;
+    self.nameLabel.text = self.contact.name;
     
     // 3. set the headline
     self.headlineLabel.text = [self getHeadline];
@@ -349,7 +349,7 @@
 }
 
 - (void)resetContactTags {
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     self.contact.tags_ = [self.contactTags copy];
     [lim.managedObjectContext save:nil];
 }
@@ -400,14 +400,14 @@
 // typeahead is chosen.  It dimisses the keyboard, moves the view offscreen,
 // and adds the tag to the collectionView
 - (void)cellClickedWithData:(id)data {
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     
-    if (self.contact.linkedInId == nil) {
-        [NSException raise:@"Contact has no id" format:@"%@ has no linkedinId", self.contact.formattedName];
+    if (self.contact.fbId == nil) {
+        [NSException raise:@"Contact has no id" format:@"%@ has no linkedinId", self.contact.name];
 //        assert(false);
     }
     
-    Tag *t = [Tag tagFromTagOption:(TagOption *)data taggedUser:self.contact.linkedInId byUser:[lim currenUserId]];
+    Tag *t = [Tag tagFromTagOption:(TagOption *)data taggedUser:self.contact.fbId byUser:[lim currenUserId]];
 
     // 1. make the view go away.
     [self.typeAheadViewController hideView:YES];

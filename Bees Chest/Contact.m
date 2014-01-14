@@ -10,10 +10,10 @@
 
 @implementation Contact
 
-@dynamic linkedInId;
-@dynamic firstName;
-@dynamic lastName;
-@dynamic formattedName;
+@dynamic fbId;
+@dynamic first_name;
+@dynamic last_name;
+@dynamic name;
 @dynamic headline;
 @dynamic locationName;
 @dynamic positionIndustry;
@@ -40,26 +40,26 @@
 }
 
 #pragma mark JSON
-+ (Contact*)contactFromLinkedIn:(NSDictionary*)user {
-    LinkedInManager *li = [LinkedInManager singleton];
++ (Contact*)contactFromFB:(NSDictionary*)user {
+    FBManager *li = [FBManager singleton];
     Contact *c = [NSEntityDescription insertNewObjectForEntityForName:@"Contact" inManagedObjectContext:li.managedObjectContext];
-    c.linkedInId = user[kContactLinkedInId];
-    c.firstName = user[kContactFirstName];
-    c.lastName = user[kContactLastName];
-    c.formattedName = user[kContactFormattedName];
-    c.headline = user[kContactHeadline];
-    [c getLocationFromJSON:user];
-    [c getPositionFromJSON:user];
-    c.industry = user[kContactIndustry];
+    c.fbId = user[kContactFBId];
+    c.first_name = user[kContactFirstName];
+    c.last_name = user[kContactLastName];
+    c.name = user[kContactFormattedName];
+    //c.headline = user[kContactHeadline];
+//    [c getLocationFromJSON:user];
+//    [c getPositionFromJSON:user];
+   // c.industry = user[kContactIndustry];
     
-    c.pictureUrl = user[kContactPicUrl];
-    c.linkedInUrl = user[kContactLinkedInGetUrl][kContactLinkedInUrl];
+    c.pictureUrl = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=normal", c.fbId];
+    //c.linkedInUrl = user[kContactLinkedInGetUrl][kContactLinkedInUrl];
 
     // This is where they will appear in the grouping.
-    if (c.lastName && c.lastName.length > 0) {
-        c.groupByLastName = [[c.lastName substringToIndex:1] uppercaseString];
-    } else if (c.firstName && c.firstName.length > 0) {
-        c.groupByLastName = [[c.firstName substringToIndex:1] uppercaseString];
+    if (c.last_name && c.last_name.length > 0) {
+        c.groupByLastName = [[c.last_name substringToIndex:1] uppercaseString];
+    } else if (c.first_name && c.first_name.length > 0) {
+        c.groupByLastName = [[c.first_name substringToIndex:1] uppercaseString];
     } else {
         c.groupByLastName = @"Z";
     }
@@ -95,15 +95,15 @@
 
 // adds the location json to the model file.
 -(void)getLocationFromJSON:(NSDictionary *)json {
-    NSString *location = @"";
-    NSDictionary * locationJSON = json[kContactLocation];
-    if (locationJSON) {
-        NSString *temp = locationJSON[kContactLocationName];
-        if (temp) {
-            location = temp;
-        }
-    }
-    self.locationName = location;
+//    NSString *location = @"";
+//    NSDictionary * locationJSON = json[kContactLocation];
+//    if (locationJSON) {
+//        NSString *temp = locationJSON[kContactLocationName];
+//        if (temp) {
+//            location = temp;
+//        }
+//    }
+//    self.locationName = location;
 }
 
 // adds the positions JSON to model.
@@ -152,7 +152,7 @@
 // time.
 + (void)setParseUser:(NSDictionary *)json andSave:(BOOL)save {
     PFUser *user = [PFUser user];
-    [user setObject:json[kContactLinkedInId] forKey:kUserLinkedInId];
+    [user setObject:json[kContactFBId] forKey:kUserLinkedInId];
     [user setObject:@NO forKey:kUserImportedAllContacts];
     [user setObject:@[] forKey:kUserConnections];
     if (save) {
@@ -164,7 +164,7 @@
 // generates tags based on Tag Options that are retrieved from Parse upon launch
 // and
 - (void)generateTags:(BOOL)pushToParse {
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     NSMutableArray *generated = [[NSMutableArray alloc] init];
     NSMutableDictionary *addedTags = [[NSMutableDictionary alloc] init];
     NSCharacterSet *badCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"] invertedSet];
@@ -186,7 +186,7 @@
             addedTags[word] = @YES; // don't add tags twice
             TagOption *option = [lim.tagOptions objectForKey:word];
             if (option) {
-                Tag *newTag = [Tag tagFromTagOption:option taggedUser:self.linkedInId byUser:[lim currenUserId]];
+                Tag *newTag = [Tag tagFromTagOption:option taggedUser:self.fbId byUser:[lim currenUserId]];
                 [generated addObject:newTag];
             }
         }
@@ -220,7 +220,7 @@
 
 
 - (void)tagsFromServerWitBlock:(void (^)(BOOL success))callback {
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     PFQuery *query = [PFQuery queryWithClassName:kTagClass];
     [query whereKey:kTagTaggedBy equalTo:[lim currenUserId]];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {

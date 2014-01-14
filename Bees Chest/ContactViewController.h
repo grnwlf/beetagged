@@ -12,7 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "TagCell.h"
 #import "BATypeAheadViewController.h"
-#import "LinkedInManager.h"
+#import "FBManager.h"
 #import "ContactTransition.h"
 #import "TagCell.h"
 

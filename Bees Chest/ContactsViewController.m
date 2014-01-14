@@ -29,7 +29,7 @@
     [super viewDidLoad];
     self.ContactTableView.delegate = self;
     self.ContactTableView.dataSource = self;
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     if (!lim.hasContacts) {
         [lim refreshContacts];
     }
@@ -58,7 +58,7 @@
 // but returns 1 if the user is searching
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     NSInteger numberOfSections = 1;
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     if (!lim.isSearching) {
         numberOfSections = [lim.fetchedResultsController.sections count];
     }
@@ -68,7 +68,7 @@
 // returns the number of rows in the given section based on whether or not
 // we are searching or not.
 -(NSInteger)tableView:(UITableView *)table numberOfRowsInSection:(NSInteger)section {
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     NSInteger numberOfRows = 0;
     if (lim.isSearching) {
         numberOfRows = lim.searchArray.count;
@@ -82,7 +82,7 @@
 // returns the title for the header in the section. It will not give a header
 // (because title is nil) if the tableView is searching
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     NSString *title = nil;
     
     if (!lim.isSearching &&  [[lim.fetchedResultsController sections] count] > 0) {
@@ -94,7 +94,7 @@
 
 // shows the sectionIndexTitles if the tableView is grouped.
 -(NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     NSArray *sectionIndexTitles = nil;
     if (!lim.isSearching) {
         sectionIndexTitles = [lim.fetchedResultsController sectionIndexTitles];
@@ -104,7 +104,7 @@
 
 // tells the tableView which section to jump to when the index side bar is clicked.
 -(NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     NSInteger section = 0;
     if (!lim.isSearching) {
         section = [lim.fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
@@ -118,10 +118,10 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kContactCell];
     }
-    LinkedInManager *lim = [LinkedInManager singleton];
+    FBManager *lim = [FBManager singleton];
     Contact *contact = [lim.fetchedResultsController objectAtIndexPath:indexPath];
     UILabel *nameLabel = (UILabel*)[cell viewWithTag:1];
-    nameLabel.text = [NSString stringWithFormat:@"%@ %@", contact.firstName, contact.lastName];
+    nameLabel.text = [NSString stringWithFormat:@"%@ %@", contact.first_name, contact.last_name];
     
     UILabel *industryLabel = (UILabel *)[cell viewWithTag:3];
     industryLabel.text = contact.industry;
@@ -138,7 +138,7 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:kShowContactSegue]) {
-        LinkedInManager *lim = [LinkedInManager singleton];
+        FBManager *lim = [FBManager singleton];
         NSIndexPath *indexPath = [self.ContactTableView indexPathForSelectedRow];
         Contact *contact = [lim.fetchedResultsController objectAtIndexPath:indexPath];
         ContactViewController *cvc = (ContactViewController *)[segue destinationViewController];
