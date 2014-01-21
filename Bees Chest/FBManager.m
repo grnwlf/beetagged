@@ -37,6 +37,8 @@ static FBManager *fb = nil;
 - (id)init {
     self = [super init];
     if (self) {
+        self.tagIndex = [[TagIndex alloc] init];
+        
         NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"BeesChestData" withExtension:@"momd"];
         self.managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
         NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Tag.sqlite"];
@@ -81,7 +83,7 @@ static FBManager *fb = nil;
 //    BOOL shouldSendTagsToParse = [[[PFUser user] objectForKey:kUserImportedAllContacts] boolValue];
     for (NSDictionary *c in contacts) {
         Contact *contact = [Contact contactFromFB:c];
-        [contact generateTags:YES]; // generate tags upon launch
+        //[contact generateTags:YES]; // generate tags upon launch
         [self.managedObjectContext save:nil];
     }
 }
@@ -120,9 +122,43 @@ static FBManager *fb = nil;
     BOOL success = [self.fetchedResultsController performFetch:&error];
     if (success) {
         self.hasContacts = YES;
+        [self createFakeTags];
+        [self printContacts];
+        [self.tagIndex createIndex:self.fetchedResultsController.fetchedObjects];
+        [self.tagIndex printTagIndex];
+        [self.tagIndex printRandomSame:20];
         NSLog(@"The fetch from Core Data was succcessful");
     } else {
         NSLog(@"Error fetching contacts from Core Data: %@", [error localizedDescription]);
+    }
+}
+
+- (void)createFakeTags {
+    NSString *tagStr = @"iOS Android Ruby Python Java C++ Go JavaScript Rails HTML CSS C SQL Perl PHP Haml Node Sails Express MongoDB Postgres MySQL Oracle Assembly Sass Math Science English History Writing Web Design Frontend Backend Database FullStack Communications Law Enterpeneur Health Doctor Calc Trig Stats Psych CS CSE EECS Mechanical Medical Engineering A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 1 2 3 4 5 6 7 8 9";
+    NSArray *fakeTags = [tagStr componentsSeparatedByString:@" "];
+    int x = fakeTags.count;
+    for (Contact *c in self.fetchedResultsController.fetchedObjects) {
+        int r = rand() % x;
+        int rank = rand() % 10;
+        Tag *t = [Tag tagFromTagName:fakeTags[r] taggedUser:@"dsfadsfa" byUser:[FBManager singleton].currenUserId withRank:rank];
+        
+        c.tags_ = [@{ t.attributeName : t } mutableCopy];
+    }
+}
+
+- (void)printContacts {
+    NSLog(@"=====================================================================");
+    NSLog(@"Printing all %i contacts", self.fetchedResultsController.fetchedObjects.count);
+    NSLog(@"=====================================================================");
+    
+    for (Contact *c in self.fetchedResultsController.fetchedObjects) {
+        NSMutableString *tags = [[NSMutableString alloc] init];
+        NSArray *keys = c.tags_.allKeys;
+        for (NSString *k in keys) {
+            Tag *t = c.tags_[k];
+            [tags appendFormat:@" %@ %@ %i", k, t.attributeName, t.rank.integerValue];
+        }
+        NSLog(@"%@ : %@", c.name, tags);
     }
 }
 
@@ -174,6 +210,7 @@ static FBManager *fb = nil;
 - (NSDictionary *)currentUserAsDictionary {
     return [[NSUserDefaults standardUserDefaults] dictionaryForKey:kLICurUser];
 }
+
 
 //deprecated with FB transition
 //- (BOOL)loggedIn {

@@ -37,7 +37,7 @@
 @property (nonatomic, retain) NSString * pictureUrl;
 @property (nonatomic, retain) NSString * linkedInUrl;
 @property (nonatomic, retain) NSString * groupByLastName;
-@property (nonatomic, strong) NSArray * tags_;
+@property (nonatomic, strong) NSMutableDictionary * tags_;
 
 
 

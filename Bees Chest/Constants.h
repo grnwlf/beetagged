@@ -84,6 +84,7 @@
 #define kTagOptionId @"tagOptionId"
 #define kTagCreatedAt @"createdAt"
 #define kTagUpdatedAt @"updatedAt"
+#define kTagRank @"rank"
 
 //********************************************************************//
 //    Tag Option //
@@ -107,5 +108,14 @@
 //********************************************************************//
 #define kBATypeAheadCellHeight 40
 #define kBATypeAheadTextLabelHeight 45.0
+
+//********************************************************************//
+//    Tag Index //
+//********************************************************************//
+#define kSame @"same"
+#define kContacts @"contactArray"
+
+#define kTagName @"tagName"
+#define kTagVal @"tagVal"
 
 #endif

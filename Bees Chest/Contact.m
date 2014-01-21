@@ -163,6 +163,8 @@
 
 // generates tags based on Tag Options that are retrieved from Parse upon launch
 // and
+
+// Deprecated because of change to FB
 - (void)generateTags:(BOOL)pushToParse {
     FBManager *lim = [FBManager singleton];
     NSMutableArray *generated = [[NSMutableArray alloc] init];
@@ -183,11 +185,11 @@
             if (!word || word.length < 1 || addedTags[word] != nil) {
                 continue;
             }
-            addedTags[word] = @YES; // don't add tags twice
+            addedTags[word] = @(0); // don't add tags twice
             TagOption *option = [lim.tagOptions objectForKey:word];
             if (option) {
                 Tag *newTag = [Tag tagFromTagOption:option taggedUser:self.fbId byUser:[lim currenUserId]];
-                [generated addObject:newTag];
+                //[generated addObject:@{kTagName: newTag, kTagVal : @(0)}];
             }
         }
     }
@@ -200,15 +202,24 @@
         [PFObject saveAllInBackground:parseGenerated];
     }
     self.hasGeneratedTags = YES;
-    self.tagData = [NSKeyedArchiver archivedDataWithRootObject:generated];
+    self.tagData = [NSKeyedArchiver archivedDataWithRootObject:addedTags];
+}
+
+- (void)addTag:(NSString*)tag {
+    self.tags_[tag] = [Tag tagFromTagName:tag taggedUser:self.fbId byUser:[FBManager singleton].currenUserId withRank:0];
+    PFObject *t = [(Tag*)self.tags_[tag] pfObject];
+    [t saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) [(Tag*)self.tags_[tag]  setObjectId:[t objectId]];
+        
+    }];
 }
 
 #pragma mark Tags Override setter
-- (NSArray *)tags_ {
-    return [NSKeyedUnarchiver unarchiveObjectWithData:self.tagData];
+- (NSMutableDictionary*)tags_ {
+    return (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:self.tagData];
 }
 
-- (void)setTags_:(NSArray *)tags_ {
+- (void)setTags_:(NSMutableDictionary *)tags_ {
     self.tagData = [NSKeyedArchiver archivedDataWithRootObject:tags_];
 }
 
@@ -220,6 +231,11 @@
 
 
 - (void)tagsFromServerWitBlock:(void (^)(BOOL success))callback {
+    if (self.tags_) {
+        [self.tags_ removeAllObjects];
+    } else {
+        self.tags_ = [[NSMutableDictionary alloc] init];
+    }
     FBManager *lim = [FBManager singleton];
     PFQuery *query = [PFQuery queryWithClassName:kTagClass];
     [query whereKey:kTagTaggedBy equalTo:[lim currenUserId]];
@@ -229,11 +245,10 @@
             if (callback) callback(NO);
         } else {
             
-            NSMutableArray *arr = [NSMutableArray arrayWithCapacity:objects.count];
             for (PFObject *obj in objects) {
-                [arr addObject:[Tag tagFromParse:obj]];
+                Tag *t = [Tag tagFromParse:obj];
+                [self.tags_ setObject:t forKey:t.attributeName];
             }
-            self.tags_ = arr;
             if (callback) callback(YES);
         }
     }];

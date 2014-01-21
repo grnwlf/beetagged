@@ -12,6 +12,7 @@
 #import "Constants.h"
 #import "Contact.h"
 #import "TagOption.h"
+#import "TagIndex.h"
 
 @interface FBManager : NSObject
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
@@ -22,6 +23,7 @@
 @property (nonatomic, assign, readonly) BOOL isSearching;
 @property (nonatomic, assign, readonly) BOOL hasContacts;
 @property (nonatomic, strong) NSMutableDictionary *tagOptions;
+@property (strong, nonatomic)  TagIndex *tagIndex;
 
 + (FBManager*)singleton;
 
