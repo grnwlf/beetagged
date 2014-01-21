@@ -41,15 +41,15 @@
 //********************************************************************//
 //    Contact //
 //********************************************************************//
-#define kContactFirstName @"firstName"
-#define kContactLastName @"lastName"
-#define kContactFormattedName @"formattedName"
+#define kContactFirstName @"first_name"
+#define kContactLastName @"last_name"
+#define kContactFormattedName @"name"
 #define kContactHeadline @"headline"
-#define kContactLinkedInId @"id"
-#define kContactIndustry @"industry"
+#define kContactFBId @"id"
+//#define kContactIndustry @"industry"
 #define kContactPicUrl @"pictureUrl"
-#define kContactLocation @"location"
-#define kContactLocationName @"name"
+//#define kContactLocation @"location"
+//#define kContactLocationName @"name"
 
 // Position
 #define kContactPosition @"positions"
@@ -84,6 +84,7 @@
 #define kTagOptionId @"tagOptionId"
 #define kTagCreatedAt @"createdAt"
 #define kTagUpdatedAt @"updatedAt"
+#define kTagRank @"rank"
 
 //********************************************************************//
 //    Tag Option //
@@ -107,5 +108,14 @@
 //********************************************************************//
 #define kBATypeAheadCellHeight 40
 #define kBATypeAheadTextLabelHeight 45.0
+
+//********************************************************************//
+//    Tag Index //
+//********************************************************************//
+#define kSame @"same"
+#define kContacts @"contactArray"
+
+#define kTagName @"tagName"
+#define kTagVal @"tagVal"
 
 #endif

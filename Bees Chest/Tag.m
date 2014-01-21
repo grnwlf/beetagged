@@ -19,6 +19,7 @@
     tag.tagOptionId = [pfObject objectForKey:kTagOptionId];
     tag.createdAt = [pfObject objectForKey:kTagCreatedAt];
     tag.updatedAt = [pfObject objectForKey:kTagUpdatedAt];
+    tag.rank = [pfObject objectForKey:kTagRank];
     return tag;
 }
 
@@ -29,6 +30,19 @@
     tag.tagOptionId = tagOption.objectId;
     tag.taggedBy = byUser;
     tag.tagUserId = taggedUser;
+    tag.createdAt = nil;
+    tag.updatedAt = nil;
+    tag.rank = @(0);
+    return tag;
+}
+
++ (Tag *)tagFromTagName:(NSString *)name taggedUser:(NSString *)taggedUser byUser:(NSString *)byUser withRank:(int)rank {
+    Tag *tag = [[Tag alloc] init];
+    tag.objectId = nil;
+    tag.attributeName = name;
+    tag.taggedBy = byUser;
+    tag.tagUserId = taggedUser;
+    tag.rank = @(rank);
     tag.createdAt = nil;
     tag.updatedAt = nil;
     return tag;
@@ -44,6 +58,7 @@
     [pfObject setObject:self.taggedBy forKey:kTagTaggedBy];
     [pfObject setObject:self.tagUserId forKey:kTagUserId];
     [pfObject setObject:self.tagOptionId forKey:kTagOptionId];
+    [pfObject setObject:self.rank forKey:kTagRank];
     
     if (self.createdAt) {
         [pfObject setObject:self.createdAt forKey:kTagCreatedAt];
@@ -69,6 +84,7 @@
     self.tagOptionId = [decoder decodeObjectForKey:kTagOptionId];
     self.createdAt = [decoder decodeObjectForKey:kTagCreatedAt]; // optional
     self.updatedAt = [decoder decodeObjectForKey:kTagUpdatedAt]; // optional
+    self.rank = [decoder decodeObjectForKey:kTagRank];
     return self;
 }
 
@@ -80,6 +96,7 @@
     [encoder encodeObject:self.tagOptionId forKey:kTagOptionId];
     [encoder encodeObject:self.createdAt forKey:kTagCreatedAt];
     [encoder encodeObject:self.updatedAt forKey:kTagUpdatedAt];
+    [encoder encodeObject:self.rank forKey:kTagRank];
 }
 
 @end

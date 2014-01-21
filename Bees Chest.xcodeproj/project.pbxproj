@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2813B221188E04DB00845843 /* TagIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 2813B220188E04DB00845843 /* TagIndex.m */; };
 		282F2F231877AC81004566D0 /* BeesChestData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 282F2F211877AC81004566D0 /* BeesChestData.xcdatamodeld */; };
 		282F2F251877AD7F004566D0 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 282F2F241877AD7F004566D0 /* CoreData.framework */; };
 		282F2F281877AD9A004566D0 /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 282F2F271877AD9A004566D0 /* Contact.m */; };
@@ -24,13 +25,14 @@
 		2889B0511870651700CF8580 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2889B0331870651700CF8580 /* UIKit.framework */; };
 		2889B0591870651700CF8580 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2889B0571870651700CF8580 /* InfoPlist.strings */; };
 		2889B05B1870651700CF8580 /* Bees_ChestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B05A1870651700CF8580 /* Bees_ChestTests.m */; };
-		2889B06618706EAE00CF8580 /* LinkedInManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06518706EAE00CF8580 /* LinkedInManager.m */; };
+		2889B06618706EAE00CF8580 /* FBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06518706EAE00CF8580 /* FBManager.m */; };
 		2889B06A187456AA00CF8580 /* BATypeAheadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B069187456AA00CF8580 /* BATypeAheadView.m */; };
 		2889B06D187456D200CF8580 /* BATypeAheadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06C187456D200CF8580 /* BATypeAheadViewController.m */; };
 		2889B0701874991500CF8580 /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06F1874991500CF8580 /* ProfileViewController.m */; };
 		2889B0731874992200CF8580 /* ContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0721874992200CF8580 /* ContactsViewController.m */; };
 		2889B0761874992C00CF8580 /* ContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0751874992C00CF8580 /* ContactViewController.m */; };
 		2889B0791874993500CF8580 /* BeesChestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0781874993500CF8580 /* BeesChestViewController.m */; };
+		288D49051889BC4700051BCB /* ContactManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 288D49041889BC4700051BCB /* ContactManager.m */; };
 		8A0B0C4F5E9443E9999A1150 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AB626A38B19406BB8FD1558 /* libPods.a */; };
 		9D2C71321879DEFC0022CE5F /* TagOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C71311879DEFC0022CE5F /* TagOption.m */; };
 		9D2C71351879DF170022CE5F /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C71341879DF170022CE5F /* Tag.m */; };
@@ -52,6 +54,8 @@
 
 /* Begin PBXFileReference section */
 		0AB626A38B19406BB8FD1558 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2813B21F188E04DB00845843 /* TagIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagIndex.h; sourceTree = "<group>"; };
+		2813B220188E04DB00845843 /* TagIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagIndex.m; sourceTree = "<group>"; };
 		282F2F221877AC81004566D0 /* BeesChestData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BeesChestData.xcdatamodel; sourceTree = "<group>"; };
 		282F2F241877AD7F004566D0 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		282F2F261877AD9A004566D0 /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
@@ -75,8 +79,8 @@
 		2889B0561870651700CF8580 /* Bees ChestTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Bees ChestTests-Info.plist"; sourceTree = "<group>"; };
 		2889B0581870651700CF8580 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2889B05A1870651700CF8580 /* Bees_ChestTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Bees_ChestTests.m; sourceTree = "<group>"; };
-		2889B06418706EAE00CF8580 /* LinkedInManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkedInManager.h; sourceTree = "<group>"; };
-		2889B06518706EAE00CF8580 /* LinkedInManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkedInManager.m; sourceTree = "<group>"; };
+		2889B06418706EAE00CF8580 /* FBManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBManager.h; sourceTree = "<group>"; };
+		2889B06518706EAE00CF8580 /* FBManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBManager.m; sourceTree = "<group>"; };
 		2889B06718706F8400CF8580 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		2889B068187456AA00CF8580 /* BATypeAheadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BATypeAheadView.h; sourceTree = "<group>"; };
 		2889B069187456AA00CF8580 /* BATypeAheadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BATypeAheadView.m; sourceTree = "<group>"; };
@@ -90,6 +94,8 @@
 		2889B0751874992C00CF8580 /* ContactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactViewController.m; sourceTree = "<group>"; };
 		2889B0771874993500CF8580 /* BeesChestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeesChestViewController.h; sourceTree = "<group>"; };
 		2889B0781874993500CF8580 /* BeesChestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeesChestViewController.m; sourceTree = "<group>"; };
+		288D49031889BC4700051BCB /* ContactManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactManager.h; sourceTree = "<group>"; };
+		288D49041889BC4700051BCB /* ContactManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactManager.m; sourceTree = "<group>"; };
 		9D2C71301879DEFC0022CE5F /* TagOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagOption.h; sourceTree = "<group>"; };
 		9D2C71311879DEFC0022CE5F /* TagOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagOption.m; sourceTree = "<group>"; };
 		9D2C71331879DF170022CE5F /* Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tag.h; sourceTree = "<group>"; };
@@ -214,8 +220,10 @@
 		9D3792DF1878BCC3003955EF /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				2889B06418706EAE00CF8580 /* LinkedInManager.h */,
-				2889B06518706EAE00CF8580 /* LinkedInManager.m */,
+				2889B06418706EAE00CF8580 /* FBManager.h */,
+				2889B06518706EAE00CF8580 /* FBManager.m */,
+				288D49031889BC4700051BCB /* ContactManager.h */,
+				288D49041889BC4700051BCB /* ContactManager.m */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -229,6 +237,8 @@
 				9D2C71311879DEFC0022CE5F /* TagOption.m */,
 				282F2F261877AD9A004566D0 /* Contact.h */,
 				282F2F271877AD9A004566D0 /* Contact.m */,
+				2813B21F188E04DB00845843 /* TagIndex.h */,
+				2813B220188E04DB00845843 /* TagIndex.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -411,7 +421,9 @@
 				9D2C713C187A496C0022CE5F /* TagCell.m in Sources */,
 				9D2C713F187A6EE00022CE5F /* LessBoringFlowLayout.m in Sources */,
 				2889B0461870651700CF8580 /* ViewController.m in Sources */,
+				2813B221188E04DB00845843 /* TagIndex.m in Sources */,
 				2889B0791874993500CF8580 /* BeesChestViewController.m in Sources */,
+				288D49051889BC4700051BCB /* ContactManager.m in Sources */,
 				2889B0731874992200CF8580 /* ContactsViewController.m in Sources */,
 				2889B06D187456D200CF8580 /* BATypeAheadViewController.m in Sources */,
 				282F2F281877AD9A004566D0 /* Contact.m in Sources */,
@@ -420,7 +432,7 @@
 				9D2C71321879DEFC0022CE5F /* TagOption.m in Sources */,
 				2889B0761874992C00CF8580 /* ContactViewController.m in Sources */,
 				9D2C71351879DF170022CE5F /* Tag.m in Sources */,
-				2889B06618706EAE00CF8580 /* LinkedInManager.m in Sources */,
+				2889B06618706EAE00CF8580 /* FBManager.m in Sources */,
 				2889B0701874991500CF8580 /* ProfileViewController.m in Sources */,
 				282F2F231877AC81004566D0 /* BeesChestData.xcdatamodeld in Sources */,
 				2889B0401870651700CF8580 /* AppDelegate.m in Sources */,

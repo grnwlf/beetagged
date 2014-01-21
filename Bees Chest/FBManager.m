@@ -1,14 +1,14 @@
 //
-//  LinkedInManager.m
+//  FBManager.m
 //  Bees Chest
 //
 //  Created by Billy Irwin on 12/29/13.
 //  Copyright (c) 2013 Arbrr. All rights reserved.
 //
 
-#import "LinkedInManager.h"
+#import "FBManager.h"
 
-@interface LinkedInManager()
+@interface FBManager()
 
 @property (nonatomic, assign, readwrite) BOOL isSearching;
 @property (nonatomic, assign, readwrite) BOOL hasContacts;
@@ -16,15 +16,14 @@
 
 @end
 
-@implementation LinkedInManager
+@implementation FBManager
+static FBManager *fb = nil;
 
-static LinkedInManager *li = nil;
-
-+ (LinkedInManager*)singleton {
-    if (!li) {
-        li = [[LinkedInManager alloc] init];
++ (FBManager*)singleton {
+    if (!fb) {
+        fb = [[FBManager alloc] init];
     }
-    return li;
+    return fb;
 }
 
 - (NSURL *)applicationDocumentsDirectory {
@@ -38,11 +37,7 @@ static LinkedInManager *li = nil;
 - (id)init {
     self = [super init];
     if (self) {
-        self.app = [LIALinkedInApplication applicationWithRedirectURL:@"http://www.ancientprogramming.com"
-                                                            clientId:kLinkedInAPIKey
-                                                        clientSecret:kLinkedInSecretKey
-                                                               state:@"DCEEFWF45453sdffef424"
-                                                       grantedAccess:@[@"r_fullprofile", @"r_network"]];
+        self.tagIndex = [[TagIndex alloc] init];
         
         NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"BeesChestData" withExtension:@"momd"];
         self.managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
@@ -87,8 +82,8 @@ static LinkedInManager *li = nil;
 - (void)importContacts:(NSArray*)contacts {
 //    BOOL shouldSendTagsToParse = [[[PFUser user] objectForKey:kUserImportedAllContacts] boolValue];
     for (NSDictionary *c in contacts) {
-        Contact *contact = [Contact contactFromLinkedIn:c];
-        [contact generateTags:YES]; // generate tags upon launch
+        Contact *contact = [Contact contactFromFB:c];
+        //[contact generateTags:YES]; // generate tags upon launch
         [self.managedObjectContext save:nil];
     }
 }
@@ -105,7 +100,7 @@ static LinkedInManager *li = nil;
 // This returns the predicate that doesn't get all of the private private
 // users that linkedin doesn't allow you to grab.
 - (NSPredicate *)getPredicate {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"firstName != %@ AND lastName != %@", @"private", @"private"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"first_name != %@ AND last_name != %@", @"private", @"private"];
     return predicate;
 }
 
@@ -127,9 +122,43 @@ static LinkedInManager *li = nil;
     BOOL success = [self.fetchedResultsController performFetch:&error];
     if (success) {
         self.hasContacts = YES;
+        [self createFakeTags];
+        [self printContacts];
+        [self.tagIndex createIndex:self.fetchedResultsController.fetchedObjects];
+        [self.tagIndex printTagIndex];
+        [self.tagIndex printRandomSame:20];
         NSLog(@"The fetch from Core Data was succcessful");
     } else {
         NSLog(@"Error fetching contacts from Core Data: %@", [error localizedDescription]);
+    }
+}
+
+- (void)createFakeTags {
+    NSString *tagStr = @"iOS Android Ruby Python Java C++ Go JavaScript Rails HTML CSS C SQL Perl PHP Haml Node Sails Express MongoDB Postgres MySQL Oracle Assembly Sass Math Science English History Writing Web Design Frontend Backend Database FullStack Communications Law Enterpeneur Health Doctor Calc Trig Stats Psych CS CSE EECS Mechanical Medical Engineering A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 1 2 3 4 5 6 7 8 9";
+    NSArray *fakeTags = [tagStr componentsSeparatedByString:@" "];
+    int x = fakeTags.count;
+    for (Contact *c in self.fetchedResultsController.fetchedObjects) {
+        int r = rand() % x;
+        int rank = rand() % 10;
+        Tag *t = [Tag tagFromTagName:fakeTags[r] taggedUser:@"dsfadsfa" byUser:[FBManager singleton].currenUserId withRank:rank];
+        
+        c.tags_ = [@{ t.attributeName : t } mutableCopy];
+    }
+}
+
+- (void)printContacts {
+    NSLog(@"=====================================================================");
+    NSLog(@"Printing all %i contacts", self.fetchedResultsController.fetchedObjects.count);
+    NSLog(@"=====================================================================");
+    
+    for (Contact *c in self.fetchedResultsController.fetchedObjects) {
+        NSMutableString *tags = [[NSMutableString alloc] init];
+        NSArray *keys = c.tags_.allKeys;
+        for (NSString *k in keys) {
+            Tag *t = c.tags_[k];
+            [tags appendFormat:@" %@ %@ %i", k, t.attributeName, t.rank.integerValue];
+        }
+        NSLog(@"%@ : %@", c.name, tags);
     }
 }
 
@@ -175,16 +204,18 @@ static LinkedInManager *li = nil;
 
 - (NSString *)currenUserId {
     NSDictionary *currentUser = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kLICurUser];
-    return currentUser[kContactLinkedInId];
+    return currentUser[kContactFBId];
 }
 
 - (NSDictionary *)currentUserAsDictionary {
     return [[NSUserDefaults standardUserDefaults] dictionaryForKey:kLICurUser];
 }
 
-- (BOOL)loggedIn {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kLIToken] != nil;
-}
+
+//deprecated with FB transition
+//- (BOOL)loggedIn {
+//    return [[NSUserDefaults standardUserDefaults] objectForKey:kLIToken] != nil;
+//}
 
 
 

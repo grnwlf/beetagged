@@ -11,18 +11,18 @@
 #import <SDWebImage/SDWebImageDownloader.h>
 #import <SDWebImage/SDImageCache.h>
 #import <SDWebImage/SDWebImageManager.h>
-#import "LinkedInManager.h"
+#import "FBManager.h"
 #import "Tag.h"
 #import "TagOption.h"
-#import "LinkedInManager.h"
+#import "FBManager.h"
 #import <Parse/Parse.h>
 
 @interface Contact : NSManagedObject
 
-@property (nonatomic, retain) NSString * linkedInId;
-@property (nonatomic, retain) NSString * firstName;
-@property (nonatomic, retain) NSString * lastName;
-@property (nonatomic, retain) NSString * formattedName;
+@property (nonatomic, retain) NSString * fbId;
+@property (nonatomic, retain) NSString * first_name;
+@property (nonatomic, retain) NSString * last_name;
+@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * headline;
 @property (nonatomic, retain) NSString * locationName;
 @property (nonatomic, retain) NSString * industry;
@@ -37,11 +37,11 @@
 @property (nonatomic, retain) NSString * pictureUrl;
 @property (nonatomic, retain) NSString * linkedInUrl;
 @property (nonatomic, retain) NSString * groupByLastName;
-@property (nonatomic, strong) NSArray * tags_;
+@property (nonatomic, strong) NSMutableDictionary * tags_;
 
 
 
-+ (Contact*)contactFromLinkedIn:(NSDictionary*)user;
++ (Contact*)contactFromFB:(NSDictionary*)user;
 - (void)generateTags:(BOOL)pushToParse;
 + (void)setParseUser:(NSDictionary *)json andSave:(BOOL)save;
 

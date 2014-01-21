@@ -20,9 +20,11 @@
 @property (nonatomic, strong) NSString *tagOptionId;
 @property (nonatomic, strong) NSDate *updatedAt;
 @property (nonatomic, strong) NSDate *createdAt;
+@property (nonatomic,strong) NSNumber *rank;
 
 + (Tag *)tagFromParse:(PFObject *)pfObject;
 + (Tag *)tagFromTagOption:(TagOption *)tagOption taggedUser:(NSString *)taggedUser byUser:(NSString *)byUser;
++ (Tag *)tagFromTagName:(NSString *)tagName taggedUser:(NSString *)taggedUser byUser:(NSString *)byUser withRank:(int)rank;
 - (PFObject *)pfObject;
 
 @end

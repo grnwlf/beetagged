@@ -25,6 +25,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *gameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *p1NameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *p2NameLabel;
+@property (strong, nonatomic) NSString *tagName;
 
 @property (weak, nonatomic) Contact *p1;
 @property (weak, nonatomic) Contact *p2;
