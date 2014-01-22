@@ -142,10 +142,10 @@
     }];
 }
 
-- (void)loginToApp
-{
+- (void)loginToApp {
     [self performSegueWithIdentifier:kLoginSegue sender:self];
 }
+
 
 
 

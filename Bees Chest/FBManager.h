@@ -36,7 +36,7 @@
 - (NSString *)currenUserId;
 - (NSDictionary *)currentUserAsDictionary;
 - (NSArray *)tagOptionsArray;
-- (void)importContacts:(NSArray*)contacts;
+- (void)importContacts:(NSArray*)contacts cb:(void(^)(void))callback;
 
 
 @end

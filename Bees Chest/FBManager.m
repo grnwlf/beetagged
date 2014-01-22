@@ -79,8 +79,22 @@ static FBManager *fb = nil;
     }];
 }
 
-- (void)importContacts:(NSArray*)contacts {
+- (void)importContacts:(NSArray*)contacts cb:(void(^)(void))callback {
 //    BOOL shouldSendTagsToParse = [[[PFUser user] objectForKey:kUserImportedAllContacts] boolValue];
+    
+//    - (void)importContacts:(NSArray*)contacts cb:(void(^)(void))callback {
+    
+    
+    NSMutableArray *pfUsers = [NSMutableArray arrayWithCapacity:[contacts count]];
+    for (NSDictionary *user in contacts) {
+        
+//        [pfUsers addObject:[]
+        
+        
+    }
+    
+    
+    
     for (NSDictionary *c in contacts) {
         Contact *contact = [Contact contactFromFB:c];
         //[contact generateTags:YES]; // generate tags upon launch
