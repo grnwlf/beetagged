@@ -19,12 +19,15 @@
 - (void)createIndex:(NSArray*)contacts;
 - (void)printTagIndex;
 - (void)add:(Contact*)contact forTag:(Tag*)tag;
+- (void)move:(Contact*)contact forTag:(Tag*)tag toIndex:(int)index;
 - (void)remove:(Contact*)contact forTag:(Tag*)tag;
 - (BOOL)hasSameForTag:(Tag*)tag;
-- (NSArray*)findTwoSameForTag:(Tag*)tag;
+- (NSArray*)findTwoSameForTag:(NSString*)tag;
 - (void)printRandomSame:(int)i;
-- (Tag*)randomTag;
+- (NSString*)randomTag;
 - (void)sortForTag:(Tag*)tag;
+- (int)countForTag:(Tag*)tag;
+- (void)printForTag:(Tag*)t;
 
 
 @end

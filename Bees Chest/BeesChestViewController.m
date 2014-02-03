@@ -76,21 +76,33 @@
 - (IBAction)chooseP1:(id)sender {
     NSLog(@"p1");
     [self incrementPlayer:self.p1];
+    [self decrementPlayer:self.p2];
     [self endTurnandDone:NO];
 }
 
 - (IBAction)chooseP2:(id)sender {
     NSLog(@"p2");
     [self incrementPlayer:self.p2];
+    [self decrementPlayer:self.p1];
     [self endTurnandDone:NO];
 }
 
 - (void)incrementPlayer:(Contact*)c {
-    Tag *t = c.tags_[self.tagName];
-    t.rank = @([t.rank integerValue] + 1);
     FBManager *fb = [FBManager singleton];
+    Tag *t = c.tags_[self.tagName];
+    [fb.tagIndex printForTag:t];
+    int count = [fb.tagIndex countForTag:t];
+    int newIndex = t.rank.integerValue + (count - t.rank.integerValue) / 2;
+    [fb.tagIndex move:c forTag:t toIndex:newIndex];
+}
+
+- (void)decrementPlayer:(Contact*)c {
+    FBManager *fb = [FBManager singleton];
+    Tag *t = c.tags_[self.tagName];
+    if (t.rank.integerValue > 0) {
+        [fb.tagIndex move:c forTag:t toIndex:t.rank.integerValue-1];
+    }
     [fb.tagIndex sortForTag:t];
-    [fb.tagIndex hasSameForTag:t];
 }
 
 // style the typeahead view
@@ -140,11 +152,11 @@
 - (void)chooseTwoContacts
 {
     FBManager *li = [FBManager singleton];
-    Tag *randTag = [li.tagIndex randomTag];
-    self.gameLabel.text = randTag.attributeName;
-    self.tagName = randTag.attributeName;
-    NSLog(@"finding two contacts for %@", randTag.attributeName);
-    NSArray *players = [li.tagIndex findTwoSameForTag:randTag];
+    NSString *tag = [li.tagIndex randomTag];
+    self.gameLabel.text = tag;
+    self.tagName = tag;
+    NSLog(@"finding two contacts for %@", tag);
+    NSArray *players = [li.tagIndex findTwoSameForTag:tag];
 
     self.p1 = players[0];
     self.p2 = players[1];

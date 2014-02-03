@@ -33,6 +33,7 @@
     if (!lim.hasContacts) {
         [lim refreshContacts];
     }
+    self.ContactTableView.clipsToBounds = YES;
     [self.ContactTableView reloadData];
     
     self.navigationController.navigationBar.hidden = YES;
@@ -142,7 +143,7 @@
         NSIndexPath *indexPath = [self.ContactTableView indexPathForSelectedRow];
         Contact *contact = [lim.fetchedResultsController objectAtIndexPath:indexPath];
         ContactViewController *cvc = (ContactViewController *)[segue destinationViewController];
-        [cvc setContact:contact];
+        [cvc renderContact:contact];
     }
 }
 @end

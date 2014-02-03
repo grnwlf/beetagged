@@ -16,20 +16,17 @@
 #import "ContactTransition.h"
 #import "TagCell.h"
 
-@interface ContactViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, TagCellDelegate>
+@interface ContactViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, TagCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) Contact *contact;
 @property (nonatomic, strong) BATypeAheadViewController *typeAheadViewController;
 @property (nonatomic, strong) BATypeAheadView *typeAheadView;
-@property (strong, nonatomic) IBOutlet UIImageView *contactImage;
-@property (strong, nonatomic) IBOutlet UILabel *nameLabel;
-@property (strong, nonatomic) IBOutlet UILabel *headlineLabel;
-@property (strong, nonatomic) IBOutlet UILabel *positionTitleLabel;
-@property (strong, nonatomic) IBOutlet UILabel *positionNameLabel;
-@property (strong, nonatomic) IBOutlet UITextView *positionSummaryText;
-@property (strong, nonatomic) IBOutlet UICollectionView *tagsCollectionView;
 @property (strong, nonatomic) NSMutableArray *contactTags;
+@property (strong, nonatomic) NSMutableDictionary *expandedRows;
 
+@property (weak, nonatomic) IBOutlet UITableView *profileTableView;
+
+- (void)renderContact:(Contact*)c;
 
 
 @end

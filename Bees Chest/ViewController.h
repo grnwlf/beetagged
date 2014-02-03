@@ -14,7 +14,10 @@
 @interface ViewController : UIViewController
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (weak, nonatomic) IBOutlet UIProgressView *progressView;
+@property (weak, nonatomic) IBOutlet UIButton *loginBtn;
 
+- (void)setProgress:(float)value;
 - (IBAction)loginButtonTouchHandler:(id)sender;
 
 @end

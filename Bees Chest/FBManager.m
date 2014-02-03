@@ -26,6 +26,13 @@ static FBManager *fb = nil;
     return fb;
 }
 
+- (void)saveContext {
+    for (Contact *c in self.fetchedResultsController.fetchedObjects) {
+        [c save];
+    }
+    [self.managedObjectContext save:nil];
+}
+
 - (NSURL *)applicationDocumentsDirectory {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
@@ -79,6 +86,57 @@ static FBManager *fb = nil;
     }];
 }
 
+- (void)reformatWorkFor:(NSMutableDictionary*)c {
+    NSMutableArray *workArr = [[NSMutableArray alloc] init];
+    NSLog(@"work");
+    for (NSDictionary *workDict in c[kContactWork]) {
+        NSMutableDictionary *d = [[NSMutableDictionary alloc] init];
+        if (workDict[kContactEmployer]) {
+            d[kContactEmployer] = workDict[kContactEmployer][kContactName];
+        }
+        if (workDict[kContactPosition]) {
+            d[kContactPosition] = workDict[kContactPosition][kContactName];
+        }
+        
+        [workArr addObject:d];
+    }
+    [c removeObjectForKey:kContactWork];
+    c[kContactWork] = workArr;
+    
+}
+
+- (void)reformatEducation:(NSMutableDictionary*)c {
+    NSMutableArray *eduArr = [[NSMutableArray alloc] init];
+    NSLog(@"education");
+    for (NSDictionary *eduDict in c[kContactEducation]) {
+        NSMutableDictionary *d = [[NSMutableDictionary alloc] init];
+        if (eduDict[kContactSchool]) {
+            d[kContactSchool] = eduDict[kContactSchool][kContactName];
+        }
+        if (eduDict[@"year"]) {
+            d[@"year"] = eduDict[@"year"][kContactName];
+        }
+        
+        if (eduDict[kContactType]) {
+            d[kContactType] = eduDict[kContactType];
+        }
+        
+        [eduArr addObject:d];
+    }
+    [c removeObjectForKey:kContactEducation];
+    c[kContactEducation] = eduArr;
+    
+}
+
+- (void)reformatHometown:(NSMutableDictionary*)c {
+    if (c[kContactHometown]) {
+        NSLog(@"reformat home");
+        NSString *s = c[kContactHometown][kContactName];
+        [c removeObjectForKey:kContactHometown];
+        [c setObject:s forKey:kContactHometown];
+    }
+}
+
 - (void)importContacts:(NSArray*)contacts cb:(void(^)(void))callback {
 //    BOOL shouldSendTagsToParse = [[[PFUser user] objectForKey:kUserImportedAllContacts] boolValue];
     
@@ -86,20 +144,52 @@ static FBManager *fb = nil;
     
     
     NSMutableArray *pfUsers = [NSMutableArray arrayWithCapacity:[contacts count]];
-    for (NSDictionary *user in contacts) {
-        
-//        [pfUsers addObject:[]
-        
-        
+    for (int i = 0; i < 60; i++) {
+        NSMutableDictionary *c = [[NSMutableDictionary alloc] initWithDictionary:contacts[i]];
+        [self reformatWorkFor:c];
+        [self reformatEducation:c];
+        [self reformatHometown:c];
+        [pfUsers addObject:c];
     }
+    NSString *meId = [[PFUser currentUser] objectForKey:@"fbId"];
+    
+    NSLog(@"pfusers: %@", pfUsers);
+    
+    [self uploadContacts:pfUsers meId:meId from:0 to:60 cb:callback];
     
     
     
-    for (NSDictionary *c in contacts) {
-        Contact *contact = [Contact contactFromFB:c];
-        //[contact generateTags:YES]; // generate tags upon launch
+//    for (NSDictionary *c in contacts) {
+//        Contact *contact = [Contact contactFromFB:c];
+//        
+//        [self.managedObjectContext save:nil];
+//    }
+}
+
+- (void)uploadContacts:(NSArray*)contacts meId:(NSString*)meId from:(int)from to:(int)to cb:(void(^)(void))cb {
+    NSLog(@"%i %i", from, contacts.count);
+    if (from >= contacts.count) {
+        cb();
+        return;
+    }
+    int end = to;
+    if (end >= contacts.count) end = contacts.count;
+    
+    float val = (float)from / (float)contacts.count;
+    [self.vc setProgress:val];
+    
+    NSLog(@"upload from %i to %i", from, end);
+    NSRange range = NSMakeRange(from, end-from);
+    NSIndexSet *set = [[NSIndexSet alloc] initWithIndexesInRange:range];
+    NSArray *uploadUsers = [contacts objectsAtIndexes:set];
+
+    [PFCloud callFunctionInBackground:@"batchUpload" withParameters:@{@"users" : uploadUsers, @"meId" : meId} block:^(id object, NSError *error) {
+        for (PFObject *o in object) {
+            Contact *c = [Contact contactFromUserModel:o];
+        }
         [self.managedObjectContext save:nil];
-    }
+        [self uploadContacts:contacts meId:meId from:to to:to+60 cb:cb];
+    }];
 }
 
 
@@ -140,7 +230,6 @@ static FBManager *fb = nil;
         [self printContacts];
         [self.tagIndex createIndex:self.fetchedResultsController.fetchedObjects];
         [self.tagIndex printTagIndex];
-        [self.tagIndex printRandomSame:20];
         NSLog(@"The fetch from Core Data was succcessful");
     } else {
         NSLog(@"Error fetching contacts from Core Data: %@", [error localizedDescription]);
@@ -148,13 +237,14 @@ static FBManager *fb = nil;
 }
 
 - (void)createFakeTags {
-    NSString *tagStr = @"iOS Android Ruby Python Java C++ Go JavaScript Rails HTML CSS C SQL Perl PHP Haml Node Sails Express MongoDB Postgres MySQL Oracle Assembly Sass Math Science English History Writing Web Design Frontend Backend Database FullStack Communications Law Enterpeneur Health Doctor Calc Trig Stats Psych CS CSE EECS Mechanical Medical Engineering A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 1 2 3 4 5 6 7 8 9";
+    NSString *tagStr = @"iOS Android Ruby Python Java C++ ";
+//    Go JavaScript Rails HTML CSS C SQL Perl PHP Haml Node Sails Express MongoDB Postgres MySQL Oracle Assembly Sass Math Science English History Writing Web Design Frontend Backend Database FullStack Communications Law Enterpeneur Health Doctor Calc Trig Stats Psych CS CSE EECS Mechanical Medical Engineering A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 1 2 3 4 5 6 7 8 9";
     NSArray *fakeTags = [tagStr componentsSeparatedByString:@" "];
     int x = fakeTags.count;
     for (Contact *c in self.fetchedResultsController.fetchedObjects) {
         int r = rand() % x;
-        int rank = rand() % 10;
-        Tag *t = [Tag tagFromTagName:fakeTags[r] taggedUser:@"dsfadsfa" byUser:[FBManager singleton].currenUserId withRank:rank];
+        int rank = rand() % 6;
+        Tag *t = [Tag tagFromTagName:fakeTags[r] taggedUser:c.parseId byUser:[[PFUser currentUser] objectForKey:@"fbId"] withRank:rank];
         
         c.tags_ = [@{ t.attributeName : t } mutableCopy];
     }
@@ -173,19 +263,6 @@ static FBManager *fb = nil;
             [tags appendFormat:@" %@ %@ %i", k, t.attributeName, t.rank.integerValue];
         }
         NSLog(@"%@ : %@", c.name, tags);
-    }
-}
-
-- (void)saveContext {
-    NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    if (managedObjectContext != nil) {
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
     }
 }
 

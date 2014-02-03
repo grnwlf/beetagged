@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "FBManager.h"
 #import "BATypeAheadViewController.h"
+#import <FontAwesomeKit/FAKZocial.h>
 
 
 @interface ViewController ()
@@ -22,6 +23,14 @@
 //    if ([[FBManager singleton] loggedIn]) {
 //        [self performSegueWithIdentifier:kLoginSegue sender:self];
 //    }
+    [FBManager singleton].vc = self;
+    FAKZocial *fb = [FAKZocial facebookIconWithSize:15];
+    UIImage *fbImage = [fb imageWithSize:CGSizeMake(300, 50)];
+    [self.loginBtn setImage:fbImage forState:UIControlStateNormal];
+}
+
+- (void)setProgress:(float)value {
+    [self.progressView setProgress:value animated:YES];
 }
 
 
@@ -98,7 +107,19 @@
 /* Login to facebook method */
 - (IBAction)loginButtonTouchHandler:(id)sender  {
     // Set permissions required from the facebook user account
-    NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
+    NSArray *permissionsArray = @[ @"user_about_me",
+                                   @"user_relationships",
+                                   @"user_birthday",
+                                   @"user_location",
+                                   @"friends_about_me",
+                                    @"friends_birthday",
+                                   @"friends_education_history",
+                                   @"friends_hometown",
+                                   @"friends_likes",
+                                   @"friends_relationship_details",
+                                   @"friends_relationships",
+                                   @"friends_website",
+                                   @"friends_work_history" ];
     
     // Login PFUser using facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
@@ -116,28 +137,49 @@
             }
         } else if (user.isNew) {
             NSLog(@"User with facebook signed up and logged in!");
+            [self setFBId];
             [self fetchFBFriends];
         } else {
             NSLog(@"User with facebook logged in!");
-            [self fetchFBFriends];
+            //NSLog(@"%@", [user objectForKey:@"authData"]);
+            [self setFBId];
         }
     }];
     
     [_activityIndicator startAnimating]; // Show loading indicator until login is finished
 }
 
+- (void)setFBId {
+    FBRequest *fbrequest = [FBRequest requestForMe];
+    
+    [fbrequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        //        if (!error) {
+        // result is a dictionary with the user's Facebook data
+        NSLog(@"got me");
+        NSDictionary *userData = (NSDictionary *)result;
+        
+        NSString *fbid = userData[@"id"];
+        [[PFUser currentUser] setObject:fbid forKey:@"fbId"];
+        [[PFUser currentUser] saveInBackground];
+        [self fetchFBFriends];
+    }];
+
+}
+
 - (void)fetchFBFriends
 {
-    FBRequest *friends = [FBRequest requestForMyFriends];
+    FBRequest *friends = [FBRequest requestForGraphPath:@"me/friends?fields=about,bio,birthday,education,email,first_name,gender,id,hometown,last_name,name,relationship_status,work"];
+    //FBRequest *friends = [FBRequest requestForGraphPath:@"me/friends"];
     [friends startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
-            NSLog(@"error");
+            NSLog(@"error fetching friends %@", error);
             [PFUser logOut];
             //should logout user and have them restart
         } else {
-            NSLog(@"friends: %@", result);
-            [[FBManager singleton] importContacts:result[@"data"]];
-            [self loginToApp];
+            //NSLog(@"friends: %@", result);
+            [[FBManager singleton] importContacts:result[@"data"] cb:^(void) {
+               [self loginToApp];
+            }];
         }
     }];
 }

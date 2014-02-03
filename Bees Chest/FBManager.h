@@ -13,6 +13,7 @@
 #import "Contact.h"
 #import "TagOption.h"
 #import "TagIndex.h"
+#import "ViewController.h"
 
 @interface FBManager : NSObject
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
@@ -24,6 +25,8 @@
 @property (nonatomic, assign, readonly) BOOL hasContacts;
 @property (nonatomic, strong) NSMutableDictionary *tagOptions;
 @property (strong, nonatomic)  TagIndex *tagIndex;
+
+@property (weak, nonatomic) ViewController *vc;
 
 + (FBManager*)singleton;
 
@@ -37,6 +40,8 @@
 - (NSDictionary *)currentUserAsDictionary;
 - (NSArray *)tagOptionsArray;
 - (void)importContacts:(NSArray*)contacts cb:(void(^)(void))callback;
+
+- (void)saveContext;
 
 
 @end

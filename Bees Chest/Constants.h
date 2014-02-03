@@ -38,18 +38,29 @@
 #define kContactCellHeight 70.0
 #define kContactCellPlaceholderImage [UIImage imageNamed:@"Bees Chest Placeholder.png"]
 
+#define kProfileHeaderCell @"ProfileHeaderCell"
+#define kProfileDetailCell @"ProfileDetailCell"
+
 //********************************************************************//
 //    Contact //
 //********************************************************************//
 #define kContactFirstName @"first_name"
 #define kContactLastName @"last_name"
 #define kContactFormattedName @"name"
-#define kContactHeadline @"headline"
+#define kContactBirthday @"birthday"
 #define kContactFBId @"id"
-//#define kContactIndustry @"industry"
 #define kContactPicUrl @"pictureUrl"
-//#define kContactLocation @"location"
-//#define kContactLocationName @"name"
+#define kContactWork @"work"
+#define kContactName @"name"
+#define kContactType @"type"
+#define kContactSchool @"school"
+#define kContactRelationship @"relationship_status"
+#define kContactGender @"gender"
+#define kContactHometown @"hometown"
+#define kContactEmployer @"employer"
+#define kContactEducation @"education"
+#define kContactPosition @"position"
+#define kContactBio @"bio"
 
 // Position
 #define kContactPosition @"positions"

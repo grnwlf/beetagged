@@ -20,6 +20,16 @@
     return self;
 }
 
+- (void)move:(Contact *)contact forTag:(Tag *)tag toIndex:(int)index {
+    NSMutableArray *tagArr = self.data[tag.attributeName];
+    [tagArr removeObject:contact];
+    [tagArr insertObject:contact atIndex:index];
+}
+
+- (int)countForTag:(Tag *)tag {
+    return [self.data[tag.attributeName] count];
+}
+
 - (void)createIndex:(NSArray *)contacts
 {
     [self.data removeAllObjects];
@@ -58,34 +68,49 @@
     return NO;
 }
 
-- (NSArray*)findTwoSameForTag:(Tag *)tag {
-    int tmp = -1;
-    int i = 0;
-    Contact *tmpC;
-    for (Contact *c in self.data[tag.attributeName]) {
-        Tag *t = c.tags_[tag.attributeName];
-        if (tmp == [t.rank integerValue]) {
-            return @[c, tmpC];
-        } else {
-            tmp = [t.rank integerValue];
-            tmpC = c;
-        }
-        i++;
+- (NSArray*)findTwoSameForTag:(NSString*)tag {
+//    int tmp = -1;
+//    int i = 0;
+//    Contact *tmpC;
+//    for (Contact *c in self.data[tag.attributeName]) {
+//        Tag *t = c.tags_[tag.attributeName];
+//        if (tmp == [t.rank integerValue]) {
+//            return @[c, tmpC];
+//        } else {
+//            tmp = [t.rank integerValue];
+//            tmpC = c;
+//        }
+//        i++;
+//    }
+//    NSLog(@"no same two contacts were found");
+//    if (self.sameTags[tag.attributeName] != nil) {
+//        [self.sameTags removeObjectForKey:tag.attributeName];
+//    }
+    NSMutableArray *arr = self.data[tag];
+    int idx = rand() % arr.count - 1;
+    if (idx == -1) idx = 0;
+    return @[arr[idx], arr[idx+1]];
+}
+
+- (void)printForTag:(Tag*)t {
+    NSLog(@"printing order for tag %@", t.attributeName);
+    NSMutableArray *arr = self.data[t.attributeName];
+    for (int i = 0; i < arr.count; i++) {
+        Contact *c = (Contact*)arr[i];
+        NSLog(@"%@ %@ %i", c.first_name, c.last_name, [[c.tags_[t.attributeName] rank] integerValue]);
     }
-    NSLog(@"no same two contacts were found");
-    if (self.sameTags[tag.attributeName] != nil) {
-        [self.sameTags removeObjectForKey:tag.attributeName];
-    }
-    return @[];
+
 }
 
 - (void)sortForTag:(Tag*)tag {
     NSMutableArray *arr = self.data[tag.attributeName];
-    [arr sortWithOptions:nil usingComparator:^NSComparisonResult(id obj1, id obj2) {
-        Tag *t1 = [[(Contact*)obj1 tags_] objectForKey:tag.attributeName];
-        Tag *t2 = [[(Contact*)obj2 tags_] objectForKey:tag.attributeName];
-        return [t1.rank compare:t2.rank];
-    }];
+    NSLog(@"setting new vals for tag %@", tag.attributeName);
+    for (int i = 0; i < arr.count; i++) {
+        Contact *c = (Contact*)arr[i];
+        [[c.tags_ objectForKey:tag.attributeName] setRank:[NSNumber numberWithInt:i]];
+        NSLog(@"%@ %@ %i", c.first_name, c.last_name, [[[c.tags_ objectForKey:tag.attributeName] rank] integerValue]);
+    }
+    [self printForTag:tag];
 }
 
 - (void)printTagIndex {
@@ -101,9 +126,22 @@
     }
 }
 
-- (Tag*)randomTag {
-    NSArray *allTags = self.sameTags.allKeys;
-    return self.sameTags[allTags[rand() % allTags.count]];
+- (NSString*)randomTag {
+    NSArray *allTags = self.data.allKeys;
+    NSMutableArray *possibleOptions = [[NSMutableArray alloc] init];
+    int i = 0;
+    for (Tag *t in allTags) {
+        if ([self.data[t] count] > 1) {
+            [possibleOptions addObject:@(i)];
+        }
+        i++;
+    }
+    if (possibleOptions.count == 0) {
+        return nil;
+    }
+    NSLog(@"possible options: %i", possibleOptions.count);
+    int idx = [possibleOptions[rand() % possibleOptions.count] integerValue];
+    return allTags[idx];
 }
 
 - (void)printRandomSame:(int)i {

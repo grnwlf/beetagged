@@ -11,6 +11,7 @@
 @implementation Contact
 
 @dynamic fbId;
+@dynamic parseId;
 @dynamic first_name;
 @dynamic last_name;
 @dynamic name;
@@ -29,6 +30,13 @@
 @dynamic hasGeneratedTags;
 @dynamic tagData;
 @synthesize tags_;
+@dynamic workData;
+@dynamic educationData;
+@dynamic hometown;
+@dynamic gender;
+@dynamic bio;
+@synthesize work;
+@synthesize education;
 
 
 -(id)init {
@@ -55,6 +63,36 @@
     c.pictureUrl = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=normal", c.fbId];
     //c.linkedInUrl = user[kContactLinkedInGetUrl][kContactLinkedInUrl];
 
+    // This is where they will appear in the grouping.
+    if (c.last_name && c.last_name.length > 0) {
+        c.groupByLastName = [[c.last_name substringToIndex:1] uppercaseString];
+    } else if (c.first_name && c.first_name.length > 0) {
+        c.groupByLastName = [[c.first_name substringToIndex:1] uppercaseString];
+    } else {
+        c.groupByLastName = @"Z";
+    }
+    
+    [c addToCache];
+    return c;
+}
+
++ (Contact*)contactFromUserModel:(PFObject *)user {
+    FBManager *li = [FBManager singleton];
+    Contact *c = [NSEntityDescription insertNewObjectForEntityForName:@"Contact" inManagedObjectContext:li.managedObjectContext];
+    c.fbId = [user objectForKey:@"fbId"];
+    c.first_name = user[kContactFirstName];
+    c.last_name = user[kContactLastName];
+    c.name = [NSString stringWithFormat:@"%@ %@", c.first_name, c.last_name];
+    c.parseId = user.objectId;
+    c.bio = user[kContactBio];
+    c.hometown = user[kContactHometown];
+    c.work = user[kContactWork];
+    c.education = user[kContactEducation];
+    c.gender = user[kContactGender];
+    
+    c.pictureUrl = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=normal", c.fbId];
+    //c.linkedInUrl = user[kContactLinkedInGetUrl][kContactLinkedInUrl];
+    
     // This is where they will appear in the grouping.
     if (c.last_name && c.last_name.length > 0) {
         c.groupByLastName = [[c.last_name substringToIndex:1] uppercaseString];
@@ -206,21 +244,37 @@
 }
 
 - (void)addTag:(NSString*)tag {
-    self.tags_[tag] = [Tag tagFromTagName:tag taggedUser:self.fbId byUser:[FBManager singleton].currenUserId withRank:0];
+    self.tags_[tag] = [Tag tagFromTagName:tag taggedUser:self.parseId byUser:[[PFUser currentUser] objectForKey:@"fbId"] withRank:0];
     PFObject *t = [(Tag*)self.tags_[tag] pfObject];
     [t saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) [(Tag*)self.tags_[tag]  setObjectId:[t objectId]];
-        
     }];
 }
 
 #pragma mark Tags Override setter
 - (NSMutableDictionary*)tags_ {
-    return (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:self.tagData];
+    if (!tags_) {
+        tags_ = (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:self.tagData];
+    }
+    return tags_;
 }
 
-- (void)setTags_:(NSMutableDictionary *)tags_ {
-    self.tagData = [NSKeyedArchiver archivedDataWithRootObject:tags_];
+//- (void)setTags_:(NSMutableDictionary *)newTags {
+//    self.tagData = [NSKeyedArchiver archivedDataWithRootObject:newTags];
+//}
+
+- (NSMutableArray*)work {
+    if (!work) {
+        work = (NSMutableArray*)[NSKeyedUnarchiver unarchiveObjectWithData:self.workData];
+    }
+    return work;
+}
+
+- (NSMutableArray*)education {
+    if (!education) {
+        education = (NSMutableArray*)[NSKeyedUnarchiver unarchiveObjectWithData:self.educationData];
+    }
+    return education;
 }
 
 // Makes sure that there are no special characters include when we are looking
@@ -254,4 +308,40 @@
     }];
 }
 
+- (NSMutableArray*)profileAttributeKeys {
+    NSMutableArray *n = [[NSMutableArray alloc] init];
+    if (self.bio || self.hometown || self.gender) [n addObject:kContactBio];
+    if (self.work.count > 0) [n addObject:kContactWork];
+    if (self.education.count > 0) [n addObject:kContactEducation];
+    
+    return n;
+}
+
+- (NSMutableArray*)detailAttributesFor:(NSString *)key {
+    NSMutableArray *n = [[NSMutableArray alloc] init];
+    if ([key isEqualToString:kContactBio]) {
+        [n addObject:kContactBio];
+        if (self.bio) [n addObject:@{kContactBio : self.bio}];
+        if (self.hometown) [n addObject:@{kContactHometown : self.hometown}];
+        if (self.gender) [n addObject:@{kContactGender : self.gender}];
+    } else if ([key isEqualToString:kContactWork]) {
+        [n addObject:kContactWork];
+        for (NSDictionary *d in self.work) {
+            [n addObject:@{@"value": [NSString stringWithFormat:@"%@ : %@", d[kContactEmployer], d[kContactPosition]] }];
+        }
+    } else if ([key isEqualToString:kContactEducation]) {
+        [n addObject:kContactEducation];
+        for (NSDictionary *d in self.education) {
+            [n addObject:@{@"value": [NSString stringWithFormat:@"%@ %@ %@", d[kContactSchool], d[kContactType], d[@"year"]]}];
+        }
+    }
+    return n;
+}
+
+- (void)save {
+    self.tagData = [NSKeyedArchiver archivedDataWithRootObject:self.tags_];
+    self.educationData = [NSKeyedArchiver archivedDataWithRootObject:self.education];
+    self.workData = [NSKeyedArchiver archivedDataWithRootObject:self.work];
+}
+    
 @end

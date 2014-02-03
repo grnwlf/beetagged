@@ -20,6 +20,7 @@
 @interface Contact : NSManagedObject
 
 @property (nonatomic, retain) NSString * fbId;
+@property (nonatomic, retain) NSString * parseId;
 @property (nonatomic, retain) NSString * first_name;
 @property (nonatomic, retain) NSString * last_name;
 @property (nonatomic, retain) NSString * name;
@@ -38,11 +39,25 @@
 @property (nonatomic, retain) NSString * linkedInUrl;
 @property (nonatomic, retain) NSString * groupByLastName;
 @property (nonatomic, strong) NSMutableDictionary * tags_;
+@property (nonatomic, retain) NSData *workData;
+@property (nonatomic, retain) NSData *educationData;
+@property (strong, nonatomic) NSMutableArray *work;
+@property (strong, nonatomic) NSMutableArray *education;
+@property (nonatomic, retain) NSString *gender;
+@property (nonatomic, retain) NSString *bio;
+@property (nonatomic, retain) NSString *hometown;
 
 
 
 + (Contact*)contactFromFB:(NSDictionary*)user;
++ (Contact*)contactFromUserModel:(PFObject*)user;
+
 - (void)generateTags:(BOOL)pushToParse;
 + (void)setParseUser:(NSDictionary *)json andSave:(BOOL)save;
+
+- (NSMutableArray*)profileAttributeKeys;
+- (NSMutableArray*)detailAttributesFor:(NSString*)key;
+
+- (void)save;
 
 @end

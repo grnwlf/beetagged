@@ -7,6 +7,7 @@
 //
 
 #import "ContactViewController.h"
+#import "ProfileDetailCell.h"
 
 @interface ContactViewController ()
 
@@ -28,9 +29,8 @@
 #pragma mark View Loading
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.tagsCollectionView.delegate = self;
-    self.tagsCollectionView.dataSource = self;
-    self.tagsCollectionView.backgroundColor = [UIColor clearColor];
+    
+    self.expandedRows = [[NSMutableDictionary alloc] init];
     
     [self formatLayout];
     [self typeahead];
@@ -38,6 +38,11 @@
     self.added = [@[] mutableCopy];
     self.itemToDelete = -1;
     self.contactTags = [self.contact.tags_ mutableCopy];
+}
+
+- (void)renderContact:(Contact*)c {
+    self.contact = c;
+    [self.profileTableView reloadData];
 }
 
 // style the typeahead view
@@ -67,8 +72,89 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [self updateAddedTagsInParse];
+  //  [self updateAddedTagsInParse];
     [self updatedDeletedTagsInParse];
+}
+
+
+#pragma mark TableView
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.contact.profileAttributeKeys.count+1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 0) return 200;
+    else {
+        NSString *key = self.contact.profileAttributeKeys[indexPath.row-1];
+        if (self.expandedRows[key]) return [self.contact detailAttributesFor:key].count * 40 + 50;
+        else return 50;
+    }
+}
+
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == 0) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kProfileHeaderCell forIndexPath:indexPath];
+        UIImageView *imageView = (UIImageView*)[cell viewWithTag:1];
+        [imageView setImageWithURL:[NSURL URLWithString:self.contact.pictureUrl]];
+        
+        UILabel *label = (UILabel*)[cell viewWithTag:2];
+        label.text = [self.contact name];
+        
+        return cell;
+    } else {
+        ProfileDetailCell *cell = (ProfileDetailCell*)[tableView dequeueReusableCellWithIdentifier:kProfileDetailCell forIndexPath:indexPath];
+        if (cell.textFields) {
+            for (UITextField *t in cell.textFields) {
+                [t removeFromSuperview];
+            }
+        } else {
+            cell.textFields = [[NSMutableArray alloc] init];
+        }
+        
+        NSMutableArray *detail = [self.contact detailAttributesFor:self.contact.profileAttributeKeys[indexPath.row-1]];
+        
+        UILabel *l = (UILabel*)[cell viewWithTag:1];
+        l.text = detail[0];
+        
+        float h = 50;
+        for (int i = 1; i < detail.count; i++) {
+            NSDictionary *d = detail[i];
+            
+            if ([detail[0] isEqualToString:kContactBio]) {
+                UITextField *t = [[UITextField alloc] initWithFrame:CGRectMake(30, h, kWidth-60, 40)];
+                t.text = [NSString stringWithFormat:@"%@: %@", d.allKeys[0], d[d.allKeys[0]]];
+                [cell addSubview:t];
+                [cell.textFields addObject:t];
+                h += 40;
+            } else {
+                UITextField *t = [[UITextField alloc] initWithFrame:CGRectMake(30, h, kWidth-60, 40)];
+                t.text = d[@"value"];
+                [cell addSubview:t];
+                [cell.textFields addObject:t];
+                h += 40;
+            }
+        }
+        return cell;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *key = self.contact.profileAttributeKeys[indexPath.row-1];
+    if (self.expandedRows[key]) {
+        [self.expandedRows removeObjectForKey:key];
+    } else {
+        self.expandedRows[key] = @YES;
+    }
+    
+    [self.profileTableView beginUpdates];
+    [self.profileTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.profileTableView endUpdates];
 }
 
 
@@ -76,115 +162,115 @@
 - (void)updatedDeletedTagsInParse {
     NSLog(@"deleting %@", self.deleted);
     
-    NSMutableArray *parseTags = [self makeParseTags:self.deleted];
-    [PFObject deleteAllInBackground:parseTags block:^(BOOL succeeded, NSError *error) {
-        if (error) {
-            NSLog(@"Error: %@", [error localizedDescription]);
-        }
-        if (succeeded) {
-            self.deleted = [@[] mutableCopy];
-        }
-    }];
+  //  NSMutableArray *parseTags = [self makeParseTags:self.deleted];
+ //   [PFObject deleteAllInBackground:parseTags block:^(BOOL succeeded, NSError *error) {
+//        if (error) {
+//            NSLog(@"Error: %@", [error localizedDescription]);
+//        }
+//        if (succeeded) {
+//            self.deleted = [@[] mutableCopy];
+//        }
+//    }];
 }
 
 
 // 1. add to parse
 // 2. update the objects in the db and save to core data
-- (void)updateAddedTagsInParse {
-    NSLog(@"adding %@", self.added);
-    NSMutableArray *parseTags = [self makeParseTags:self.added];
-    [PFObject saveAllInBackground:parseTags block:^(BOOL succeeded, NSError *error) {
-        if (error) {
-            NSLog(@"Error: %@", error);
-        }
-        if (succeeded) {
-            NSLog(@"save in background succeeeded");
-            NSLog(@"%@", parseTags);
-            [self replaceParseTags:parseTags];
-            self.added = [@[] mutableCopy];
-        }
-    }];
-}
+//- (void)updateAddedTagsInParse {
+//    NSLog(@"adding %@", self.added);
+//    NSMutableArray *parseTags = [self makeParseTags:self.added];
+//    [PFObject saveAllInBackground:parseTags block:^(BOOL succeeded, NSError *error) {
+//        if (error) {
+//            NSLog(@"Error: %@", error);
+//        }
+//        if (succeeded) {
+//            NSLog(@"save in background succeeeded");
+//            NSLog(@"%@", parseTags);
+//            [self replaceParseTags:parseTags];
+//            self.added = [@[] mutableCopy];
+//        }
+//    }];
+//}
 
-- (NSMutableArray *)makeParseTags:(NSMutableArray *)ts {
-    NSMutableArray *parseTags = [[NSMutableArray alloc] initWithCapacity:self.added.count];
-    // make all of the array objects a PFObject
-    for (Tag *t in ts) {
-        [parseTags addObject:[t pfObject]];
-    }
-    return parseTags;
-}
+//- (NSMutableArray *)makeParseTags:(NSMutableArray *)ts {
+//    NSMutableArray *parseTags = [[NSMutableArray alloc] initWithCapacity:self.added.count];
+//    // make all of the array objects a PFObject
+//    for (Tag *t in ts) {
+//        [parseTags addObject:[t pfObject]];
+//    }
+//    return parseTags;
+//}
 
-- (void)replaceParseTags:(NSArray *)parseTags {
-    NSLog(@"replaceParseTags");
-    NSMutableDictionary *tagDictionary = [NSMutableDictionary dictionaryWithCapacity:parseTags.count];
-    
-    for (PFObject *parseTag in parseTags) {
-        Tag *tag = [Tag tagFromParse:parseTag];
-        tagDictionary[tag.attributeName] = tag;
-    }
-    
-    NSMutableArray *cts = [self.contact.tags_ mutableCopy];
-    NSInteger i = 0;
-    for (Tag *ct in cts) {
-        if (tagDictionary[ct.attributeName] != nil) {
-            cts[i] = tagDictionary[ct.attributeName];
-        }
-        i++;
-    }
-    
-    NSLog(@"updating in core data");
-    // update in core data
-    FBManager *lim = [FBManager singleton];
-    self.contact.tags_ = [cts copy];
-    [lim.managedObjectContext save:nil];
-}
+//- (void)replaceParseTags:(NSArray *)parseTags {
+//    NSLog(@"replaceParseTags");
+//    NSMutableDictionary *tagDictionary = [NSMutableDictionary dictionaryWithCapacity:parseTags.count];
+//    
+//    for (PFObject *parseTag in parseTags) {
+//        Tag *tag = [Tag tagFromParse:parseTag];
+//        tagDictionary[tag.attributeName] = tag;
+//    }
+//    
+//    NSMutableArray *cts = [self.contact.tags_ mutableCopy];
+//    NSInteger i = 0;
+//    for (Tag *ct in cts) {
+//        if (tagDictionary[ct.attributeName] != nil) {
+//            cts[i] = tagDictionary[ct.attributeName];
+//        }
+//        i++;
+//    }
+//    
+//    NSLog(@"updating in core data");
+//    // update in core data
+//    FBManager *lim = [FBManager singleton];
+//    self.contact.tags_ = [cts copy];
+//    [lim.managedObjectContext save:nil];
+//}
 
 
 #pragma mark View Logic
 // encapsulating function that writes text in all of the fields and moves the view
 // up if no text exists.
 - (void)formatLayout {
-    CGFloat moved = 0.0;
+//    CGFloat moved = 0.0;
     
     // 1. set the image and make it a circle
-    self.contactImage.layer.cornerRadius = self.contactImage.frame.size.height / 2;
-    self.contactImage.clipsToBounds = YES;
-	[self.contactImage setImageWithURL:[NSURL URLWithString:self.contact.pictureUrl] placeholderImage:kContactCellPlaceholderImage];
-    
-    // 2. set the name
-    self.nameLabel.text = self.contact.name;
-    
-    // 3. set the headline
-    self.headlineLabel.text = [self getHeadline];
-    
-    // 4. set the position
-    NSString *positionTitle = [self getPositionTitle];
-    if (positionTitle.length == 0) {
-        moved += [self removeViewOfHeight:self.positionTitleLabel];
-    } else {
-        self.positionTitleLabel.text = positionTitle;
-    }
-    
-    NSString *positionName = [self getPositionName];
-    if (positionName.length == 0) {
-        moved += [self removeViewOfHeight:self.positionNameLabel];
-    } else {
-        [self moveView:self.positionNameLabel upBy:moved andIncreaseHeight:0.0];
-        self.positionNameLabel.text = positionName;
-    }
-    
-    // 5. set the description
-    NSString *description = self.contact.positionSummary;
-    if (description && description.length > 0) {
-        [self moveView:self.positionSummaryText upBy:moved andIncreaseHeight:0.0];
-        self.positionSummaryText.text = description;
-    } else {
-        moved += [self removeViewOfHeight:self.positionSummaryText];
-    }
-    
-    // 6. set up the custom tag view (to be implemented)
-    [self moveView:self.tagsCollectionView upBy:moved andIncreaseHeight:moved];
+//    self.contactImage.layer.cornerRadius = self.contactImage.frame.size.height / 2;
+//    self.contactImage.clipsToBounds = YES;
+//	[self.contactImage setImageWithURL:[NSURL URLWithString:self.contact.pictureUrl] placeholderImage:kContactCellPlaceholderImage];
+//    
+//    // 2. set the name
+//    self.nameLabel.text = self.contact.name;
+//    
+//    // 3. set the headline
+//    self.headlineLabel.text = [self getHeadline];
+//    
+//    // 4. set the position
+//    NSString *positionTitle = [self getPositionTitle];
+//    if (positionTitle.length == 0) {
+//        moved += [self removeViewOfHeight:self.positionTitleLabel];
+//    } else {
+//        self.positionTitleLabel.text = positionTitle;
+//    }
+//    
+//    NSString *positionName = [self getPositionName];
+//    if (positionName.length == 0) {
+//        moved += [self removeViewOfHeight:self.positionNameLabel];
+//    } else {
+//        [self moveView:self.positionNameLabel upBy:moved andIncreaseHeight:0.0];
+//        self.positionNameLabel.text = positionName;
+//    }
+//    
+//    // 5. set the description
+//    NSString *description = self.contact.positionSummary;
+//    if (description && description.length > 0) {
+//        [self moveView:self.positionSummaryText upBy:moved andIncreaseHeight:0.0];
+//        self.positionSummaryText.text = description;
+//    } else {
+//        moved += [self removeViewOfHeight:self.positionSummaryText];
+//    }
+//    
+//    // 6. set up the custom tag view (to be implemented)
+//    [self moveView:self.tagsCollectionView upBy:moved andIncreaseHeight:moved];
 }
 
 // gives the headline for the Contact
@@ -269,10 +355,10 @@
 }
 
 - (void)clearDeleteViewAtIndex:(NSInteger)index {
-    self.itemToDelete = -1;
-    [UIView animateWithDuration:.3 animations:^{
-        [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
-    }];
+//    self.itemToDelete = -1;
+//    [UIView animateWithDuration:.3 animations:^{
+//        [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
+//    }];
 }
 
 
@@ -325,12 +411,12 @@
 // one of the cells.
 - (void)didPressCellAtItemIndex:(NSInteger)itemIndex {
     // 1. set the deleted item to the itemIndex
-    if (itemIndex != self.contactTags.count && self.itemToDelete == -1) {
-        self.itemToDelete = itemIndex;
-        [UIView animateWithDuration:.3 animations:^{
-            [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:itemIndex inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
-        }];
-    }
+//    if (itemIndex != self.contactTags.count && self.itemToDelete == -1) {
+//        self.itemToDelete = itemIndex;
+//        [UIView animateWithDuration:.3 animations:^{
+//            [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:itemIndex inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
+//        }];
+//    }
 }
 
 - (void)addTagToCollectionView:(Tag *)tag {
@@ -345,7 +431,7 @@
     [self.contactTags addObject:tag];
     [self addedTag:tag];
     [self resetContactTags];
-    [self.tagsCollectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.contactTags.count - 1 inSection:0]]];
+  //  [self.tagsCollectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.contactTags.count - 1 inSection:0]]];
 }
 
 - (void)resetContactTags {
@@ -387,7 +473,7 @@
     [self.contactTags removeObjectAtIndex:indexPath.item];
     [self deletedTag:tag];
     [self resetContactTags];
-    [self.tagsCollectionView deleteItemsAtIndexPaths:@[indexPath]];
+  //  [self.tagsCollectionView deleteItemsAtIndexPaths:@[indexPath]];
 }
 
 // This is is what brings the typeahead view onto the screen and shows the
