@@ -15,6 +15,7 @@
 @interface TagCell : UICollectionViewCell <UIGestureRecognizerDelegate>
 @property (nonatomic, assign) NSInteger itemIndex;
 @property (nonatomic, weak) id delegate;
+@property (nonatomic, strong) UILabel* label;
 - (void)addLongPress;
 - (void)turnOnDelete;
 

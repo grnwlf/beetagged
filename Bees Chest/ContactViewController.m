@@ -30,6 +30,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.tagsCollectionView.delegate = self;
+    self.tagsCollectionView.dataSource = self;
+    self.tagsCollectionView.backgroundColor = [UIColor clearColor];
+    
     self.expandedRows = [[NSMutableDictionary alloc] init];
     
     [self formatLayout];
@@ -37,7 +41,7 @@
     self.deleted = [@[] mutableCopy];
     self.added = [@[] mutableCopy];
     self.itemToDelete = -1;
-    self.contactTags = [self.contact.tags_ mutableCopy];
+    self.contactTags = [[self.contact.tags_ allValues] mutableCopy];
 }
 
 - (void)renderContact:(Contact*)c {
@@ -365,8 +369,11 @@
 // style the collectionView cell at the indexPath
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *tagCellIdentifier = @"TagCollectionCell";
+    [self.tagsCollectionView registerClass:[TagCell class] forCellWithReuseIdentifier:tagCellIdentifier];
+    
     TagCell *cell = (TagCell *)[cv dequeueReusableCellWithReuseIdentifier:tagCellIdentifier forIndexPath:indexPath];
-    UILabel *label = (UILabel *)[cell viewWithTag:1];
+    //UILabel *label = (UILabel *)[cell viewWithTag:1];
+    UILabel *label = [[UILabel alloc] init];
     NSInteger i = indexPath.item;
     cell.layer.cornerRadius = cell.frame.size.height / 4;
     cell.itemIndex = i;
@@ -378,8 +385,8 @@
         if (i < self.contactTags.count) {
             [cell addLongPress];
             Tag *tag = self.contactTags[i];
-            label.text = tag.attributeName;
-            label.textColor = [UIColor yellowColor];
+            [label setText:tag.attributeName];
+            label.textColor = [UIColor blackColor];
         } else {
             label.text = @"+";
             label.font = [UIFont fontWithName:@"Helvetica-Bold" size:50.0];
@@ -397,6 +404,19 @@
             label.textColor = [UIColor whiteColor];
         }
     }
+    
+    
+    [label setTextColor:[UIColor blackColor]];
+    //[label setText:@"Android"];
+    [label setFrame:CGRectMake(0, 0, 50, 50)];
+    [cell.contentView addSubview:label];
+    
+    NSLog(@"%@", label.text);
+    
+    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    [lab setText:@"DRO"];
+    //[cell.contentView addSubview:lab];
+    
     return cell;
 }
 
@@ -451,6 +471,7 @@
         index++;
     }
     [self.added addObject:tag];
+    [self.tagsCollectionView reloadData];
 }
 
 // adds the tag to the deleted changeList

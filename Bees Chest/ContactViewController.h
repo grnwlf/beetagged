@@ -24,7 +24,9 @@
 @property (strong, nonatomic) NSMutableArray *contactTags;
 @property (strong, nonatomic) NSMutableDictionary *expandedRows;
 
+
 @property (weak, nonatomic) IBOutlet UITableView *profileTableView;
+@property (strong, nonatomic) IBOutlet UICollectionView *tagsCollectionView;
 
 - (void)renderContact:(Contact*)c;
 
