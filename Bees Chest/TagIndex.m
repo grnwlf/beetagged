@@ -20,6 +20,10 @@
     return self;
 }
 
+- (NSArray*)contactsForTag:(NSString*)tag {
+    return self.data[tag];
+}
+
 - (void)move:(Contact *)contact forTag:(Tag *)tag toIndex:(int)index {
     NSMutableArray *tagArr = self.data[tag.attributeName];
     [tagArr removeObject:contact];
@@ -103,14 +107,18 @@
 }
 
 - (void)sortForTag:(Tag*)tag {
+    NSMutableArray *pushTags = [[NSMutableArray alloc] init];
     NSMutableArray *arr = self.data[tag.attributeName];
     NSLog(@"setting new vals for tag %@", tag.attributeName);
     for (int i = 0; i < arr.count; i++) {
         Contact *c = (Contact*)arr[i];
-        [[c.tags_ objectForKey:tag.attributeName] setRank:[NSNumber numberWithInt:i]];
-        NSLog(@"%@ %@ %i", c.first_name, c.last_name, [[[c.tags_ objectForKey:tag.attributeName] rank] integerValue]);
+        Tag *t = [c.tags_ objectForKey:tag.attributeName];
+        [t setRank:[NSNumber numberWithInt:i]];
+        //PFObject *pfTag = [t pfObject];
+        //[pushTags addObject:pfTag];
     }
     [self printForTag:tag];
+    //[PFObject saveAllInBackground:pushTags];
 }
 
 - (void)printTagIndex {

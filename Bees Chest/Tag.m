@@ -49,6 +49,7 @@
 }
 
 -(PFObject *)pfObject {
+    
     PFObject *pfObject = [PFObject objectWithClassName:kTagClass];
     if (self.objectId && self.objectId.length > 0) {
         [pfObject setObjectId:self.objectId];

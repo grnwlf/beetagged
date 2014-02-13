@@ -62,6 +62,8 @@
     if (self.isOnScreen) {
         return;
     }
+    NSLog(@"here");
+    if (!self.data) self.data = [[[FBManager singleton] tagOptionsArray] copy];
     
     self.isOnScreen = YES;
     CGRect curFrame = self.view.frame;
@@ -137,7 +139,7 @@
 
 #pragma mark UITextField Delegate
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    NSLog(@"%@", string);
+    NSLog(@"%i %i", self.data.count, [[[FBManager singleton] tagOptionsArray] count]);
     NSString *query = [NSString stringWithFormat:@"%@%@", self.view.inputTextField.text, string];
     if ([string isEqualToString:@""]) {
         NSLog(@"backspace");
@@ -155,7 +157,7 @@
         NSPredicate *queryName = [NSPredicate predicateWithBlock:^BOOL(Tag *evaluatedObject, NSDictionary *bindings) {
             return [[evaluatedObject.attributeName lowercaseString] rangeOfString:query].location != NSNotFound;
         }];
-        self.searchData = (NSMutableArray*)[self.data filteredArrayUsingPredicate:queryName];
+        self.searchData = (NSMutableArray*)[[[FBManager singleton] tagOptionsArray] filteredArrayUsingPredicate:queryName];
         NSLog(@"search data: %@", self.searchData);
         [self showTableView];
     }

@@ -21,7 +21,9 @@
 @property (strong, nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (strong, nonatomic) NSMutableArray *searchArray;
-@property (nonatomic, assign, readonly) BOOL isSearching;
+@property (strong, nonatomic) NSMutableArray *filterArray;
+@property (nonatomic) BOOL search;
+@property (nonatomic) BOOL tagFilter;
 @property (nonatomic, assign, readonly) BOOL hasContacts;
 @property (nonatomic, strong) NSMutableDictionary *tagOptions;
 @property (strong, nonatomic)  TagIndex *tagIndex;
@@ -40,8 +42,11 @@
 - (NSDictionary *)currentUserAsDictionary;
 - (NSArray *)tagOptionsArray;
 - (void)importContacts:(NSArray*)contacts cb:(void(^)(void))callback;
-
+- (void)search:(NSString *)query;
 - (void)saveContext;
+- (void)clearDB;
+- (void)fetchContacts;
+- (void)filterForTags:(NSArray*)tags;
 
 
 @end

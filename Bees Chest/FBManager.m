@@ -65,6 +65,9 @@ static FBManager *fb = nil;
         self.searchArray = [[NSMutableArray alloc] init];
         self.hasContacts = NO;
         [self fetchTagOptions];
+        self.tagFilter = NO;
+        
+        self.filterArray = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -82,6 +85,7 @@ static FBManager *fb = nil;
                 TagOption *t = [TagOption tagOptionFromParse:object];
                 [self.tagOptions setObject:t forKey:[t.attributeName lowercaseString]];
             }
+            NSLog(@"Tag options %@", self.tagOptions);
         }
     }];
 }
@@ -169,6 +173,17 @@ static FBManager *fb = nil;
 - (void)uploadContacts:(NSArray*)contacts meId:(NSString*)meId from:(int)from to:(int)to cb:(void(^)(void))cb {
     NSLog(@"%i %i", from, contacts.count);
     if (from >= contacts.count) {
+        
+        [self fetchContacts];
+        
+        //store all user id's so we have access to them on login
+        NSMutableArray *userIds = [[NSMutableArray alloc] init];
+        for (Contact *c in self.fetchedResultsController.fetchedObjects) {
+            [userIds addObject:c.parseId];
+        }
+        
+        [[PFUser currentUser] setObject:userIds forKey:@"connections"];
+        [[PFUser currentUser] saveInBackground];
         cb();
         return;
     }
@@ -227,9 +242,9 @@ static FBManager *fb = nil;
     if (success) {
         self.hasContacts = YES;
         [self createFakeTags];
-        [self printContacts];
+        //[self printContacts];
         [self.tagIndex createIndex:self.fetchedResultsController.fetchedObjects];
-        [self.tagIndex printTagIndex];
+        //[self.tagIndex printTagIndex];
         NSLog(@"The fetch from Core Data was succcessful");
     } else {
         NSLog(@"Error fetching contacts from Core Data: %@", [error localizedDescription]);
@@ -237,7 +252,7 @@ static FBManager *fb = nil;
 }
 
 - (void)createFakeTags {
-    NSString *tagStr = @"iOS Android Ruby Python Java C++ ";
+    NSString *tagStr = @"iOS Android Rails Python Java C++ ";
 //    Go JavaScript Rails HTML CSS C SQL Perl PHP Haml Node Sails Express MongoDB Postgres MySQL Oracle Assembly Sass Math Science English History Writing Web Design Frontend Backend Database FullStack Communications Law Enterpeneur Health Doctor Calc Trig Stats Psych CS CSE EECS Mechanical Medical Engineering A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 1 2 3 4 5 6 7 8 9";
     NSArray *fakeTags = [tagStr componentsSeparatedByString:@" "];
     int x = fakeTags.count;
@@ -302,11 +317,73 @@ static FBManager *fb = nil;
     return [[NSUserDefaults standardUserDefaults] dictionaryForKey:kLICurUser];
 }
 
+- (void)search:(NSString *)query {
+    if (query.length == 0) {
+        self.search = false;
+    } else {
+        self.search = true;
+        NSArray *words = [query componentsSeparatedByString:@" "];
+        NSString *first, *second;
+        NSPredicate *queryNames;
+        first = words[0];
+        if (words.count > 1) {
+            second = words[1];
+            queryNames = [NSPredicate predicateWithFormat:
+                          @"(first_name BEGINSWITH[cd] %@ AND last_name BEGINSWITH[cd] %@) OR (first_name BEGINSWITH[cd] %@ AND last_name BEGINSWITH[cd] %@)", first, second, second, first];
+        } else {
+            queryNames = [NSPredicate predicateWithFormat:@"first_name BEGINSWITH[cd] %@ OR last_name BEGINSWITH[cd] %@", first, first];
+        }
+        NSArray *contacts = [self.fetchedResultsController fetchedObjects];
+        self.searchArray = [contacts filteredArrayUsingPredicate:queryNames];
+    }
+}
+
+- (void)filterForTags:(NSArray*)tags {
+    if (tags.count == 0) {
+        self.tagFilter = false;
+        return;
+    }
+    
+    NSArray *arr = [self.tagIndex contactsForTag:tags[0]];
+    [self.filterArray removeAllObjects];
+    for (int i = 0; i < arr.count; i++) {
+        Contact *c = arr[i];
+        [self.filterArray addObject:c];
+        for (int j = 0; j < tags.count; j++) {
+            NSString *t = tags[j];
+            if (c.tags_[t] == nil) {
+                [self.filterArray removeLastObject];
+                break;
+            }
+        }
+    }
+    
+    NSLog(@"%i, filterarry count", self.filterArray.count);
+}
+
 
 //deprecated with FB transition
 //- (BOOL)loggedIn {
 //    return [[NSUserDefaults standardUserDefaults] objectForKey:kLIToken] != nil;
 //}
+
+- (void)clearDB {
+    for (Contact *c in self.fetchedResultsController.fetchedObjects) {
+        [self.managedObjectContext deleteObject:c];
+    }
+    
+    
+    [NSFetchedResultsController deleteCacheWithName:kCacheAllContacts];
+    self.fetchedResultsController = nil;
+    NSError *error = nil;
+    [self.managedObjectContext save:&error];
+    if (!error) {
+        NSLog(@"Successfully deleted all contacts from Core Data");
+    } else {
+        NSLog(@"Error: %@ when attempting to delete all contacts from Core Data", [error localizedDescription]);
+    }
+
+}
 
 
 

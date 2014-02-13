@@ -28,6 +28,7 @@
 - (void)sortForTag:(Tag*)tag;
 - (int)countForTag:(Tag*)tag;
 - (void)printForTag:(Tag*)t;
+- (NSArray*)contactsForTag:(NSString*)tag;
 
 
 @end

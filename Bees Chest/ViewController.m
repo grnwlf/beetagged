@@ -10,6 +10,7 @@
 #import "FBManager.h"
 #import "BATypeAheadViewController.h"
 #import <FontAwesomeKit/FAKZocial.h>
+#import "ContactsViewController.h"
 
 
 @interface ViewController ()
@@ -93,8 +94,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+//    [PFUser logOut];
     self.title = @"Facebook Profile";
-    
     // Check if user is cached and linked to Facebook, if so, bypass login
     if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
         [self loginToApp];
@@ -138,11 +139,9 @@
         } else if (user.isNew) {
             NSLog(@"User with facebook signed up and logged in!");
             [self setFBId];
-            [self fetchFBFriends];
         } else {
             NSLog(@"User with facebook logged in!");
-            //NSLog(@"%@", [user objectForKey:@"authData"]);
-            [self setFBId];
+            [self fetchFriendsFromParse];
         }
     }];
     
@@ -166,6 +165,22 @@
 
 }
 
+- (void)fetchFriendsFromParse {
+    PFQuery *query = [PFQuery queryWithClassName:@"UserModel"];
+    [query whereKey:@"objectId" containedIn:[[PFUser currentUser] objectForKey:@"connections"]];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        NSLog(@"%@", objects);
+        for (PFObject *o in objects) {
+            Contact *c = [Contact contactFromUserModel:o];
+        }
+        [[[FBManager singleton] managedObjectContext] save:nil];
+        [self loginToApp];
+        
+        
+    }];
+    
+}
+
 - (void)fetchFBFriends
 {
     FBRequest *friends = [FBRequest requestForGraphPath:@"me/friends?fields=about,bio,birthday,education,email,first_name,gender,id,hometown,last_name,name,relationship_status,work"];
@@ -182,6 +197,10 @@
             }];
         }
     }];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    //override any actions before pushing
 }
 
 - (void)loginToApp {
