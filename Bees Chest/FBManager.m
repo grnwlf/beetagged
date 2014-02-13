@@ -241,7 +241,7 @@ static FBManager *fb = nil;
     BOOL success = [self.fetchedResultsController performFetch:&error];
     if (success) {
         self.hasContacts = YES;
-        [self createFakeTags];
+        //[self createFakeTags];
         //[self printContacts];
         [self.tagIndex createIndex:self.fetchedResultsController.fetchedObjects];
         //[self.tagIndex printTagIndex];

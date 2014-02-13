@@ -49,10 +49,8 @@
     if (self.data[tag.attributeName] == nil) {
         self.data[tag.attributeName] =  [[NSMutableArray alloc] init];
     }
-    [self.data[tag.attributeName] addObject:contact];
+    [self.data[tag.attributeName] insertObject:contact atIndex:0];
     [self sortForTag:tag];
-    
-    [self hasSameForTag:tag];
 }
 
 - (BOOL)hasSameForTag:(Tag*)tag {
@@ -114,11 +112,14 @@
         Contact *c = (Contact*)arr[i];
         Tag *t = [c.tags_ objectForKey:tag.attributeName];
         [t setRank:[NSNumber numberWithInt:i]];
-        //PFObject *pfTag = [t pfObject];
-        //[pushTags addObject:pfTag];
+        PFObject *pfTag = [t pfObject];
+        
+        [pushTags addObject:pfTag];
     }
     [self printForTag:tag];
-    //[PFObject saveAllInBackground:pushTags];
+    [PFObject saveAllInBackground:pushTags];
+    
+    [[FBManager singleton] saveContext];
 }
 
 - (void)printTagIndex {

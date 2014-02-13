@@ -253,7 +253,7 @@
 
 #pragma mark Tags Override setter
 - (NSMutableDictionary*)tags_ {
-    if (!tags_) {
+    if (!tags_ && self.tagData) {
         tags_ = (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:self.tagData];
     }
     return tags_;
@@ -264,16 +264,16 @@
 //}
 
 - (NSMutableArray*)work {
-    if (!work) {
+    if (!work && self.workData) {
         work = (NSMutableArray*)[NSKeyedUnarchiver unarchiveObjectWithData:self.workData];
     }
     return work;
 }
 
 - (NSMutableArray*)education {
-    if (!education) {
+    if (!education && self.educationData) {
         education = (NSMutableArray*)[NSKeyedUnarchiver unarchiveObjectWithData:self.educationData];
-    }
+    } 
     return education;
 }
 

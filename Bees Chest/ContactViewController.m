@@ -42,6 +42,10 @@
     self.added = [@[] mutableCopy];
     self.itemToDelete = -1;
     self.contactTags = [[self.contact.tags_ allValues] mutableCopy];
+    if (!self.contactTags) {
+        self.contactTags = [[NSMutableArray alloc] init];
+    }
+
 }
 
 - (void)renderContact:(Contact*)c {
@@ -76,8 +80,8 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-  //  [self updateAddedTagsInParse];
-    [self updatedDeletedTagsInParse];
+    [self updateAddedTagsInParse];
+    //[self updatedDeletedTagsInParse];
 }
 
 
@@ -180,30 +184,39 @@
 
 // 1. add to parse
 // 2. update the objects in the db and save to core data
-//- (void)updateAddedTagsInParse {
-//    NSLog(@"adding %@", self.added);
-//    NSMutableArray *parseTags = [self makeParseTags:self.added];
-//    [PFObject saveAllInBackground:parseTags block:^(BOOL succeeded, NSError *error) {
-//        if (error) {
-//            NSLog(@"Error: %@", error);
-//        }
-//        if (succeeded) {
-//            NSLog(@"save in background succeeeded");
-//            NSLog(@"%@", parseTags);
-//            [self replaceParseTags:parseTags];
-//            self.added = [@[] mutableCopy];
-//        }
-//    }];
-//}
+- (void)updateAddedTagsInParse {
+    NSLog(@"adding %@", self.added);
+    __block NSMutableArray *parseTags = [self makeParseTags:self.added];
+    [PFObject saveAllInBackground:parseTags block:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        }
+        if (succeeded) {
+            NSLog(@"save in background succeeeded");
+            for (PFObject *o in parseTags) {
+                NSLog(@"objectid %@", o.objectId);
+                Tag *t = [Tag tagFromParse:o];
+                if (!self.contact.tags_) {
+                    self.contact.tags_ = [[NSMutableDictionary alloc] init];
+                }
+                self.contact.tags_[t.attributeName] = t;
+                
+                [[[FBManager singleton] tagIndex] add:self.contact forTag:t];
+            }
+            self.added = [@[] mutableCopy];
+        }
+    }];
+}
 
-//- (NSMutableArray *)makeParseTags:(NSMutableArray *)ts {
-//    NSMutableArray *parseTags = [[NSMutableArray alloc] initWithCapacity:self.added.count];
-//    // make all of the array objects a PFObject
-//    for (Tag *t in ts) {
-//        [parseTags addObject:[t pfObject]];
-//    }
-//    return parseTags;
-//}
+- (NSMutableArray *)makeParseTags:(NSMutableArray *)ts {
+    NSMutableArray *parseTags = [[NSMutableArray alloc] initWithCapacity:self.added.count];
+    // make all of the array objects a PFObject
+    for (Tag *t in ts) {
+        t.rank = @(0);
+        [parseTags addObject:[t pfObject]];
+    }
+    return parseTags;
+}
 
 //- (void)replaceParseTags:(NSArray *)parseTags {
 //    NSLog(@"replaceParseTags");
@@ -450,15 +463,14 @@
 
     [self.contactTags addObject:tag];
     [self addedTag:tag];
-    [self resetContactTags];
-  //  [self.tagsCollectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.contactTags.count - 1 inSection:0]]];
+    //[self resetContactTags];
 }
 
-- (void)resetContactTags {
-    FBManager *lim = [FBManager singleton];
-    self.contact.tags_ = [self.contactTags copy];
-    [lim.managedObjectContext save:nil];
-}
+//- (void)resetContactTags {
+//    FBManager *lim = [FBManager singleton];
+//    self.contact.tags_ = [self.contactTags copy];
+//    [lim.managedObjectContext save:nil];
+//}
 
 // adds the tag to the added changeList
 - (void)addedTag:(Tag *)tag {
@@ -472,6 +484,8 @@
     }
     [self.added addObject:tag];
     [self.tagsCollectionView reloadData];
+    
+    
 }
 
 // adds the tag to the deleted changeList
@@ -493,7 +507,7 @@
     Tag *tag = [self.contactTags objectAtIndex:indexPath.item];
     [self.contactTags removeObjectAtIndex:indexPath.item];
     [self deletedTag:tag];
-    [self resetContactTags];
+    //[self resetContactTags];
   //  [self.tagsCollectionView deleteItemsAtIndexPaths:@[indexPath]];
 }
 
@@ -514,7 +528,8 @@
 //        assert(false);
     }
     
-    Tag *t = [Tag tagFromTagOption:(TagOption *)data taggedUser:self.contact.fbId byUser:[lim currenUserId]];
+    
+    Tag *t = [Tag tagFromTagOption:(TagOption *)data taggedUser:self.contact.fbId byUser:[PFUser currentUser].objectId];
 
     // 1. make the view go away.
     [self.typeAheadViewController hideView:YES];
