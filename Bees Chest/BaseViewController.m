@@ -22,18 +22,12 @@
         self.offFrame = offFrame;
         self.isOnScreen = false;
         self.keyboardVisible = false;
-        
-        self.activityView = [[CHActivityEllipses alloc] initWithSize:100 backgroundColor:kClearColor dotColor:[UIColor lightGrayColor]];
-        [self.view addSubview:self.activityView];
-        [self.view sendSubviewToBack:self.activityView];
-        self.activityView.alpha = 0;
+    
         
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 		[center addObserver:self selector:@selector(noticeShowKeyboard:) name:UIKeyboardDidShowNotification object:nil];
 		[center addObserver:self selector:@selector(noticeHideKeyboard:) name:UIKeyboardWillHideNotification object:nil];
         
-        self.flashView = [[FlashView alloc] initWithFrame:kFlashOn];
-        [self.view addSubview:self.flashView];
     }
     return self;
 }
@@ -55,14 +49,6 @@
 
 - (IBAction)backgroundTouched:(id)sender
 {
-    NSLog(@"bg touched");
-    if (self.keyboardVisible) {
-        BaseView *v = (BaseView*)self.view;
-        NSLog(@"bg touched turn off %i textFields", v.allTextFields.count);
-        for (UITextField *t in v.allTextFields) {
-            [t resignFirstResponder];
-        }
-    }
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
@@ -87,7 +73,6 @@
 //}
 
 - (void)flashMessage:(NSString *)message isError:(BOOL)err {
-    [self.flashView animateMessage:message isError:err];
 }
 
 - (void)moveOffScreen
@@ -240,22 +225,6 @@
     return length;
 }
 
-- (void)startActivity {
-    [self.view bringSubviewToFront:self.view.dimView];
-    [self.view.tagActivity start];
-    [UIView animateWithDuration:0.4 animations:^{
-        self.view.dimView.alpha = 1;
-    }];
-}
-
-- (void)endActivity {
-    [UIView animateWithDuration:0.2 animations:^{
-        self.view.dimView.alpha = 0;
-    } completion:^(BOOL finished) {
-        [self.view sendSubviewToBack:self.view.dimView];
-        [self.view.tagActivity end];
-    }];
-}
 
 
 

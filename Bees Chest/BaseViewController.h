@@ -7,22 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CHActivityEllipses.h"
-#import "BaseView.h"
-#import "FlashView.h"
 
 @interface BaseViewController : UIViewController <UIGestureRecognizerDelegate, UITextFieldDelegate>
 
-@property (strong, nonatomic) BaseView *view;
+
 @property (weak, nonatomic) id parent;
 @property (nonatomic) CGRect onFrame;
 @property (nonatomic) CGRect offFrame;
 @property (nonatomic) BOOL isOnScreen;
 @property (nonatomic) BOOL keyboardVisible;
 
-
-@property (strong, nonatomic) CHActivityEllipses *activityView;
-@property (strong, nonatomic) FlashView *flashView;
 
 - (IBAction)backgroundTouched:(id)sender;
 - (id)initWithOnFrame:(CGRect)onFrame andOffFrame:(CGRect)offFrame;

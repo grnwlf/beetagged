@@ -11,7 +11,6 @@
 		282F2F231877AC81004566D0 /* BeesChestData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 282F2F211877AC81004566D0 /* BeesChestData.xcdatamodeld */; };
 		282F2F251877AD7F004566D0 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 282F2F241877AD7F004566D0 /* CoreData.framework */; };
 		282F2F281877AD9A004566D0 /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 282F2F271877AD9A004566D0 /* Contact.m */; };
-		28398D6618AC91900016BA26 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28398D6518AC91900016BA26 /* BaseViewController.m */; };
 		2889B0301870651700CF8580 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2889B02F1870651700CF8580 /* Foundation.framework */; };
 		2889B0321870651700CF8580 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2889B0311870651700CF8580 /* CoreGraphics.framework */; };
 		2889B0341870651700CF8580 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2889B0331870651700CF8580 /* UIKit.framework */; };
@@ -35,6 +34,7 @@
 		2889B0791874993500CF8580 /* BeesChestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0781874993500CF8580 /* BeesChestViewController.m */; };
 		288D49051889BC4700051BCB /* ContactManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 288D49041889BC4700051BCB /* ContactManager.m */; };
 		28B782EA1895B42D00936D87 /* ProfileDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B782E91895B42D00936D87 /* ProfileDetailCell.m */; };
+		3597FA0418ACA52A00EC7DF5 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3597FA0318ACA52A00EC7DF5 /* BaseViewController.m */; };
 		8A0B0C4F5E9443E9999A1150 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AB626A38B19406BB8FD1558 /* libPods.a */; };
 		9D2C71321879DEFC0022CE5F /* TagOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C71311879DEFC0022CE5F /* TagOption.m */; };
 		9D2C71351879DF170022CE5F /* Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C71341879DF170022CE5F /* Tag.m */; };
@@ -62,8 +62,6 @@
 		282F2F241877AD7F004566D0 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		282F2F261877AD9A004566D0 /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
 		282F2F271877AD9A004566D0 /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contact.m; sourceTree = "<group>"; };
-		28398D6418AC91900016BA26 /* BaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
-		28398D6518AC91900016BA26 /* BaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
 		2889B02C1870651700CF8580 /* Bees Chest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bees Chest.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2889B02F1870651700CF8580 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2889B0311870651700CF8580 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -102,6 +100,8 @@
 		288D49041889BC4700051BCB /* ContactManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactManager.m; sourceTree = "<group>"; };
 		28B782E81895B42D00936D87 /* ProfileDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileDetailCell.h; sourceTree = "<group>"; };
 		28B782E91895B42D00936D87 /* ProfileDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileDetailCell.m; sourceTree = "<group>"; };
+		3597FA0218ACA52A00EC7DF5 /* BaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
+		3597FA0318ACA52A00EC7DF5 /* BaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
 		9D2C71301879DEFC0022CE5F /* TagOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagOption.h; sourceTree = "<group>"; };
 		9D2C71311879DEFC0022CE5F /* TagOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagOption.m; sourceTree = "<group>"; };
 		9D2C71331879DF170022CE5F /* Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tag.h; sourceTree = "<group>"; };
@@ -281,8 +281,8 @@
 				2889B0751874992C00CF8580 /* ContactViewController.m */,
 				2889B0771874993500CF8580 /* BeesChestViewController.h */,
 				2889B0781874993500CF8580 /* BeesChestViewController.m */,
-				28398D6418AC91900016BA26 /* BaseViewController.h */,
-				28398D6518AC91900016BA26 /* BaseViewController.m */,
+				3597FA0218ACA52A00EC7DF5 /* BaseViewController.h */,
+				3597FA0318ACA52A00EC7DF5 /* BaseViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -447,7 +447,7 @@
 				2889B0701874991500CF8580 /* ProfileViewController.m in Sources */,
 				282F2F231877AC81004566D0 /* BeesChestData.xcdatamodeld in Sources */,
 				2889B0401870651700CF8580 /* AppDelegate.m in Sources */,
-				28398D6618AC91900016BA26 /* BaseViewController.m in Sources */,
+				3597FA0418ACA52A00EC7DF5 /* BaseViewController.m in Sources */,
 				2889B03C1870651700CF8580 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
