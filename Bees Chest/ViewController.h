@@ -16,6 +16,7 @@
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressView;
 @property (weak, nonatomic) IBOutlet UIButton *loginBtn;
+@property (strong, nonatomic) NSMutableDictionary *tmpUserDict;
 
 - (void)setProgress:(float)value;
 - (IBAction)loginButtonTouchHandler:(id)sender;

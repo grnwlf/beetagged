@@ -46,7 +46,22 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    if (!self.p1) [self startTurn];
+    
+    TagIndex *t = [[FBManager singleton] tagIndex];
+    BOOL shouldPlay = false;
+    if (t.data.count == 0) {
+        NSLog(@"display some message");
+    } else {
+        NSArray *vals = t.data.allValues;
+        for (NSArray *a in vals) {
+            if (a.count > 3) {
+                shouldPlay = YES;
+                break;
+            }
+        }
+    }
+    
+    if (!self.p1 && shouldPlay) [self startTurn];
 }
 
 - (void)didReceiveMemoryWarning

@@ -141,7 +141,7 @@
             [self setFBId];
         } else {
             NSLog(@"User with facebook logged in!");
-            [self fetchFriendsFromParse];
+            [self fetchFriendsFromParse:0];
         }
     }];
     
@@ -165,20 +165,63 @@
 
 }
 
-- (void)fetchFriendsFromParse {
+- (void)fetchFriendsFromParse:(int)skip {
     PFQuery *query = [PFQuery queryWithClassName:@"UserModel"];
+    [query setLimit:1000];
+    [query setSkip:skip];
     [query whereKey:@"objectId" containedIn:[[PFUser currentUser] objectForKey:@"connections"]];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        NSLog(@"%@", objects);
         for (PFObject *o in objects) {
             Contact *c = [Contact contactFromUserModel:o];
         }
         [[[FBManager singleton] managedObjectContext] save:nil];
-        [self loginToApp];
+        if (objects.count < 1000) {
+            [self createTmpUserDict];
+        } else {
+            [self fetchFriendsFromParse:skip+1000];
+        }
         
         
     }];
     
+}
+
+- (void)createTmpUserDict {
+    self.tmpUserDict = [[NSMutableDictionary alloc] init];
+    [[FBManager singleton] fetchContacts];
+    for (Contact *c in [FBManager singleton].fetchedResultsController.fetchedObjects) {
+        c.tags_ = [[NSMutableDictionary alloc] init];
+        self.tmpUserDict[c.fbId] = c;
+    }
+    NSLog(@"tmp dict size: %i", self.tmpUserDict.count);
+    [self fetchTags:0];
+}
+
+- (void)fetchTags:(int)skip {
+    NSLog(@"fetching tags");
+    PFQuery *query = [PFQuery queryWithClassName:@"Tag"];
+    [query setLimit:1000];
+    [query setSkip:skip];
+    [query whereKey:@"taggedBy" equalTo:[PFUser currentUser].objectId];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        for (PFObject *o in objects) {
+            Tag *t = [Tag tagFromParse:o];
+            Contact *c = self.tmpUserDict[t.tagUserId];
+            //NSLog(@"%@ %@", c.name, t.attributeName);
+            [c.tags_ setObject:t forKey:t.attributeName];
+        }
+        
+        [[[FBManager singleton] managedObjectContext] save:nil];
+        if (objects.count < 1000) {
+            [[FBManager singleton] fetchContacts];
+            [self loginToApp];
+        } else {
+            [self fetchTags:skip+1000];
+        }
+        
+        
+    }];
+
 }
 
 - (void)fetchFBFriends
@@ -191,7 +234,7 @@
             [PFUser logOut];
             //should logout user and have them restart
         } else {
-            //NSLog(@"friends: %@", result);
+            //NSLog(@"friends: %@", result[@"data"]);
             [[FBManager singleton] importContacts:result[@"data"] cb:^(void) {
                [self loginToApp];
             }];

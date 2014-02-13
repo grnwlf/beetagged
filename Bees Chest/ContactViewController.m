@@ -186,6 +186,7 @@
 // 2. update the objects in the db and save to core data
 - (void)updateAddedTagsInParse {
     NSLog(@"adding %@", self.added);
+    if (self.added.count == 0 || !self.added) return;
     __block NSMutableArray *parseTags = [self makeParseTags:self.added];
     [PFObject saveAllInBackground:parseTags block:^(BOOL succeeded, NSError *error) {
         if (error) {

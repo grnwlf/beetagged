@@ -71,23 +71,6 @@
 }
 
 - (NSArray*)findTwoSameForTag:(NSString*)tag {
-//    int tmp = -1;
-//    int i = 0;
-//    Contact *tmpC;
-//    for (Contact *c in self.data[tag.attributeName]) {
-//        Tag *t = c.tags_[tag.attributeName];
-//        if (tmp == [t.rank integerValue]) {
-//            return @[c, tmpC];
-//        } else {
-//            tmp = [t.rank integerValue];
-//            tmpC = c;
-//        }
-//        i++;
-//    }
-//    NSLog(@"no same two contacts were found");
-//    if (self.sameTags[tag.attributeName] != nil) {
-//        [self.sameTags removeObjectForKey:tag.attributeName];
-//    }
     NSMutableArray *arr = self.data[tag];
     int idx = rand() % arr.count - 1;
     if (idx == -1) idx = 0;

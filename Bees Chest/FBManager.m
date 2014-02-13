@@ -142,13 +142,9 @@ static FBManager *fb = nil;
 }
 
 - (void)importContacts:(NSArray*)contacts cb:(void(^)(void))callback {
-//    BOOL shouldSendTagsToParse = [[[PFUser user] objectForKey:kUserImportedAllContacts] boolValue];
-    
-//    - (void)importContacts:(NSArray*)contacts cb:(void(^)(void))callback {
-    
-    
+    NSLog(@"importing %i contacts", contacts.count);
     NSMutableArray *pfUsers = [NSMutableArray arrayWithCapacity:[contacts count]];
-    for (int i = 0; i < 60; i++) {
+    for (int i = 0; i < contacts.count; i++) {
         NSMutableDictionary *c = [[NSMutableDictionary alloc] initWithDictionary:contacts[i]];
         [self reformatWorkFor:c];
         [self reformatEducation:c];
@@ -159,7 +155,7 @@ static FBManager *fb = nil;
     
     NSLog(@"pfusers: %@", pfUsers);
     
-    [self uploadContacts:pfUsers meId:meId from:0 to:60 cb:callback];
+    [self uploadContacts:pfUsers meId:meId from:0 to:100 cb:callback];
     
     
     
@@ -203,7 +199,7 @@ static FBManager *fb = nil;
             Contact *c = [Contact contactFromUserModel:o];
         }
         [self.managedObjectContext save:nil];
-        [self uploadContacts:contacts meId:meId from:to to:to+60 cb:cb];
+        [self uploadContacts:contacts meId:meId from:to to:to+100 cb:cb];
     }];
 }
 
@@ -348,17 +344,24 @@ static FBManager *fb = nil;
     [self.filterArray removeAllObjects];
     for (int i = 0; i < arr.count; i++) {
         Contact *c = arr[i];
-        [self.filterArray addObject:c];
+        NSMutableDictionary *d = [@{ @"contact" : c, @"rank" : [c.tags_[tags[0]] rank] } mutableCopy];
+        [self.filterArray addObject:d];
         for (int j = 0; j < tags.count; j++) {
             NSString *t = tags[j];
             if (c.tags_[t] == nil) {
                 [self.filterArray removeLastObject];
                 break;
+            } else {
+                d[@"rank"] = @([d[@"rank"] integerValue] + 1);
             }
         }
     }
     
-    NSLog(@"%i, filterarry count", self.filterArray.count);
+    [self.filterArray sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj1[@"rank"] integerValue] < [obj2[@"rank"] integerValue];
+    }];
+    
+    NSLog(@"filtered array %@", self.filterArray);
 }
 
 

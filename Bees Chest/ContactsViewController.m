@@ -83,8 +83,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[FBManager singleton] fetchContacts];
-    [self.ContactTableView reloadData];
     self.navigationController.navigationBar.hidden = YES;
 }
 
@@ -221,10 +219,11 @@
         if (lim.search) {
             contact = [lim.searchArray objectAtIndex:indexPath.row];
         } else if (lim.tagFilter) {
-            contact = [lim.filterArray objectAtIndex:indexPath.row];
+            contact = [[lim.filterArray objectAtIndex:indexPath.row] objectForKey:@"contact"];
         } else {
             contact = [lim.fetchedResultsController objectAtIndexPath:indexPath];
         }
+        
         UILabel *nameLabel = (UILabel*)[cell viewWithTag:1];
         nameLabel.text = [NSString stringWithFormat:@"%@ %@", contact.first_name, contact.last_name];
         
