@@ -13,6 +13,7 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        [self.contentView addSubview:self.label];
     }
     return self;
 }
