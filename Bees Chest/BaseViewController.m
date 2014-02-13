@@ -22,6 +22,7 @@
         self.offFrame = offFrame;
         self.isOnScreen = false;
         self.keyboardVisible = false;
+    
         
 
         self.tagActivity = [[TagActivity alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 40, self.view.frame.size.height/2 - 40, 80, 80)];
@@ -90,6 +91,8 @@
 //    return NO;
 //}
 
+- (void)flashMessage:(NSString *)message isError:(BOOL)err {
+}
 
 - (void)moveOffScreen
 {
@@ -134,6 +137,35 @@
 //    }];
 }
 
+-(NSString*)formatNumber:(NSString*)mobileNumber
+{
+    mobileNumber = [mobileNumber stringByReplacingOccurrencesOfString:@"(" withString:@""];
+    mobileNumber = [mobileNumber stringByReplacingOccurrencesOfString:@")" withString:@""];
+    mobileNumber = [mobileNumber stringByReplacingOccurrencesOfString:@" " withString:@""];
+    mobileNumber = [mobileNumber stringByReplacingOccurrencesOfString:@"-" withString:@""];
+    mobileNumber = [mobileNumber stringByReplacingOccurrencesOfString:@"+" withString:@""];
+    
+    int length = [mobileNumber length];
+    if(length > 10) {
+        mobileNumber = [mobileNumber substringFromIndex: length-10];
+    }
+    return mobileNumber;
+}
+
+
+-(int)getLength:(NSString*)mobileNumber
+{
+    mobileNumber = [mobileNumber stringByReplacingOccurrencesOfString:@"(" withString:@""];
+    mobileNumber = [mobileNumber stringByReplacingOccurrencesOfString:@")" withString:@""];
+    mobileNumber = [mobileNumber stringByReplacingOccurrencesOfString:@" " withString:@""];
+    mobileNumber = [mobileNumber stringByReplacingOccurrencesOfString:@"-" withString:@""];
+    mobileNumber = [mobileNumber stringByReplacingOccurrencesOfString:@"+" withString:@""];
+    
+    int length = [mobileNumber length];
+    return length;
+}
+
+
 - (void)endActivity {
     [UIView animateWithDuration:0.2 animations:^{
 //        self.view.dimView.alpha = 0;
@@ -142,7 +174,6 @@
         [self.tagActivity end];
     }];
 }
-
 
 
 @end
