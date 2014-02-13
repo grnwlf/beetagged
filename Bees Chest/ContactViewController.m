@@ -419,17 +419,12 @@
         }
     }
     
-    
+
     [label setTextColor:[UIColor blackColor]];
-    //[label setText:@"Android"];
     [label setFrame:CGRectMake(0, 0, 50, 50)];
     [cell.contentView addSubview:label];
     
     NSLog(@"%@", label.text);
-    
-    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [lab setText:@"DRO"];
-    //[cell.contentView addSubview:lab];
     
     return cell;
 }
