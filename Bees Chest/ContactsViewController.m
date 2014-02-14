@@ -218,8 +218,24 @@
         UILabel *nameLabel = (UILabel*)[cell viewWithTag:1];
         nameLabel.text = [NSString stringWithFormat:@"%@ %@", contact.first_name, contact.last_name];
         
-        UILabel *industryLabel = (UILabel *)[cell viewWithTag:3];
-        industryLabel.text = contact.industry;
+        UILabel *homeLabel = (UILabel *)[cell viewWithTag:3];
+        homeLabel.text = contact.hometown;
+        
+        UILabel *workLabel = (UILabel *)[cell viewWithTag:4];
+        if (contact.work.count > 0) {
+            NSDictionary *d = contact.work[0];
+            workLabel.text = [NSString stringWithFormat:@"%@", d[kContactEmployer]];
+        } else {
+            workLabel.text = nil;
+        }
+        
+        UILabel *schoolLabel = (UILabel *)[cell viewWithTag:4];
+        if (contact.education.count > 0) {
+            NSDictionary *d = contact.education[0];
+            schoolLabel.text = [NSString stringWithFormat:@"%@", d[kContactSchool]];
+        } else {
+            schoolLabel.text = nil;
+        }
         
         UIImageView *imageView = (UIImageView*)[cell viewWithTag:2];
         [imageView setImageWithURL:[NSURL URLWithString:contact.pictureUrl] placeholderImage:kContactCellPlaceholderImage];
