@@ -4,6 +4,7 @@
         <attribute name="bio" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="birthday" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="educationData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="fbId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="first_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gender" optional="YES" attributeType="String" syncable="YES"/>
@@ -24,6 +25,7 @@
         <attribute name="positionSize" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="positionSummary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="positionTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="relationshipStatus" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tagData" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="workData" optional="YES" attributeType="Binary" syncable="YES"/>
     </entity>

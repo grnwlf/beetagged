@@ -28,6 +28,10 @@
     FAKZocial *fb = [FAKZocial facebookIconWithSize:15];
     UIImage *fbImage = [fb imageWithSize:CGSizeMake(300, 50)];
     [self.loginBtn setImage:fbImage forState:UIControlStateNormal];
+    
+    self.loginBtn.alpha = 1;
+    
+    [self.navigationController.navigationBar setHidden:YES];
 }
 
 - (void)setProgress:(float)value {
@@ -107,6 +111,9 @@
 
 /* Login to facebook method */
 - (IBAction)loginButtonTouchHandler:(id)sender  {
+    NSLog(@"go");
+   // [self startActivity];
+    
     // Set permissions required from the facebook user account
     NSArray *permissionsArray = @[ @"user_about_me",
                                    @"user_relationships",
@@ -141,6 +148,7 @@
             [self setFBId];
         } else {
             NSLog(@"User with facebook logged in!");
+            [[FBManager singleton] cacheParseUser:user];
             [self fetchFriendsFromParse:0];
         }
     }];
@@ -157,9 +165,18 @@
         NSLog(@"got me");
         NSDictionary *userData = (NSDictionary *)result;
         
+    
         NSString *fbid = userData[@"id"];
+        [[PFUser currentUser] setValuesForKeysWithDictionary:userData];
         [[PFUser currentUser] setObject:fbid forKey:@"fbId"];
         [[PFUser currentUser] saveInBackground];
+        
+        [[FBManager singleton] cacheParseUser:[PFUser currentUser]];
+        
+        PFObject *userModel = [PFObject objectWithClassName:@"UserModel"];
+        [userModel setValuesForKeysWithDictionary:userData];
+        [userModel setValue:fbid forKey:@"fbId"];
+        [userModel saveInBackground];
         [self fetchFBFriends];
     }];
 
@@ -234,7 +251,7 @@
             [PFUser logOut];
             //should logout user and have them restart
         } else {
-            //NSLog(@"friends: %@", result[@"data"]);
+            NSLog(@"friends: %@", result[@"data"]);
             [[FBManager singleton] importContacts:result[@"data"] cb:^(void) {
                [self loginToApp];
             }];

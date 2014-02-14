@@ -46,6 +46,7 @@
 @property (nonatomic, retain) NSString *gender;
 @property (nonatomic, retain) NSString *bio;
 @property (nonatomic, retain) NSString *hometown;
+@property (nonatomic, retain) NSString *relationshipStatus;
 
 
 

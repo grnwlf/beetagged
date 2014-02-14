@@ -10,20 +10,21 @@
 #import "ContactViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "BATypeAheadViewController.h"
-@interface ContactsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIActionSheetDelegate, BATypeAheadDelegate>
+@interface ContactsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIActionSheetDelegate, BATypeAheadDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 
 @property (weak, nonatomic) IBOutlet UITableView *ContactTableView;
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 
-@property (strong, nonatomic) UIView *tagFilterView;
+@property (strong, nonatomic) IBOutlet UIView *tagFilterView;
 @property (strong, nonatomic) BATypeAheadViewController *typeAheadViewController;
 
 
-@property (strong, nonatomic) UITableView *tagFilterTableView;
+@property (strong, nonatomic) IBOutlet UICollectionView *tagCollectionView;
 @property (strong, nonatomic) NSMutableArray *tagFilters;
 
 - (IBAction)filterTags:(id)sender;
 - (IBAction)logout:(id)sender;
+- (IBAction)newTag:(id)sender;
 
 @end

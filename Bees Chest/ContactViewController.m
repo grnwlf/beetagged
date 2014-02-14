@@ -9,6 +9,8 @@
 #import "ContactViewController.h"
 #import "ProfileDetailCell.h"
 
+#define infoFrame(y) CGRectMake(120, y, 180, 40)
+
 @interface ContactViewController ()
 
 @property (nonatomic, strong) NSMutableArray *deleted;
@@ -29,6 +31,7 @@
 #pragma mark View Loading
 - (void)viewDidLoad {
     [super viewDidLoad];
+
     
     self.tagsCollectionView.delegate = self;
     self.tagsCollectionView.dataSource = self;
@@ -49,8 +52,17 @@
 }
 
 - (void)renderContact:(Contact*)c {
-    self.contact = c;
+    if (c == nil) {
+        NSLog(@"current user");
+        self.isCurrentUser = YES;
+        self.contact = [[FBManager singleton] currentParseUser];
+        self.navigationController.navigationBar.hidden = YES;
+    } else {
+        self.contact = c;
+        self.navigationController.navigationBar.hidden = NO;
+    }
     [self.profileTableView reloadData];
+    
 }
 
 // style the typeahead view
@@ -73,7 +85,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = NO;
+    if (self.isCurrentUser) self.navigationController.navigationBar.hidden = YES;
+    else self.navigationController.navigationBar.hidden = NO;
+    NSLog(@"show");
+    if (!self.contact) [self renderContact:nil]; //render current user for profile
 }
 
 // save the data to parse before we leave
@@ -81,7 +96,10 @@
     [super viewWillDisappear:animated];
     
     [self updateAddedTagsInParse];
-    //[self updatedDeletedTagsInParse];
+    [self updatedDeletedTagsInParse];
+    dispatch_async(dispatch_get_global_queue(0,0), ^{
+        [[FBManager singleton] saveContext];
+    });
 }
 
 
@@ -92,15 +110,16 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.contact.profileAttributeKeys.count+1;
+    return self.contact.profileAttributeKeys.count+2;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 0) return 200;
+    else if (indexPath.row == self.contact.profileAttributeKeys.count + 1) return 200;
     else {
         NSString *key = self.contact.profileAttributeKeys[indexPath.row-1];
         if (self.expandedRows[key]) return [self.contact detailAttributesFor:key].count * 40 + 50;
-        else return 50;
+        return 50;
     }
 }
 
@@ -111,9 +130,35 @@
         UIImageView *imageView = (UIImageView*)[cell viewWithTag:1];
         [imageView setImageWithURL:[NSURL URLWithString:self.contact.pictureUrl]];
         
+        float h = 30;
+        
         UILabel *label = (UILabel*)[cell viewWithTag:2];
         label.text = [self.contact name];
+        label.frame = infoFrame(h);
+        h+=40;
+    
+        UILabel *label2 = (UILabel*)[cell viewWithTag:3];
+        label2.text = self.contact.hometown;
+        label2.frame = infoFrame(h);
+        if (self.contact.hometown) h+=40;
         
+        UILabel *label3 = (UILabel*)[cell viewWithTag:4];
+        label3.text = [self.contact.relationshipStatus capitalizedString];
+        label3.frame = infoFrame(h);
+        if (self.contact.relationshipStatus) h+=40;
+        
+        UILabel *label4 = (UILabel*)[cell viewWithTag:5];
+        label4.text = [self.contact.gender capitalizedString];
+        label4.frame = infoFrame(h);
+        if (self.contact.gender) h+=40;
+        
+        
+        return cell;
+    } else if (indexPath.row == self.contact.profileAttributeKeys.count + 1) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CollectionCell" forIndexPath:indexPath];
+        UICollectionView *collectionView = (UICollectionView*)[cell viewWithTag:2];
+        self.tagsCollectionView = collectionView;
+        [self.tagsCollectionView reloadData];
         return cell;
     } else {
         ProfileDetailCell *cell = (ProfileDetailCell*)[tableView dequeueReusableCellWithIdentifier:kProfileDetailCell forIndexPath:indexPath];
@@ -133,26 +178,26 @@
         float h = 50;
         for (int i = 1; i < detail.count; i++) {
             NSDictionary *d = detail[i];
+            UITextView *t1 = [[UITextView alloc] initWithFrame:CGRectMake(0, h, 160, 40)];
+            t1.textAlignment = NSTextAlignmentCenter;
+            t1.text = d[@"header"];
+            [cell addSubview:t1];
+            [cell.textFields addObject:t1];
             
-            if ([detail[0] isEqualToString:kContactBio]) {
-                UITextField *t = [[UITextField alloc] initWithFrame:CGRectMake(30, h, kWidth-60, 40)];
-                t.text = [NSString stringWithFormat:@"%@: %@", d.allKeys[0], d[d.allKeys[0]]];
-                [cell addSubview:t];
-                [cell.textFields addObject:t];
-                h += 40;
-            } else {
-                UITextField *t = [[UITextField alloc] initWithFrame:CGRectMake(30, h, kWidth-60, 40)];
-                t.text = d[@"value"];
-                [cell addSubview:t];
-                [cell.textFields addObject:t];
-                h += 40;
-            }
+            UITextView *t2 = [[UITextView alloc] initWithFrame:CGRectMake(180, h, 130, 40)];
+            t2.textAlignment = NSTextAlignmentCenter;
+            t2.text = d[@"value"];
+            [cell addSubview:t2];
+            [cell.textFields addObject:t2];
+            h += 40;
         }
         return cell;
     }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 0)return;
+    
     NSString *key = self.contact.profileAttributeKeys[indexPath.row-1];
     if (self.expandedRows[key]) {
         [self.expandedRows removeObjectForKey:key];
@@ -170,15 +215,20 @@
 - (void)updatedDeletedTagsInParse {
     NSLog(@"deleting %@", self.deleted);
     
-  //  NSMutableArray *parseTags = [self makeParseTags:self.deleted];
- //   [PFObject deleteAllInBackground:parseTags block:^(BOOL succeeded, NSError *error) {
-//        if (error) {
-//            NSLog(@"Error: %@", [error localizedDescription]);
-//        }
-//        if (succeeded) {
-//            self.deleted = [@[] mutableCopy];
-//        }
-//    }];
+    for (Tag *t in self.deleted) {
+        [self.contact.tags_ removeObjectForKey:t.attributeName];
+        [[FBManager singleton].tagIndex remove:self.contact forTag:t];
+    }
+    
+    NSMutableArray *parseTags = [self makeParseTags:self.deleted];
+   [PFObject deleteAllInBackground:parseTags block:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", [error localizedDescription]);
+        }
+        if (succeeded) {
+            self.deleted = [@[] mutableCopy];
+        }
+    }];
 }
 
 
@@ -345,12 +395,12 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     // if it's the last item, you can select it
-    if (indexPath.item == self.contactTags.count) {
-        return YES;
-    } else if (indexPath.item == self.itemToDelete) {
-        return YES;
-    }
-    return NO;
+//    if (indexPath.item == self.contactTags.count) {
+//        return YES;
+//    } else if (indexPath.item == self.itemToDelete) {
+//        return YES;
+//    }
+    return YES;
 }
 
 // called when the item is selected - will only do anything if the add button
@@ -365,10 +415,10 @@
         } else {
             [self showAddTagView];
         }
-    } else if (indexPath.item == self.itemToDelete) {
-        NSInteger hold = self.itemToDelete;
+    } else {
+        //NSInteger hold = self.itemToDelete;
         [self deleteTagAtIndexPath:indexPath];
-        [self clearDeleteViewAtIndex:hold];
+        [self clearDeleteViewAtIndex:indexPath.item];
     }
 }
 
@@ -378,6 +428,8 @@
 //        [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
 //    }];
 }
+
+
 
 
 // style the collectionView cell at the indexPath
@@ -399,8 +451,9 @@
         if (i < self.contactTags.count) {
             [cell addLongPress];
             Tag *tag = self.contactTags[i];
+            NSLog(@"got tag %@", tag.attributeName);
             [label setText:tag.attributeName];
-            label.textColor = [UIColor blackColor];
+            label.textColor = [UIColor whiteColor];
         } else {
             label.text = @"+";
             label.font = [UIFont fontWithName:@"Helvetica-Bold" size:50.0];
@@ -419,14 +472,30 @@
         }
     }
     
-
+    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold" size:20.0], NSFontAttributeName, nil];
+    if (indexPath.item >= self.contactTags.count) {
+        [label setFrame:CGRectMake(0, 0, 50, 50)];
+    } else {
+        CGSize s = CGSizeMake([[self.contactTags[indexPath.item] attributeName] sizeWithAttributes:attributes].width, 50);
+        [label setFrame:CGRectMake(0, 0, s.width, s.height)];
+    }
     [label setTextColor:[UIColor blackColor]];
-    [label setFrame:CGRectMake(0, 0, 50, 50)];
+    label.textAlignment = NSTextAlignmentCenter;
     [cell.contentView addSubview:label];
     
     NSLog(@"%@", label.text);
     
     return cell;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold" size:20.0], NSFontAttributeName, nil];
+    if (indexPath.item >= self.contactTags.count) {
+        return CGSizeMake(50, 50);
+    }
+    CGSize s = CGSizeMake([[self.contactTags[indexPath.item] attributeName] sizeWithAttributes:attributes].width, 50);
+    return s;
 }
 
 
@@ -500,9 +569,11 @@
 // deletes a Tag object at the indexPath
 // deletes a Tag object from Core Data
 - (void)deleteTagAtIndexPath:(NSIndexPath *)indexPath {
+    
     Tag *tag = [self.contactTags objectAtIndex:indexPath.item];
     [self.contactTags removeObjectAtIndex:indexPath.item];
     [self deletedTag:tag];
+    [self.tagsCollectionView reloadData];
     //[self resetContactTags];
   //  [self.tagsCollectionView deleteItemsAtIndexPaths:@[indexPath]];
 }

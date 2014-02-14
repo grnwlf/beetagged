@@ -37,6 +37,7 @@
 @dynamic bio;
 @synthesize work;
 @synthesize education;
+@dynamic relationshipStatus;
 
 
 -(id)init {
@@ -76,6 +77,58 @@
     return c;
 }
 
++ (void)reformatHometown:(NSMutableDictionary*)c {
+    if (c[kContactHometown]) {
+        NSLog(@"reformat home");
+        NSString *s = c[kContactHometown][kContactName];
+        [c removeObjectForKey:kContactHometown];
+        [c setObject:s forKey:kContactHometown];
+    }
+}
+
+- (void)reformatWorkFor:(NSMutableDictionary*)c {
+    NSMutableArray *workArr = [[NSMutableArray alloc] init];
+    NSLog(@"work");
+    for (NSDictionary *workDict in c[kContactWork]) {
+        NSMutableDictionary *d = [[NSMutableDictionary alloc] init];
+        if (workDict[kContactEmployer]) {
+            d[kContactEmployer] = workDict[kContactEmployer][kContactName];
+        }
+        if (workDict[kContactPosition]) {
+            d[kContactPosition] = workDict[kContactPosition][kContactName];
+        }
+        
+        [workArr addObject:d];
+    }
+    [c removeObjectForKey:kContactWork];
+    c[kContactWork] = workArr;
+    
+}
+
+- (void)reformatEducation:(NSMutableDictionary*)c {
+    NSMutableArray *eduArr = [[NSMutableArray alloc] init];
+    NSLog(@"education");
+    for (NSDictionary *eduDict in c[kContactEducation]) {
+        NSMutableDictionary *d = [[NSMutableDictionary alloc] init];
+        if (eduDict[kContactSchool]) {
+            d[kContactSchool] = eduDict[kContactSchool][kContactName];
+        }
+        if (eduDict[@"year"]) {
+            d[@"year"] = eduDict[@"year"][kContactName];
+        }
+        
+        if (eduDict[kContactType]) {
+            d[kContactType] = eduDict[kContactType];
+        }
+        
+        [eduArr addObject:d];
+    }
+    [c removeObjectForKey:kContactEducation];
+    c[kContactEducation] = eduArr;
+    
+}
+
+
 + (Contact*)contactFromUserModel:(PFObject *)user {
     FBManager *li = [FBManager singleton];
     Contact *c = [NSEntityDescription insertNewObjectForEntityForName:@"Contact" inManagedObjectContext:li.managedObjectContext];
@@ -85,10 +138,18 @@
     c.name = [NSString stringWithFormat:@"%@ %@", c.first_name, c.last_name];
     c.parseId = user.objectId;
     c.bio = user[kContactBio];
-    c.hometown = user[kContactHometown];
+    NSLog(@"homeotwn %@",[user[kContactHometown] class]);
+    if ([user[kContactHometown] isKindOfClass:[NSDictionary class]]) {
+        NSLog(@"reformat home");
+        NSString *s = user[kContactHometown][kContactName];
+        c.hometown = s;
+    } else {
+        c.hometown = user[kContactHometown];
+    }
     c.work = user[kContactWork];
     c.education = user[kContactEducation];
     c.gender = user[kContactGender];
+    c.relationshipStatus = user[@"relationship_status"];
     
     c.pictureUrl = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=normal", c.fbId];
     //c.linkedInUrl = user[kContactLinkedInGetUrl][kContactLinkedInUrl];
@@ -310,29 +371,29 @@
 
 - (NSMutableArray*)profileAttributeKeys {
     NSMutableArray *n = [[NSMutableArray alloc] init];
-    if (self.bio || self.hometown || self.gender) [n addObject:kContactBio];
     if (self.work.count > 0) [n addObject:kContactWork];
     if (self.education.count > 0) [n addObject:kContactEducation];
     
     return n;
 }
 
+- (id)noNil:(id)s {
+    if (!s) return @"";
+    else if (s == [NSNull null]) return @"";
+    return s;
+}
+
 - (NSMutableArray*)detailAttributesFor:(NSString *)key {
     NSMutableArray *n = [[NSMutableArray alloc] init];
-    if ([key isEqualToString:kContactBio]) {
-        [n addObject:kContactBio];
-        if (self.bio) [n addObject:@{kContactBio : self.bio}];
-        if (self.hometown) [n addObject:@{kContactHometown : self.hometown}];
-        if (self.gender) [n addObject:@{kContactGender : self.gender}];
-    } else if ([key isEqualToString:kContactWork]) {
+    if ([key isEqualToString:kContactWork]) {
         [n addObject:kContactWork];
         for (NSDictionary *d in self.work) {
-            [n addObject:@{@"value": [NSString stringWithFormat:@"%@ : %@", d[kContactEmployer], d[kContactPosition]] }];
+            [n addObject:@{ @"header" : [self noNil:d[kContactEmployer]], @"value" : [self noNil:d[kContactPosition]] }];
         }
     } else if ([key isEqualToString:kContactEducation]) {
         [n addObject:kContactEducation];
         for (NSDictionary *d in self.education) {
-            [n addObject:@{@"value": [NSString stringWithFormat:@"%@ %@ %@", d[kContactSchool], d[kContactType], d[@"year"]]}];
+            [n addObject:@{ @"header" : [self noNil:d[kContactType]], @"value" : [self noNil:d[kContactSchool]] }];
         }
     }
     return n;

@@ -27,6 +27,7 @@
 @property (nonatomic, assign, readonly) BOOL hasContacts;
 @property (nonatomic, strong) NSMutableDictionary *tagOptions;
 @property (strong, nonatomic)  TagIndex *tagIndex;
+@property (strong, nonatomic) Contact *currentParseUser;
 
 @property (weak, nonatomic) ViewController *vc;
 
@@ -47,6 +48,8 @@
 - (void)clearDB;
 - (void)fetchContacts;
 - (void)filterForTags:(NSArray*)tags;
+- (void)cacheParseUser:(PFUser*)user;
+- (void)fetchCurUser;
 
 
 @end

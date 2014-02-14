@@ -18,5 +18,6 @@
 @property (nonatomic, strong) UILabel* label;
 - (void)addLongPress;
 - (void)turnOnDelete;
+- (CGSize)getLabelSize;
 
 @end

@@ -10,8 +10,9 @@
 #import "BATypeAheadViewController.h"
 #import "Contact.h"
 #import <Parse/Parse.h>
+#import "BaseViewController.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : BaseViewController
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressView;

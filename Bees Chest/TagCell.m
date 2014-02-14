@@ -14,11 +14,12 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self.contentView addSubview:self.label];
+        self.backgroundColor = [UIColor lightGrayColor];
     }
     return self;
 }
 
-#define kTagCellLabelOrigin CGRectMake(0.0, -1.0, 82.0, 40.0)
+#define kTagCellLabelOrigin CGRectMake(0.0, -1.0, 150.0, 40.0)
 
 -(void)prepareForReuse {
     [super prepareForReuse];
@@ -28,7 +29,7 @@
     label.font = [UIFont fontWithName:@"Helvetica-Light" size:15.0];
     label.frame = kTagCellLabelOrigin;
     
-    self.backgroundColor = [UIColor grayColor];
+    self.backgroundColor = [UIColor blackColor];
     
     for (UIGestureRecognizer *gr in self.gestureRecognizers) {
         [self removeGestureRecognizer:gr];
@@ -57,4 +58,8 @@
     label.text = @"Delete";
 }
 
+- (CGSize)getLabelSize {
+    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:self.label.font, NSFontAttributeName, nil];
+    return [self.label.text sizeWithAttributes:attributes];
+}
 @end

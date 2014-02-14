@@ -26,6 +26,29 @@ static FBManager *fb = nil;
     return fb;
 }
 
+- (void)fetchCurUser {
+    NSFetchRequest *req = [[NSFetchRequest alloc] init];
+    NSEntityDescription *desc = [NSEntityDescription entityForName:@"Contact" inManagedObjectContext:self.managedObjectContext];
+    NSLog(@"Looking for serverID: %@", [[PFUser currentUser] objectForKey:@"fbId"]);
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"fbId==%@", [[PFUser currentUser] objectForKey:@"fbId"]];
+    [req setPredicate:predicate];
+    [req setEntity:desc];
+    NSError *error;
+    NSArray *arr = [self.managedObjectContext executeFetchRequest:req error:&error];
+    if ([arr count] > 0) {
+        self.currentParseUser = arr[0];
+    }
+}
+
+- (void)cacheParseUser:(PFUser*)user {
+    [self reformatEducation:user];
+    [self reformatWorkFor:user];
+    [self reformatHometown:user];
+    
+    self.currentParseUser = [Contact contactFromUserModel:user];
+    [self saveContext];
+}
+
 - (void)saveContext {
     for (Contact *c in self.fetchedResultsController.fetchedObjects) {
         [c save];

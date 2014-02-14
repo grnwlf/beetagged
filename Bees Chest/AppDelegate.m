@@ -20,6 +20,11 @@
     
     [PFFacebookUtils initializeFacebook];
     
+    if ([PFUser currentUser]) {
+        [[FBManager singleton] fetchCurUser];
+        
+    }
+    
     srand(time(NULL));
     
     NSLog(@"cloud code");
@@ -29,6 +34,8 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     return [PFFacebookUtils handleOpenURL:url];
+    
+
 }
 							
 - (void)applicationWillResignActive:(UIApplication *)application

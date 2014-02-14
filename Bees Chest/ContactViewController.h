@@ -23,6 +23,7 @@
 @property (nonatomic, strong) BATypeAheadView *typeAheadView;
 @property (strong, nonatomic) NSMutableArray *contactTags;
 @property (strong, nonatomic) NSMutableDictionary *expandedRows;
+@property (nonatomic) BOOL isCurrentUser;
 
 
 @property (weak, nonatomic) IBOutlet UITableView *profileTableView;

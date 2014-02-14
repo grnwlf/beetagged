@@ -26,6 +26,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self renderContact:[Contact contactFromUserModel:[PFUser currentUser]]];
 	// Do any additional setup after loading the view.
 }
 

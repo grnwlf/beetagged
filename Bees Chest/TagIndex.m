@@ -53,6 +53,12 @@
     [self sortForTag:tag];
 }
 
+- (void)remove:(Contact*)contact forTag:(Tag *)tag {
+    NSMutableArray *arr = self.data[tag.attributeName];
+    [arr removeObject:contact];
+    [self sortForTag:tag];
+}
+
 - (BOOL)hasSameForTag:(Tag*)tag {
     int tmp = -1;
     for (Contact *c in self.data[tag.attributeName]) {
