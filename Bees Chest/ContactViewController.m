@@ -123,6 +123,14 @@
     }
 }
 
+-(NSString *)getLabelText:(NSString *)s {
+    if (s && s.length > 0) {
+        return s;
+    } else {
+        return @"N/A";
+    }
+}
+
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row == 0) {
@@ -130,28 +138,20 @@
         UIImageView *imageView = (UIImageView*)[cell viewWithTag:1];
         [imageView setImageWithURL:[NSURL URLWithString:self.contact.pictureUrl]];
         
-        float h = 30;
+        UILabel *nameLabel = (UILabel*)[cell viewWithTag:2];
+        nameLabel.text = [self getLabelText:[self.contact name]];
         
-        UILabel *label = (UILabel*)[cell viewWithTag:2];
-        label.text = [self.contact name];
-        label.frame = infoFrame(h);
-        h+=40;
-    
-        UILabel *label2 = (UILabel*)[cell viewWithTag:3];
-        label2.text = self.contact.hometown;
-        label2.frame = infoFrame(h);
-        if (self.contact.hometown) h+=40;
+        UILabel *genderLabel = (UILabel*)[cell viewWithTag:3];
+        genderLabel.text = [self getLabelText:[self.contact.gender capitalizedString]];
         
-        UILabel *label3 = (UILabel*)[cell viewWithTag:4];
-        label3.text = [self.contact.relationshipStatus capitalizedString];
-        label3.frame = infoFrame(h);
-        if (self.contact.relationshipStatus) h+=40;
+        UILabel *relationshipStatusLabel = (UILabel*)[cell viewWithTag:4];
+        relationshipStatusLabel.text = [self getLabelText:[self.contact.relationshipStatus capitalizedString]];
         
-        UILabel *label4 = (UILabel*)[cell viewWithTag:5];
-        label4.text = [self.contact.gender capitalizedString];
-        label4.frame = infoFrame(h);
-        if (self.contact.gender) h+=40;
+        UILabel *hometownLabel = (UILabel*)[cell viewWithTag:5];
+        hometownLabel.text = [self getLabelText:self.contact.hometown];
         
+        UILabel *locationLabel = (UILabel*)[cell viewWithTag:6];
+        locationLabel.text = [self getLabelText:self.contact.locationName];
         
         return cell;
     } else if (indexPath.row == self.contact.profileAttributeKeys.count + 1) {

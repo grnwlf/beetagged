@@ -38,7 +38,7 @@
     [self.ContactTableView reloadData];
     
     self.searchBar.delegate = self;
-    
+    self.navigationController.interactivePopGestureRecognizer.enabled = NO; // make sure we can't swipe to logout
     self.tagFilterView.backgroundColor = [UIColor colorWithRed:0.3 green:0.3 blue:0.3 alpha:1];
     
     self.tagCollectionView.backgroundColor = [UIColor clearColor];
@@ -47,9 +47,6 @@
 
     self.tagFilters = [[NSMutableArray alloc] init];
     [self typeahead];
-    
-    //self.navigationController.navigationBar.hidden = YES;
-	// Do any additional setup after loading the view.
 }
 
 - (void)typeahead {
