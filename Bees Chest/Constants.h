@@ -50,7 +50,7 @@
 #define kContactBirthday @"birthday"
 #define kContactFBId @"id"
 #define kContactPicUrl @"pictureUrl"
-#define kContactWork @"work"
+#define kContactWork @"Work"
 #define kContactName @"name"
 #define kContactType @"type"
 #define kContactSchool @"school"
@@ -58,7 +58,7 @@
 #define kContactGender @"gender"
 #define kContactHometown @"hometown"
 #define kContactEmployer @"employer"
-#define kContactEducation @"education"
+#define kContactEducation @"Education"
 #define kContactPosition @"position"
 #define kContactBio @"bio"
 

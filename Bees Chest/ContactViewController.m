@@ -16,10 +16,13 @@
 @property (nonatomic, strong) NSMutableArray *deleted;
 @property (nonatomic, strong) NSMutableArray *added;
 @property (nonatomic, assign) NSInteger itemToDelete;
-
+@property (nonatomic, assign) BOOL isCurrentlyDeleting;
 @end
 
 @implementation ContactViewController
+
+static const float margin = 15.0;
+static const float tfHeight = 30.0;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -31,12 +34,10 @@
 #pragma mark View Loading
 - (void)viewDidLoad {
     [super viewDidLoad];
-
     
     self.tagsCollectionView.delegate = self;
     self.tagsCollectionView.dataSource = self;
     self.tagsCollectionView.backgroundColor = [UIColor clearColor];
-    
     self.expandedRows = [[NSMutableDictionary alloc] init];
     
     [self formatLayout];
@@ -48,7 +49,7 @@
     if (!self.contactTags) {
         self.contactTags = [[NSMutableArray alloc] init];
     }
-
+    self.isCurrentlyDeleting = NO;
 }
 
 - (void)renderContact:(Contact*)c {
@@ -110,16 +111,32 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.contact.profileAttributeKeys.count+2;
+    return 4;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0) return 200;
-    else if (indexPath.row == self.contact.profileAttributeKeys.count + 1) return 200;
-    else {
-        NSString *key = self.contact.profileAttributeKeys[indexPath.row-1];
-        if (self.expandedRows[key]) return [self.contact detailAttributesFor:key].count * 40 + 50;
-        return 50;
+    // always 150 for the profileView
+    if (indexPath.row == 0) {
+        return 150.0;
+    } else if (indexPath.row == 1) {
+        if (self.contact.profileAttributeKeys && self.contact.profileAttributeKeys.count > 0) {
+            if ([self.contact.profileAttributeKeys containsObject:kContactWork]) {
+                NSArray *detailAttributes = [self.contact detailAttributesFor:kContactWork];
+                return detailAttributes.count * tfHeight + margin;
+            }
+        }
+        return tfHeight + margin;
+    } else if (indexPath.row == 2) {
+        if (self.contact.profileAttributeKeys && self.contact.profileAttributeKeys.count > 1) {
+            
+            if ([self.contact.profileAttributeKeys containsObject:kContactEducation]) {
+                NSArray *detailAttributes = [self.contact detailAttributesFor:kContactEducation];
+                return detailAttributes.count * tfHeight + margin;
+            }
+        }
+        return tfHeight + margin;
+    } else {
+        return 200;
     }
 }
 
@@ -131,10 +148,11 @@
     }
 }
 
-- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    // top cell, well formatted
     if (indexPath.row == 0) {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kProfileHeaderCell forIndexPath:indexPath];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         UIImageView *imageView = (UIImageView*)[cell viewWithTag:1];
         [imageView setImageWithURL:[NSURL URLWithString:self.contact.pictureUrl]];
         
@@ -154,62 +172,240 @@
         locationLabel.text = [self getLabelText:self.contact.locationName];
         
         return cell;
-    } else if (indexPath.row == self.contact.profileAttributeKeys.count + 1) {
+    
+    // last cell, statically formatted with a collectionView
+        
+        
+    } else if (indexPath.row == 1) {
+        ProfileDetailCell *cell = (ProfileDetailCell *)[tableView dequeueReusableCellWithIdentifier:kProfileDetailCell forIndexPath:indexPath];
+        UILabel *l = (UILabel*)[cell viewWithTag:1];
+        l.text = kContactWork;
+        UIButton *button = (UIButton *)[cell viewWithTag:2];
+        [button setTintColor:[UIColor goldBeeColor]];
+        [button addTarget:self action:@selector(addOrDelete:) forControlEvents:UIControlEventTouchUpInside];
+        
+        if (cell.textFields) {
+            for (UITextField *tf in cell.textFields) {
+                [tf removeFromSuperview];
+            }
+            [cell.textFields removeAllObjects];
+        } else {
+            cell.textFields = [[NSMutableArray alloc] init];
+        }
+        
+        return [self updateProfileViewCell:cell atIndexPath:indexPath withKey:kContactWork];
+    } else if (indexPath.row == 2) {
+        ProfileDetailCell *cell = (ProfileDetailCell*)[tableView dequeueReusableCellWithIdentifier:kProfileDetailCell forIndexPath:indexPath];
+        UILabel *l = (UILabel*)[cell viewWithTag:1];
+        l.text = kContactEducation;
+        
+        UIButton *button = (UIButton *)[cell viewWithTag:2];
+        [button setTintColor:[UIColor goldBeeColor]];
+        [button addTarget:self action:@selector(addOrDelete:) forControlEvents:UIControlEventTouchUpInside];
+        
+        if (cell.textFields) {
+            for (UITextField *tf in cell.textFields) {
+                [tf removeFromSuperview];
+            }
+            [cell.textFields removeAllObjects];
+        } else {
+            cell.textFields = [[NSMutableArray alloc] init];
+        }
+        
+        return [self updateProfileViewCell:cell atIndexPath:indexPath withKey:kContactEducation];
+    } else {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CollectionCell" forIndexPath:indexPath];
         UICollectionView *collectionView = (UICollectionView*)[cell viewWithTag:2];
         self.tagsCollectionView = collectionView;
         [self.tagsCollectionView reloadData];
         return cell;
-    } else {
-        ProfileDetailCell *cell = (ProfileDetailCell*)[tableView dequeueReusableCellWithIdentifier:kProfileDetailCell forIndexPath:indexPath];
-        if (cell.textFields) {
-            for (UITextField *t in cell.textFields) {
-                [t removeFromSuperview];
-            }
-        } else {
-            cell.textFields = [[NSMutableArray alloc] init];
-        }
-        
-        NSMutableArray *detail = [self.contact detailAttributesFor:self.contact.profileAttributeKeys[indexPath.row-1]];
-        
-        UILabel *l = (UILabel*)[cell viewWithTag:1];
-        l.text = detail[0];
-        
-        float h = 50;
-        for (int i = 1; i < detail.count; i++) {
-            NSDictionary *d = detail[i];
-            UITextView *t1 = [[UITextView alloc] initWithFrame:CGRectMake(0, h, 160, 40)];
-            t1.textAlignment = NSTextAlignmentCenter;
-            t1.text = d[@"header"];
-            [cell addSubview:t1];
-            [cell.textFields addObject:t1];
-            
-            UITextView *t2 = [[UITextView alloc] initWithFrame:CGRectMake(180, h, 130, 40)];
-            t2.textAlignment = NSTextAlignmentCenter;
-            t2.text = d[@"value"];
-            [cell addSubview:t2];
-            [cell.textFields addObject:t2];
-            h += 40;
-        }
+    }
+
+}
+
+- (ProfileDetailCell *)updateProfileViewCell:(ProfileDetailCell *)cell atIndexPath:(NSIndexPath *)indexPath withKey:(NSString *)key {
+
+    // make sure we don't get null errors
+    if (!self.contact.profileAttributeKeys || self.contact.profileAttributeKeys.count == 0) {
+        NSLog(@"This contact has no profileAttributeKeys");
         return cell;
     }
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0)return;
     
-    NSString *key = self.contact.profileAttributeKeys[indexPath.row-1];
-    if (self.expandedRows[key]) {
-        [self.expandedRows removeObjectForKey:key];
-    } else {
-        self.expandedRows[key] = @YES;
+    if (![self.contact.profileAttributeKeys containsObject:key]) {
+        NSLog(@"This key does not exist");
+        return cell;
+    }
+
+    NSMutableArray *detail = [self.contact detailAttributesFor:key];
+    NSInteger rows = detail.count;
+    
+    // set the start height
+    float h = 30.0;
+    
+    for (int i = 1; i < rows; i++) {
+        NSDictionary *d = detail[i];
+        
+        UITextView *t1 = [[UITextView alloc] initWithFrame:CGRectMake(margin, h, kWidth / 2 - margin, tfHeight)];
+        t1.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:15.0];
+        t1.backgroundColor = [UIColor clearColor];
+        t1.text = d[@"header"];
+        t1.delegate = self;
+        t1.scrollEnabled = NO;
+        t1.editable = YES;
+        t1.returnKeyType = UIReturnKeyDone;
+        [cell addSubview:t1];
+        [cell.textFields addObject:t1];
+        
+        UITextView *t2 = [[UITextView alloc] initWithFrame:CGRectMake(kWidth / 2, h, kWidth / 2 - margin, tfHeight)];
+        t2.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:15.0];
+        t2.backgroundColor = [UIColor clearColor];
+        t2.text = d[@"value"];
+        t2.delegate = self;
+        t2.scrollEnabled = NO;
+        t2.editable = YES;
+        t2.returnKeyType = UIReturnKeyDone;
+        [cell addSubview:t2];
+        [cell.textFields addObject:t2];
+        
+        // on to the next one
+        h += tfHeight;
     }
     
-    [self.profileTableView beginUpdates];
-    [self.profileTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [self.profileTableView endUpdates];
+    return cell;
 }
 
+- (void)dismiss {
+    [self resignFirstResponder];
+}
+
+// this is the function that does logic on which text field to add or delete when
+// the @"+" or @"-" button is pressed in the top right corner of the profile detail
+// cell.
+- (void)addOrDelete:(UIButton *)sender {
+    NSLog(@"Add or Delete");
+    ProfileDetailCell *cell = [self getProfileDetailCellFromView:sender];
+    UILabel *label = (UILabel *)[cell viewWithTag:1];
+    if ([sender.titleLabel.text isEqualToString:@"+"]) {
+        if ([label.text isEqualToString:kContactWork]) {
+            if (self.contact.work == nil) {
+                self.contact.work = [NSMutableArray array];
+            }
+            [self.contact.work addObject:[@{kContactEmployer : @"Enter Employer", kContactPosition : @"Enter Position"} mutableCopy]];
+            NSLog(@"work = %@", self.contact.work);
+        } else if ([label.text isEqualToString:kContactEducation]) {
+            if (self.contact.education == nil) {
+                self.contact.education = [NSMutableArray array];
+            }
+            [self.contact.education addObject:[@{kContactType : @"Enter Education Level", kContactSchool: @"Enter School"} mutableCopy]];
+            NSLog(@"edu = %@", self.contact.education);
+        } else {
+            NSLog(@"UH OH!  Something went wrong here, and the labels aren't marked right");
+        }
+    } else if ([sender.titleLabel.text  isEqualToString:@"-"]) {
+        self.isCurrentlyDeleting = YES;
+        NSInteger toDelete = [self selectedRowInCell:cell];
+        if ([label.text isEqualToString:kContactWork]) {
+            [self.contact.work removeObjectAtIndex:toDelete];
+        } else if ([label.text isEqualToString:kContactEducation]) {
+            [self.contact.education removeObjectAtIndex:toDelete];
+        } else {
+            NSLog(@"we should be deleting the text field that we are currently on");
+        }
+    } else {
+        NSLog(@"uh oh... what the hell does our button say?");
+    }
+    [self.profileTableView reloadData];
+}
+
+// fired when you stop editing the text field -- if this is a a saved text field,
+// and you didn't delete it, we will update that data in the core data model
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    NSLog(@"done editing");
+    UIButton *b = [self getButtonFromTextView:textView];
+    [b setTitle:@"+" forState:UIControlStateNormal];
+    
+    if (self.isCurrentlyDeleting == YES) {
+        self.isCurrentlyDeleting = NO;
+        return;
+    }
+    
+    ProfileDetailCell *cell = [self getProfileDetailCellFromView:textView];
+    UILabel *label = (UILabel *)[cell viewWithTag:1];
+    NSString *key =  label.text;
+    NSInteger count = 0;
+    
+    // get which text label to use
+    for (UITextView *tv in cell.textFields) {
+        if (tv == textView) {
+            break;
+        }
+        count++;
+    }
+    
+    // figure out which type to edit
+    UITextField *headerTV, *valueTV;
+    if (count % 2 == 0) {
+        headerTV = (UITextField *)cell.textFields[count];
+        valueTV = (UITextField *)cell.textFields[count + 1];
+    } else {
+        headerTV = (UITextField *)cell.textFields[count - 1];
+        valueTV = (UITextField *)cell.textFields[count];
+    }
+    
+    
+    if ([key isEqualToString:kContactEducation]) {
+        [self.contact updateEducationAtIndex:count/2 withHeader:headerTV.text andValue:valueTV.text];
+    } else if ([key isEqualToString:kContactWork]) {
+        [self.contact updateWorkAtIndex:count/2 withHeader:headerTV.text andValue:valueTV.text];
+    }
+}
+
+#pragma mark figure out what to add / delete
+-(ProfileDetailCell *)getProfileDetailCellFromView:(UIView *)view {
+    while (view && [view class] != [ProfileDetailCell class]) {
+        view = view.superview;
+    }
+    return (ProfileDetailCell *)view;
+}
+
+- (UIButton *)getButtonFromTextView:(UITextView *)tv {
+    ProfileDetailCell *cell = [self getProfileDetailCellFromView:tv];
+    UIButton *b = (UIButton *)[cell viewWithTag:2];
+    return b;
+}
+
+- (UILabel *)getLabelFromButton:(UIButton *)b {
+    ProfileDetailCell *cell = [self getProfileDetailCellFromView:b];
+    UILabel *l = (UILabel *)[cell viewWithTag:1];
+    return l;
+}
+
+- (NSInteger)selectedRowInCell:(ProfileDetailCell *)cell {
+    NSInteger row = 0;
+    for (UITextField *tf in cell.textFields) {
+        if ([tf isFirstResponder]) {
+            return row / 2;
+        }
+        row++;
+    }
+    [NSException raise:@"Row Not In Cell" format:@"There are not %d cells in the text view", row];
+    return 0;
+}
+
+// change the button from @"+" to @"-"
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    UIButton *b = [self getButtonFromTextView:textView];
+    [b setTitle:@"-" forState:UIControlStateNormal];
+}
+
+// make sure that hitting the done key will take away the keyboard
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text; {
+    if ([text isEqualToString:@"\n"]) {
+        [textView resignFirstResponder];
+        return NO;
+    }
+    return YES;
+}
 
 // delete on parse (everything else should be taken care of)
 - (void)updatedDeletedTagsInParse {
@@ -230,7 +426,6 @@
         }
     }];
 }
-
 
 // 1. add to parse
 // 2. update the objects in the db and save to core data

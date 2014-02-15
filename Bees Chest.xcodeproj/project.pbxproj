@@ -44,6 +44,8 @@
 		9D2C713F187A6EE00022CE5F /* LessBoringFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C713D187A6EE00022CE5F /* LessBoringFlowLayout.m */; };
 		9D2C7142187A8D0B0022CE5F /* ContactTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2C7141187A8D0B0022CE5F /* ContactTransition.m */; };
 		9D3792E41878D0D6003955EF /* Bees Chest Placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D3792E31878D0D6003955EF /* Bees Chest Placeholder.png */; };
+		9D875E4518AECF84002E945B /* UIColor+Bee.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D875E4418AECF84002E945B /* UIColor+Bee.m */; };
+		9D875E4818AED19C002E945B /* BeeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D875E4718AED19C002E945B /* BeeButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +120,10 @@
 		9D2C7140187A8D0B0022CE5F /* ContactTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactTransition.h; sourceTree = "<group>"; };
 		9D2C7141187A8D0B0022CE5F /* ContactTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactTransition.m; sourceTree = "<group>"; };
 		9D3792E31878D0D6003955EF /* Bees Chest Placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bees Chest Placeholder.png"; sourceTree = "<group>"; };
+		9D875E4318AECF84002E945B /* UIColor+Bee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Bee.h"; sourceTree = "<group>"; };
+		9D875E4418AECF84002E945B /* UIColor+Bee.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Bee.m"; sourceTree = "<group>"; };
+		9D875E4618AED19C002E945B /* BeeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeeButton.h; sourceTree = "<group>"; };
+		9D875E4718AED19C002E945B /* BeeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeeButton.m; sourceTree = "<group>"; };
 		AEA705BE07BD482FBA74034C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -183,6 +189,7 @@
 		2889B0351870651700CF8580 /* Bees Chest */ = {
 			isa = PBXGroup;
 			children = (
+				9D875E3F18AECDFF002E945B /* Categories */,
 				9D3792E51878D0DE003955EF /* Images */,
 				9D3792E21878BCEC003955EF /* Controllers */,
 				9D3792E11878BCDF003955EF /* Views */,
@@ -267,6 +274,8 @@
 				2889B069187456AA00CF8580 /* BATypeAheadView.m */,
 				28B782E81895B42D00936D87 /* ProfileDetailCell.h */,
 				28B782E91895B42D00936D87 /* ProfileDetailCell.m */,
+				9D875E4618AED19C002E945B /* BeeButton.h */,
+				9D875E4718AED19C002E945B /* BeeButton.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -301,6 +310,15 @@
 				9D3792E31878D0D6003955EF /* Bees Chest Placeholder.png */,
 			);
 			name = Images;
+			sourceTree = "<group>";
+		};
+		9D875E3F18AECDFF002E945B /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				9D875E4318AECF84002E945B /* UIColor+Bee.h */,
+				9D875E4418AECF84002E945B /* UIColor+Bee.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -449,6 +467,7 @@
 				28B782EA1895B42D00936D87 /* ProfileDetailCell.m in Sources */,
 				2889B0731874992200CF8580 /* ContactsViewController.m in Sources */,
 				2889B06D187456D200CF8580 /* BATypeAheadViewController.m in Sources */,
+				9D875E4518AECF84002E945B /* UIColor+Bee.m in Sources */,
 				282F2F281877AD9A004566D0 /* Contact.m in Sources */,
 				9D2C7142187A8D0B0022CE5F /* ContactTransition.m in Sources */,
 				2889B06A187456AA00CF8580 /* BATypeAheadView.m in Sources */,
@@ -461,6 +480,7 @@
 				2889B0401870651700CF8580 /* AppDelegate.m in Sources */,
 				3597FA0418ACA52A00EC7DF5 /* BaseViewController.m in Sources */,
 				2889B03C1870651700CF8580 /* main.m in Sources */,
+				9D875E4818AED19C002E945B /* BeeButton.m in Sources */,
 				28398D6918AC963F0016BA26 /* TagActivity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -48,8 +48,6 @@
 @property (nonatomic, retain) NSString *hometown;
 @property (nonatomic, retain) NSString *relationshipStatus;
 
-
-
 + (Contact*)contactFromFB:(NSDictionary*)user;
 + (Contact*)contactFromUserModel:(PFObject*)user;
 
@@ -59,6 +57,8 @@
 - (NSMutableArray*)profileAttributeKeys;
 - (NSMutableArray*)detailAttributesFor:(NSString*)key;
 
+- (void)updateEducationAtIndex:(NSInteger)index withHeader:(NSString *)header andValue:(NSString *)value;
+- (void)updateWorkAtIndex:(NSInteger)index withHeader:(NSString *)header andValue:(NSString *)value;
 - (void)save;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
+#import "UIColor+Bee.h"
 
 @implementation AppDelegate
 
@@ -25,9 +26,10 @@
         
     }
     
+    [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
+    [[UINavigationBar appearance] setTintColor:[UIColor goldBeeColor]];    
     srand(time(NULL));
-    
-    NSLog(@"cloud code");
+
     
     return YES;
 }

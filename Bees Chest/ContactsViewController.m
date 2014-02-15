@@ -9,6 +9,7 @@
 #import "ContactsViewController.h"
 #import "Contact.h"
 #import "TagCell.h"
+#import "UIColor+Bee.h"
 
 @interface ContactsViewController ()
 
@@ -16,8 +17,7 @@
 
 @implementation ContactsViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -35,13 +35,22 @@
         [lim refreshContacts];
     }
     self.ContactTableView.clipsToBounds = YES;
+    self.ContactTableView.sectionIndexColor = [UIColor goldBeeColor];
     [self.ContactTableView reloadData];
     
     self.searchBar.delegate = self;
     self.navigationController.interactivePopGestureRecognizer.enabled = NO; // make sure we can't swipe to logout
-    self.tagFilterView.backgroundColor = [UIColor colorWithRed:0.3 green:0.3 blue:0.3 alpha:1];
+    self.tagFilterView.backgroundColor = [UIColor cloudsColor];
     
-    self.tagCollectionView.backgroundColor = [UIColor clearColor];
+    // customize the beeButton
+    [self.beeButton setBackgroundColor:[UIColor goldBeeColor]];
+    self.beeButton.layer.cornerRadius = 2.0;
+    self.beeButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0];
+    [self.beeButton addTarget:self action:@selector(newTag:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.tagTableView.backgroundColor = [UIColor clearColor];
+    self.tagTableView.delegate = self;
+    self.tagTableView.dataSource = self;
     
     [self.view addSubview:self.tagFilterView];
 
@@ -153,6 +162,18 @@
     return self.tagFilters.count;
 }
 
+- (IBAction)removeTag:(UIButton *)sender {
+    UITableViewCell *cell = (UITableViewCell *)sender.superview.superview.superview;
+    while (cell && [cell class] == [UITableViewCell class]) {
+        cell = (UITableViewCell *)cell.superview;
+    }
+    
+    NSIndexPath *indexPathForCell = [self.tagTableView indexPathForCell:cell];
+    [self.tagFilters removeObjectAtIndex:indexPathForCell.row];
+    [self.tagTableView reloadData];
+    [self renderFilter];
+}
+
 // returns the title for the header in the section. It will not give a header
 // (because title is nil) if the tableView is searching
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -204,6 +225,7 @@
         }
         FBManager *lim = [FBManager singleton];
         Contact *contact;
+        
         if (lim.search) {
             contact = [lim.searchArray objectAtIndex:indexPath.row];
         } else if (lim.tagFilter) {
@@ -238,20 +260,38 @@
         [imageView setImageWithURL:[NSURL URLWithString:contact.pictureUrl] placeholderImage:kContactCellPlaceholderImage];
         
         return cell;
-    } else {
-        NSString *t = self.tagFilters[indexPath.row];
-        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TagFilterCell"];
-        cell.textLabel.text = t;
+    } else if (tableView == self.tagTableView) {
+        static NSString *tagCellIdentifier = @"TagFilterCell";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:tagCellIdentifier forIndexPath:indexPath];
+        
+
+        cell.textLabel.text = @"";
+        UILabel *label = (UILabel *)[cell viewWithTag:2];
+        label.text = self.tagFilters[indexPath.row];
+        
+        UIButton *button = (UIButton *)[cell viewWithTag:1];
+        [button setTintColor:[UIColor redColor]];
+        [button addTarget:self action:@selector(removeTag:) forControlEvents:UIControlEventTouchUpInside];
+        cell.backgroundColor = [UIColor clearColor];
+        
         return cell;
+    }
+    return nil;
+}
+
+- (void)setIndexTitlesColor {
+    for (UIView *view in [self.tagTableView subviews]) {
+        if([[[view class] description] isEqualToString:@"UITableViewIndex"]) {
+            [view setBackgroundColor:[UIColor goldBeeColor]];
+        }
     }
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.ContactTableView) {
         [self performSegueWithIdentifier:kShowContactSegue sender:self];
-    } else {
+    } else if (tableView == self.tagTableView) {
         [self.tagFilters removeObjectAtIndex:indexPath.row];
-        [self.tagCollectionView reloadData];
         [self renderFilter];
     }
 }
@@ -292,8 +332,8 @@
 - (void)cellClickedWithData:(id)data {
     TagOption *t = (TagOption*)data;
     [self.tagFilters addObject:t.attributeName];
-    [self.tagCollectionView reloadData];
     [self.typeAheadViewController hideView:YES];
+    [self.tagTableView reloadData];
     [self renderFilter];
 
 }
@@ -304,10 +344,8 @@
     fb.search = NO;
     fb.tagFilter = YES;
     [fb filterForTags:self.tagFilters];
-    
     [self.ContactTableView reloadData];
 }
-
 
 - (IBAction)newTag:(id)sender {
     [self.typeAheadViewController showView:YES];
@@ -319,87 +357,86 @@
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
-#pragma mark CollectionView
-- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return self.tagFilters.count;
-}
+//- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
+//    return self.tagFilters.count;
+//}
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    // if it's the last item, you can select it
-//    if (indexPath.item == self.contactTags.count) {
-//        return YES;
-//    } else if (indexPath.item == self.itemToDelete) {
-//        return YES;
-//    }
-    NSLog(@"can touch");
-    return YES;
-}
+//- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+////    // if it's the last item, you can select it
+////    if (indexPath.item == self.contactTags.count) {
+////        return YES;
+////    } else if (indexPath.item == self.itemToDelete) {
+////        return YES;
+////    }
+//    NSLog(@"can touch");
+//    return YES;
+//}
 
 // called when the item is selected - will only do anything if the add button
 // is selected
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    //[collectionView deselectItemAtIndexPath:indexPath animated:YES];
-    // if it's the last item, add a new item
-    [self.tagFilters removeObjectAtIndex:indexPath.item];
-    [self.tagCollectionView reloadData];
-    
-    [[FBManager singleton] filterForTags:self.tagFilters];
-    
-    [self.ContactTableView reloadData];
-}
-
-- (void)clearDeleteViewAtIndex:(NSInteger)index {
-    //    self.itemToDelete = -1;
-    //    [UIView animateWithDuration:.3 animations:^{
-    //        [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
-    //    }];
-}
+//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+//    //[collectionView deselectItemAtIndexPath:indexPath animated:YES];
+//    // if it's the last item, add a new item
+//    [self.tagFilters removeObjectAtIndex:indexPath.item];
+//    [self.tagCollectionView reloadData];
+//    
+//    [[FBManager singleton] filterForTags:self.tagFilters];
+//    
+//    [self.ContactTableView reloadData];
+//}
+//
+//- (void)clearDeleteViewAtIndex:(NSInteger)index {
+//    //    self.itemToDelete = -1;
+//    //    [UIView animateWithDuration:.3 animations:^{
+//    //        [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
+//    //    }];
+//}
 
 
 
 
 // style the collectionView cell at the indexPath
-- (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *tagCellIdentifier = @"TagCell";
-    [self.tagCollectionView registerClass:[TagCell class] forCellWithReuseIdentifier:tagCellIdentifier];
-    
-    TagCell *cell = (TagCell *)[cv dequeueReusableCellWithReuseIdentifier:tagCellIdentifier forIndexPath:indexPath];
-    //UILabel *label = (UILabel *)[cell viewWithTag:1];
-    UILabel *label = [[UILabel alloc] init];
-    NSInteger i = indexPath.item;
-    cell.layer.cornerRadius = cell.frame.size.height / 4;
-    cell.itemIndex = i;
-    cell.delegate = self;
-    
-
-        if (i < self.tagFilters.count) {
-            [cell addLongPress];
-            NSString *tag = self.tagFilters[i];
-            NSLog(@"got tag %@", tag);
-            [label setText:tag];
-            label.textColor = [UIColor whiteColor];
-        }
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold" size:20.0], NSFontAttributeName, nil];
-    if (indexPath.item >= self.tagFilters.count) {
-        [label setFrame:CGRectMake(0, 0, 50, 50)];
-    } else {
-        CGSize s = CGSizeMake([self.tagFilters[indexPath.item] sizeWithAttributes:attributes].width, 50);
-        [label setFrame:CGRectMake(0, 0, s.width, s.height)];
-    }
-    [label setTextColor:[UIColor blackColor]];
-    label.textAlignment = NSTextAlignmentCenter;
-    [cell.contentView addSubview:label];
-    
-    NSLog(@"%@", label.text);
-    
-    return cell;
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold" size:20.0], NSFontAttributeName, nil];
-    CGSize s = CGSizeMake([self.tagFilters[indexPath.item] sizeWithAttributes:attributes].width, 50);
-    return s;
-}
+//- (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+//    static NSString *tagCellIdentifier = @"TagCell";
+//    [self.tagCollectionView registerClass:[TagCell class] forCellWithReuseIdentifier:tagCellIdentifier];
+//    
+//    TagCell *cell = (TagCell *)[cv dequeueReusableCellWithReuseIdentifier:tagCellIdentifier forIndexPath:indexPath];
+//    //UILabel *label = (UILabel *)[cell viewWithTag:1];
+//    UILabel *label = [[UILabel alloc] init];
+//    NSInteger i = indexPath.item;
+//    cell.layer.cornerRadius = cell.frame.size.height / 4;
+//    cell.itemIndex = i;
+//    cell.delegate = self;
+//    
+//
+//        if (i < self.tagFilters.count) {
+//            [cell addLongPress];
+//            NSString *tag = self.tagFilters[i];
+//            NSLog(@"got tag %@", tag);
+//            [label setText:tag];
+//            label.textColor = [UIColor whiteColor];
+//        }
+//    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold" size:20.0], NSFontAttributeName, nil];
+//    if (indexPath.item >= self.tagFilters.count) {
+//        [label setFrame:CGRectMake(0, 0, 50, 50)];
+//    } else {
+//        CGSize s = CGSizeMake([self.tagFilters[indexPath.item] sizeWithAttributes:attributes].width, 50);
+//        [label setFrame:CGRectMake(0, 0, s.width, s.height)];
+//    }
+//    [label setTextColor:[UIColor blackColor]];
+//    label.textAlignment = NSTextAlignmentCenter;
+//    [cell.contentView addSubview:label];
+//    
+//    NSLog(@"%@", label.text);
+//    
+//    return cell;
+//}
+//
+//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold" size:20.0], NSFontAttributeName, nil];
+//    CGSize s = CGSizeMake([self.tagFilters[indexPath.item] sizeWithAttributes:attributes].width, 50);
+//    return s;
+//}
 
 @end

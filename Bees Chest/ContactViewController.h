@@ -15,8 +15,9 @@
 #import "FBManager.h"
 #import "ContactTransition.h"
 #import "TagCell.h"
+#import "UIColor+Bee.h"
 
-@interface ContactViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, TagCellDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface ContactViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, TagCellDelegate, UITableViewDataSource, UITableViewDelegate, UITextViewDelegate>
 
 @property (nonatomic, strong) Contact *contact;
 @property (nonatomic, strong) BATypeAheadViewController *typeAheadViewController;
@@ -30,6 +31,5 @@
 @property (strong, nonatomic) IBOutlet UICollectionView *tagsCollectionView;
 
 - (void)renderContact:(Contact*)c;
-
 
 @end

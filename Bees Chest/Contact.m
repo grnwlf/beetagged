@@ -125,7 +125,6 @@
     }
     [c removeObjectForKey:kContactEducation];
     c[kContactEducation] = eduArr;
-    
 }
 
 
@@ -138,7 +137,7 @@
     c.name = [NSString stringWithFormat:@"%@ %@", c.first_name, c.last_name];
     c.parseId = user.objectId;
     c.bio = user[kContactBio];
-    NSLog(@"homeotwn %@",[user[kContactHometown] class]);
+    NSLog(@"hometown %@",[user[kContactHometown] class]);
     if ([user[kContactHometown] isKindOfClass:[NSDictionary class]]) {
         NSLog(@"reformat home");
         NSString *s = user[kContactHometown][kContactName];
@@ -326,14 +325,14 @@
 
 - (NSMutableArray*)work {
     if (!work && self.workData) {
-        work = (NSMutableArray*)[NSKeyedUnarchiver unarchiveObjectWithData:self.workData];
+        work = (NSMutableArray *)[NSKeyedUnarchiver unarchiveObjectWithData:self.workData];
     }
     return work;
 }
 
 - (NSMutableArray*)education {
     if (!education && self.educationData) {
-        education = (NSMutableArray*)[NSKeyedUnarchiver unarchiveObjectWithData:self.educationData];
+        education = (NSMutableArray *)[NSKeyedUnarchiver unarchiveObjectWithData:self.educationData];
     } 
     return education;
 }
@@ -343,7 +342,6 @@
 -(NSArray *)cleanseString:(NSString *)dirtyString dirtySet:(NSCharacterSet *)dirtySet {
     return [dirtyString componentsSeparatedByCharactersInSet:dirtySet];
 }
-
 
 - (void)tagsFromServerWitBlock:(void (^)(BOOL success))callback {
     if (self.tags_) {
@@ -371,15 +369,22 @@
 
 - (NSMutableArray*)profileAttributeKeys {
     NSMutableArray *n = [[NSMutableArray alloc] init];
-    if (self.work.count > 0) [n addObject:kContactWork];
-    if (self.education.count > 0) [n addObject:kContactEducation];
-    
+    if (self.work.count > 0) {
+        [n addObject:kContactWork];
+    }
+    if (self.education.count > 0) {
+        [n addObject:kContactEducation];
+    }
     return n;
 }
 
+// if the object is nil or [NSNull null], return @""
 - (id)noNil:(id)s {
-    if (!s) return @"";
-    else if (s == [NSNull null]) return @"";
+    if (!s) {
+        return @"";
+    } else if (s == [NSNull null]) {
+        return @"";
+    }
     return s;
 }
 
@@ -387,16 +392,30 @@
     NSMutableArray *n = [[NSMutableArray alloc] init];
     if ([key isEqualToString:kContactWork]) {
         [n addObject:kContactWork];
-        for (NSDictionary *d in self.work) {
+        for (NSMutableDictionary *d in self.work) {
             [n addObject:@{ @"header" : [self noNil:d[kContactEmployer]], @"value" : [self noNil:d[kContactPosition]] }];
         }
-    } else if ([key isEqualToString:kContactEducation]) {
+    }
+    
+    if ([key isEqualToString:kContactEducation]) {
         [n addObject:kContactEducation];
-        for (NSDictionary *d in self.education) {
+        for (NSMutableDictionary *d in self.education) {
             [n addObject:@{ @"header" : [self noNil:d[kContactType]], @"value" : [self noNil:d[kContactSchool]] }];
         }
     }
     return n;
+}
+
+- (void)updateEducationAtIndex:(NSInteger)index withHeader:(NSString *)header andValue:(NSString *)value {
+    NSMutableDictionary *e = (NSMutableDictionary *)self.education[index];
+    e[kContactType] = header;
+    e[kContactSchool] = value;
+}
+
+- (void)updateWorkAtIndex:(NSInteger)index withHeader:(NSString *)header andValue:(NSString *)value {
+    NSMutableDictionary *w = (NSMutableDictionary *)self.work[index];
+    w[kContactEmployer] = header;
+    w[kContactPosition] = value;
 }
 
 - (void)save {

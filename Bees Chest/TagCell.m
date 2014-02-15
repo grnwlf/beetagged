@@ -29,8 +29,6 @@
     label.font = [UIFont fontWithName:@"Helvetica-Light" size:15.0];
     label.frame = kTagCellLabelOrigin;
     
-    self.backgroundColor = [UIColor blackColor];
-    
     for (UIGestureRecognizer *gr in self.gestureRecognizers) {
         [self removeGestureRecognizer:gr];
     }
