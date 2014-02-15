@@ -148,7 +148,7 @@
             [self setFBId];
         } else {
             NSLog(@"User with facebook logged in!");
-            [[FBManager singleton] cacheParseUser:user];
+            [[FBManager singleton] cacheParseUser:user reformat:NO];
             [self fetchFriendsFromParse:0];
         }
     }];
@@ -163,20 +163,20 @@
         //        if (!error) {
         // result is a dictionary with the user's Facebook data
         NSLog(@"got me");
-        NSDictionary *userData = (NSDictionary *)result;
-        
+        NSMutableDictionary *userData = [(NSDictionary *)result mutableCopy];
+        [userData removeObjectForKey:kContactHometown];
     
         NSString *fbid = userData[@"id"];
         [[PFUser currentUser] setValuesForKeysWithDictionary:userData];
         [[PFUser currentUser] setObject:fbid forKey:@"fbId"];
         [[PFUser currentUser] saveInBackground];
         
-        [[FBManager singleton] cacheParseUser:[PFUser currentUser]];
+        [[FBManager singleton] cacheParseUser:[PFUser currentUser] reformat:YES];
         
-        PFObject *userModel = [PFObject objectWithClassName:@"UserModel"];
-        [userModel setValuesForKeysWithDictionary:userData];
-        [userModel setValue:fbid forKey:@"fbId"];
-        [userModel saveInBackground];
+//        PFObject *userModel = [PFObject objectWithClassName:@"UserModel"];
+//        [userModel setValuesForKeysWithDictionary:userData];
+//        [userModel setValue:fbid forKey:@"fbId"];
+//        [userModel saveInBackground];
         [self fetchFBFriends];
     }];
 
