@@ -290,6 +290,7 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.ContactTableView) {
         [self performSegueWithIdentifier:kShowContactSegue sender:self];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else if (tableView == self.tagTableView) {
         [self.tagFilters removeObjectAtIndex:indexPath.row];
         [self renderFilter];

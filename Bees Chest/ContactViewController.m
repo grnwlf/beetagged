@@ -50,6 +50,7 @@ static const float tfHeight = 30.0;
         self.contactTags = [[NSMutableArray alloc] init];
     }
     self.isCurrentlyDeleting = NO;
+    [self.tagsCollectionView registerClass:[TagCell class] forCellWithReuseIdentifier:@"TagCollectionCell"];
 }
 
 - (void)renderContact:(Contact*)c {
@@ -72,8 +73,8 @@ static const float tfHeight = 30.0;
 
     self.typeAheadViewController = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(left, top, self.view.frame.size.width - left * 2, height) andData:[[FBManager singleton] tagOptionsArray]];
     self.typeAheadViewController.delegate = self;
-    self.typeAheadViewController.view.layer.cornerRadius = 40.0;
-    self.typeAheadViewController.view.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:.6];
+    self.typeAheadViewController.view.layer.cornerRadius = 10.0;
+    self.typeAheadViewController.view.backgroundColor = [UIColor colorWithRed:236.0/255.0 green:240.0/255.0 blue:241.0/255.0 alpha:.95];
     self.typeAheadViewController.view.tableView.backgroundColor = [UIColor clearColor];
     [self.typeAheadViewController hideView:NO];
     [self addChildViewController:self.typeAheadViewController];
@@ -215,6 +216,7 @@ static const float tfHeight = 30.0;
         return [self updateProfileViewCell:cell atIndexPath:indexPath withKey:kContactEducation];
     } else {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CollectionCell" forIndexPath:indexPath];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         UICollectionView *collectionView = (UICollectionView*)[cell viewWithTag:2];
         self.tagsCollectionView = collectionView;
         [self.tagsCollectionView reloadData];
@@ -624,81 +626,73 @@ static const float tfHeight = 30.0;
 //    }];
 }
 
-
-
-
 // style the collectionView cell at the indexPath
 - (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *tagCellIdentifier = @"TagCollectionCell";
-    [self.tagsCollectionView registerClass:[TagCell class] forCellWithReuseIdentifier:tagCellIdentifier];
-    
     TagCell *cell = (TagCell *)[cv dequeueReusableCellWithReuseIdentifier:tagCellIdentifier forIndexPath:indexPath];
-    //UILabel *label = (UILabel *)[cell viewWithTag:1];
-    UILabel *label = [[UILabel alloc] init];
+    cell.backgroundColor = [UIColor cloudsColor];
+    UILabel *label = (UILabel *)[cell viewWithTag:1];
+    label.backgroundColor = [UIColor clearColor];
+    
     NSInteger i = indexPath.item;
-    cell.layer.cornerRadius = cell.frame.size.height / 4;
     cell.itemIndex = i;
     cell.delegate = self;
     
     BOOL isReloadingForDelete = (self.itemToDelete != -1);
+    
     // 1. There is no cell being deleted
     if (!isReloadingForDelete) {
         if (i < self.contactTags.count) {
             [cell addLongPress];
             Tag *tag = self.contactTags[i];
-            NSLog(@"got tag %@", tag.attributeName);
-            [label setText:tag.attributeName];
-            label.textColor = [UIColor whiteColor];
+            label.text = tag.attributeName;
+            label.textColor = [UIColor goldBeeColor];
         } else {
             label.text = @"+";
-            label.font = [UIFont fontWithName:@"Helvetica-Bold" size:50.0];
+            label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:50.0];
             float cellHeight = cell.frame.size.height, labelHeight = label.frame.size.height;
             float offset = cellHeight - labelHeight - 3.0;
-            label.frame = CGRectMake(0, offset, cell.frame.size.width, labelHeight);
-            label.textColor = [UIColor whiteColor];
+            label.frame = CGRectMake(0, offset, cell.frame.size.width *2, labelHeight);
+            label.textColor = [UIColor goldBeeColor];
         }
     } else {
         if (i < self.contactTags.count) {
             [cell turnOnDelete];
         } else {
-            label.text = @"Back";
-            label.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+            label.text = @"BACK";
+            label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0];
             label.textColor = [UIColor whiteColor];
         }
     }
     
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold" size:20.0], NSFontAttributeName, nil];
+
     if (indexPath.item >= self.contactTags.count) {
-        [label setFrame:CGRectMake(0, 0, 50, 50)];
+        NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"HelveticaNeue-Bold" size:55.0], NSFontAttributeName, nil];
+        CGSize s = CGSizeMake([@"+" sizeWithAttributes:attributes].width + 20, 50);
+        [label setFrame:CGRectMake(0, -5, s.width, s.height)];
     } else {
+        NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"HelveticaNeue-Thin" size:20.0], NSFontAttributeName, nil];
         CGSize s = CGSizeMake([[self.contactTags[indexPath.item] attributeName] sizeWithAttributes:attributes].width, 50);
-        [label setFrame:CGRectMake(0, 0, s.width, s.height)];
+        [label setFrame:CGRectMake(10, 0, s.width, s.height)];
     }
-    [label setTextColor:[UIColor blackColor]];
+    
     label.textAlignment = NSTextAlignmentCenter;
-    [cell.contentView addSubview:label];
-    
-    NSLog(@"%@", label.text);
-    
     return cell;
 }
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold" size:20.0], NSFontAttributeName, nil];
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+
     if (indexPath.item >= self.contactTags.count) {
-        return CGSizeMake(50, 50);
+        NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"HelveticaNeue-Bold" size:55.0], NSFontAttributeName, nil];
+        return CGSizeMake([@"+" sizeWithAttributes:attributes].width + 20, 50);
+    } else {
+        NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"HelveticaNeue-Thin" size:20.0], NSFontAttributeName, nil];
+        return CGSizeMake([[self.contactTags[indexPath.item] attributeName] sizeWithAttributes:attributes].width + 20, 50);
     }
-    CGSize s = CGSizeMake([[self.contactTags[indexPath.item] attributeName] sizeWithAttributes:attributes].width, 50);
-    return s;
 }
 
 
 #pragma mark - Tag insert/remove
-// adds a Tag object at the indexPath
-// adds a Tag object from Core Data
-
-
 // This is the callback function for the long press on the cell.  Basically,
 // it's job is to notify the view controller that someone is trying to delete
 // one of the cells.

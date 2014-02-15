@@ -7,6 +7,7 @@
 //
 
 #import "TagCell.h"
+#import "UIColor+Bee.h"
 
 @implementation TagCell
 
@@ -14,7 +15,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self.contentView addSubview:self.label];
-        self.backgroundColor = [UIColor lightGrayColor];
+        self.backgroundColor = [UIColor cloudsColor];
+        self.layer.cornerRadius = 2.0;
     }
     return self;
 }
@@ -26,8 +28,11 @@
     self.itemIndex = -1;
     
     UILabel *label = (UILabel *)[self viewWithTag:1];
-    label.font = [UIFont fontWithName:@"Helvetica-Light" size:15.0];
+    label.text = @"";
+    label.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:18.0];
+    label.textColor = [UIColor yellowBeeColor];
     label.frame = kTagCellLabelOrigin;
+    self.backgroundColor = [UIColor cloudsColor];
     
     for (UIGestureRecognizer *gr in self.gestureRecognizers) {
         [self removeGestureRecognizer:gr];

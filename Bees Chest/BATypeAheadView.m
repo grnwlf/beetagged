@@ -29,15 +29,14 @@
         self.inputTextField = [[UITextField alloc] initWithFrame:CGRectMake(50, 0, self.frame.size.width - 100.0, kBATypeAheadTextLabelHeight)];
         self.exitButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 50, 5.0, 25.0, 25.0)];
         [self.exitButton setTitle:@"x" forState:UIControlStateNormal];
-        self.exitButton.titleLabel.textColor = [UIColor whiteColor];
+        self.exitButton.titleLabel.textColor = [UIColor blackColor];
         self.exitButton.backgroundColor = [UIColor clearColor];
         [self addSubview:self.exitButton];
         
-        
         self.inputTextField.textAlignment = NSTextAlignmentCenter;
         self.inputTextField.backgroundColor = [UIColor clearColor];
-        self.inputTextField.textColor = [UIColor whiteColor];
-        self.inputTextField.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+        self.inputTextField.textColor = [UIColor blackColor];
+        self.inputTextField.font = [UIFont fontWithName:@"HelveticaNeue" size:16.0];
         
         [self addSubview:self.tableView];
         [self addSubview:self.inputTextField];

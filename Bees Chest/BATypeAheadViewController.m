@@ -125,7 +125,7 @@
     
     Tag *tag = self.searchData[indexPath.row];
     cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Thin" size:14.0];
-    cell.textLabel.textColor = [UIColor whiteColor];
+    cell.textLabel.textColor = [UIColor blackColor];
     cell.textLabel.backgroundColor = [UIColor clearColor];
     cell.backgroundColor = [UIColor clearColor];
     cell.textLabel.text = tag.attributeName;
