@@ -40,13 +40,20 @@ static FBManager *fb = nil;
     }
 }
 
-- (void)cacheParseUser:(PFUser*)user {
-    [self reformatEducation:user];
-    [self reformatWorkFor:user];
-    [self reformatHometown:user];
-    
+- (void)cacheParseUser:(PFUser*)user reformat:(BOOL)reformat {
+    if (reformat) {
+        [self reformatEducation:user];
+        [self reformatWorkFor:user];
+        //[self reformatHometown:user];
+        
+    }
     self.currentParseUser = [Contact contactFromUserModel:user];
-    [self saveContext];
+    NSError *error;
+    [self.managedObjectContext save:&error];
+    if (error) {
+        NSLog(@"couldn't cache user: %@", error);
+        [[PFUser currentUser] deleteInBackground];
+    }
 }
 
 - (void)saveContext {
@@ -200,10 +207,21 @@ static FBManager *fb = nil;
         for (Contact *c in self.fetchedResultsController.fetchedObjects) {
             [userIds addObject:c.parseId];
         }
+        NSLog(@"update pfuser %@", [[PFUser currentUser] objectForKey:@"first_name"]);
         
         [[PFUser currentUser] setObject:userIds forKey:@"connections"];
-        [[PFUser currentUser] saveInBackground];
-        cb();
+        [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                cb();
+                return;
+            } else {
+                NSLog(@"%@", error);
+                PFUser *c = [PFUser currentUser];
+                [PFUser logOut];
+                [c deleteInBackground];
+                return;
+            }
+        }];
         return;
     }
     int end = to;

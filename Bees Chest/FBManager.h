@@ -48,7 +48,7 @@
 - (void)clearDB;
 - (void)fetchContacts;
 - (void)filterForTags:(NSArray*)tags;
-- (void)cacheParseUser:(PFUser*)user;
+- (void)cacheParseUser:(PFUser*)user reformat:(BOOL)reformat;
 - (void)fetchCurUser;
 
 
