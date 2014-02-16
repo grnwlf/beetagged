@@ -23,7 +23,7 @@
 @implementation ContactViewController
 
 static const float margin = 15.0;
-static const float tfHeight = 46.0;
+static const float tfHeight = 54.0;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
