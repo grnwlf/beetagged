@@ -47,6 +47,7 @@
 		9D3792E41878D0D6003955EF /* Bees Chest Placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D3792E31878D0D6003955EF /* Bees Chest Placeholder.png */; };
 		9D875E4518AECF84002E945B /* UIColor+Bee.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D875E4418AECF84002E945B /* UIColor+Bee.m */; };
 		9D875E4818AED19C002E945B /* BeeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D875E4718AED19C002E945B /* BeeButton.m */; };
+		9D875E4B18B0688A002E945B /* NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D875E4A18B0688A002E945B /* NetworkManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,6 +128,8 @@
 		9D875E4418AECF84002E945B /* UIColor+Bee.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Bee.m"; sourceTree = "<group>"; };
 		9D875E4618AED19C002E945B /* BeeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeeButton.h; sourceTree = "<group>"; };
 		9D875E4718AED19C002E945B /* BeeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeeButton.m; sourceTree = "<group>"; };
+		9D875E4918B0688A002E945B /* NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkManager.h; sourceTree = "<group>"; };
+		9D875E4A18B0688A002E945B /* NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkManager.m; sourceTree = "<group>"; };
 		AEA705BE07BD482FBA74034C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -245,6 +248,8 @@
 				2889B06518706EAE00CF8580 /* FBManager.m */,
 				288D49031889BC4700051BCB /* ContactManager.h */,
 				288D49041889BC4700051BCB /* ContactManager.m */,
+				9D875E4918B0688A002E945B /* NetworkManager.h */,
+				9D875E4A18B0688A002E945B /* NetworkManager.m */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -465,6 +470,7 @@
 			files = (
 				9D2C713C187A496C0022CE5F /* TagCell.m in Sources */,
 				9D2C713F187A6EE00022CE5F /* LessBoringFlowLayout.m in Sources */,
+				9D875E4B18B0688A002E945B /* NetworkManager.m in Sources */,
 				2889B0461870651700CF8580 /* ViewController.m in Sources */,
 				2813B221188E04DB00845843 /* TagIndex.m in Sources */,
 				2889B0791874993500CF8580 /* BeesChestViewController.m in Sources */,
