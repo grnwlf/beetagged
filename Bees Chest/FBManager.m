@@ -408,10 +408,6 @@ static FBManager *fb = nil;
 
 
 //deprecated with FB transition
-//- (BOOL)loggedIn {
-//    return [[NSUserDefaults standardUserDefaults] objectForKey:kLIToken] != nil;
-//}
-
 - (void)clearDB {
     for (Contact *c in self.fetchedResultsController.fetchedObjects) {
         [self.managedObjectContext deleteObject:c];
