@@ -24,12 +24,22 @@
 //    if ([[FBManager singleton] loggedIn]) {
 //        [self performSegueWithIdentifier:kLoginSegue sender:self];
 //    }
+    [PFUser logOut];
+    self.dimView.alpha = 0;
     [FBManager singleton].vc = self;
     FAKZocial *fb = [FAKZocial facebookIconWithSize:15];
     UIImage *fbImage = [fb imageWithSize:CGSizeMake(300, 50)];
     [self.loginBtn setImage:fbImage forState:UIControlStateNormal];
     
     self.loginBtn.alpha = 1;
+    
+    self.spinner = [[BASpinner alloc] initWithFrame:CGRectMake(kWidth/2-50, kHeight/2-50, 100, 100) andColor:[UIColor greenColor] andBackgroundColor:[UIColor clearColor]];
+    [self.view addSubview:self.spinner];
+    
+    self.dimView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];
+    self.dimView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
+    self.dimView.alpha = 0;
+    [self.view addSubview:self.dimView];
     
     [self.navigationController.navigationBar setHidden:YES];
 }
@@ -99,6 +109,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 //    [PFUser logOut];
+    [PFUser logOut];
+    self.loginBtn.alpha = 1;
     self.title = @"Facebook Profile";
     // Check if user is cached and linked to Facebook, if so, bypass login
     if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
@@ -113,7 +125,8 @@
 - (IBAction)loginButtonTouchHandler:(id)sender  {
     NSLog(@"go");
    // [self startActivity];
-    
+    self.loginBtn.alpha = 0;
+    //[self.spinner start];
     // Set permissions required from the facebook user account
     NSArray *permissionsArray = @[ @"user_about_me",
                                    @"user_relationships",
@@ -131,8 +144,11 @@
     
     // Login PFUser using facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
-        [_activityIndicator stopAnimating]; // Hide loading indicator
-        
+        [UIView animateWithDuration:0.3 animations:^{
+           self.dimView.alpha = 1;
+        }];
+        [self.spinner start];
+        self.loginBtn.alpha = 0;
         if (!user) {
             if (!error) {
                 NSLog(@"Uh oh. The user cancelled the Facebook login.");
@@ -164,19 +180,22 @@
         // result is a dictionary with the user's Facebook data
         NSLog(@"got me");
         NSMutableDictionary *userData = [(NSDictionary *)result mutableCopy];
-        [userData removeObjectForKey:kContactHometown];
+        
+        [FBManager reformatEducation:userData];
+        [FBManager reformatWork:userData];
+        [FBManager reformatHometown:userData];
     
         NSString *fbid = userData[@"id"];
         [[PFUser currentUser] setValuesForKeysWithDictionary:userData];
         [[PFUser currentUser] setObject:fbid forKey:@"fbId"];
         [[PFUser currentUser] saveInBackground];
         
-        [[FBManager singleton] cacheParseUser:[PFUser currentUser] reformat:YES];
+        [[FBManager singleton] cacheParseUser:[PFUser currentUser] reformat:NO];
         
-//        PFObject *userModel = [PFObject objectWithClassName:@"UserModel"];
-//        [userModel setValuesForKeysWithDictionary:userData];
-//        [userModel setValue:fbid forKey:@"fbId"];
-//        [userModel saveInBackground];
+        PFObject *userModel = [PFObject objectWithClassName:@"UserModel"];
+        [userModel setValuesForKeysWithDictionary:userData];
+        [userModel setValue:fbid forKey:@"fbId"];
+        [userModel saveInBackground];
         [self fetchFBFriends];
     }];
 
@@ -197,7 +216,6 @@
         } else {
             [self fetchFriendsFromParse:skip+1000];
         }
-        
         
     }];
     
@@ -264,6 +282,7 @@
 }
 
 - (void)loginToApp {
+    [self.spinner stop];
     [self performSegueWithIdentifier:kLoginSegue sender:self];
 }
 

@@ -50,6 +50,10 @@
 - (void)filterForTags:(NSArray*)tags;
 - (void)cacheParseUser:(PFUser*)user reformat:(BOOL)reformat;
 - (void)fetchCurUser;
++ (void)reformatHometown:(NSMutableDictionary*)c;
++ (void)reformatWork:(NSMutableDictionary*)c;
++ (void)reformatEducation:(NSMutableDictionary*)c;
+
 
 
 @end

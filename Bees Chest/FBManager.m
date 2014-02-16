@@ -42,9 +42,9 @@ static FBManager *fb = nil;
 
 - (void)cacheParseUser:(PFUser*)user reformat:(BOOL)reformat {
     if (reformat) {
-        [self reformatEducation:user];
-        [self reformatWorkFor:user];
-        //[self reformatHometown:user];
+        [FBManager reformatEducation:user];
+        [FBManager reformatWork:user];
+        [FBManager reformatHometown:user];
         
     }
     self.currentParseUser = [Contact contactFromUserModel:user];
@@ -120,7 +120,7 @@ static FBManager *fb = nil;
     }];
 }
 
-- (void)reformatWorkFor:(NSMutableDictionary*)c {
++ (void)reformatWork:(NSMutableDictionary*)c {
     NSMutableArray *workArr = [[NSMutableArray alloc] init];
     NSLog(@"work");
     for (NSDictionary *workDict in c[kContactWork]) {
@@ -139,7 +139,7 @@ static FBManager *fb = nil;
     
 }
 
-- (void)reformatEducation:(NSMutableDictionary*)c {
++ (void)reformatEducation:(NSMutableDictionary*)c {
     NSMutableArray *eduArr = [[NSMutableArray alloc] init];
     NSLog(@"education");
     for (NSDictionary *eduDict in c[kContactEducation]) {
@@ -162,7 +162,7 @@ static FBManager *fb = nil;
     
 }
 
-- (void)reformatHometown:(NSMutableDictionary*)c {
++ (void)reformatHometown:(NSMutableDictionary*)c {
     if (c[kContactHometown]) {
         NSLog(@"reformat home");
         NSString *s = c[kContactHometown][kContactName];
@@ -176,9 +176,9 @@ static FBManager *fb = nil;
     NSMutableArray *pfUsers = [NSMutableArray arrayWithCapacity:[contacts count]];
     for (int i = 0; i < contacts.count; i++) {
         NSMutableDictionary *c = [[NSMutableDictionary alloc] initWithDictionary:contacts[i]];
-        [self reformatWorkFor:c];
-        [self reformatEducation:c];
-        [self reformatHometown:c];
+        [FBManager reformatWork:c];
+        [FBManager reformatEducation:c];
+        [FBManager reformatHometown:c];
         [pfUsers addObject:c];
     }
     NSString *meId = [[PFUser currentUser] objectForKey:@"fbId"];
