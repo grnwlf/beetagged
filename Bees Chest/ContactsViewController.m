@@ -301,6 +301,7 @@
     }
 }
 
+// either selects a contact or removes a tag depending on tableview selected
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.ContactTableView) {
         [self performSegueWithIdentifier:kShowContactSegue sender:self];
@@ -311,6 +312,8 @@
     }
 }
 
+
+// perform necessary logic to render a contact on the single contacts screen
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:kShowContactSegue]) {
         FBManager *lim = [FBManager singleton];
@@ -328,6 +331,8 @@
         [cvc renderContact:contact];
     }
 }
+
+//show or hide tag filter view
 - (IBAction)filterTags:(id)sender {
     if (!self.typeAheadViewController.data) {
         self.typeAheadViewController.data = [[FBManager singleton] tagOptionsArray];
@@ -344,6 +349,7 @@
     }
 }
 
+//callback function from BATypeAheadViewController, adds a new tag
 - (void)cellClickedWithData:(id)data {
     TagOption *t = (TagOption*)data;
     [self.tagFilters addObject:t.attributeName];
@@ -353,6 +359,7 @@
 
 }
 
+//query FBManager.tagindex for correct contacts
 - (void)renderFilter {
     FBManager *fb = [FBManager singleton];
     fb.search = NO;

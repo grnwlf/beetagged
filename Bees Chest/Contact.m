@@ -290,7 +290,7 @@
             addedTags[word] = @(0); // don't add tags twice
             TagOption *option = [lim.tagOptions objectForKey:word];
             if (option) {
-                Tag *newTag = [Tag tagFromTagOption:option taggedUser:self.fbId byUser:[lim currenUserId]];
+                Tag *newTag = [Tag tagFromTagOption:option taggedUser:self.fbId byUser:[[lim currentParseUser] fbId]];
                 //[generated addObject:@{kTagName: newTag, kTagVal : @(0)}];
             }
         }
@@ -306,6 +306,7 @@
     self.hasGeneratedTags = YES;
     self.tagData = [NSKeyedArchiver archivedDataWithRootObject:addedTags];
 }
+
 
 - (void)addTag:(NSString*)tag {
     self.tags_[tag] = [Tag tagFromTagName:tag taggedUser:self.parseId byUser:[[PFUser currentUser] objectForKey:@"fbId"] withRank:0];
@@ -346,31 +347,7 @@
 -(NSArray *)cleanseString:(NSString *)dirtyString dirtySet:(NSCharacterSet *)dirtySet {
     return [dirtyString componentsSeparatedByCharactersInSet:dirtySet];
 }
-
-- (void)tagsFromServerWitBlock:(void (^)(BOOL success))callback {
-    if (self.tags_) {
-        [self.tags_ removeAllObjects];
-    } else {
-        self.tags_ = [[NSMutableDictionary alloc] init];
-    }
-    FBManager *lim = [FBManager singleton];
-    PFQuery *query = [PFQuery queryWithClassName:kTagClass];
-    [query whereKey:kTagTaggedBy equalTo:[lim currenUserId]];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (error) {
-            NSLog(@"Error getting tags %@", error);
-            if (callback) callback(NO);
-        } else {
-            
-            for (PFObject *obj in objects) {
-                Tag *t = [Tag tagFromParse:obj];
-                [self.tags_ setObject:t forKey:t.attributeName];
-            }
-            if (callback) callback(YES);
-        }
-    }];
-}
-
+// returns the amount of profile options the user has
 - (NSMutableArray*)profileAttributeKeys {
     NSMutableArray *n = [[NSMutableArray alloc] init];
     if (self.work.count > 0) {
@@ -392,6 +369,7 @@
     return s;
 }
 
+//grabs contact details
 - (NSMutableArray*)detailAttributesFor:(NSString *)key {
     NSMutableArray *n = [[NSMutableArray alloc] init];
     if ([key isEqualToString:kContactWork]) {
@@ -422,12 +400,15 @@
     w[kContactPosition] = value;
 }
 
+//saves contacts data to data before storing in core data
 - (void)save {
     self.tagData = [NSKeyedArchiver archivedDataWithRootObject:self.tags_];
     self.educationData = [NSKeyedArchiver archivedDataWithRootObject:self.education];
     self.workData = [NSKeyedArchiver archivedDataWithRootObject:self.work];
 }
 
+
+// reupdate users from parse data
 - (void)updateWithCallback:(void(^)(void))callback {
     PFQuery *query = [PFQuery queryWithClassName:@"UserModel"];
     [query whereKey:@"fbId" equalTo:self.fbId];
@@ -449,6 +430,7 @@
     }];
 }
 
+// save contact to parse when updated
 - (void)saveContactToParse {
     if (!self.userModel) {
         PFQuery *query = [PFQuery queryWithClassName:@"UserModel"];

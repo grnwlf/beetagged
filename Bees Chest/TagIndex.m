@@ -15,7 +15,7 @@
     self = [super init];
     if (self) {
         self.data = [[NSMutableDictionary alloc] init];
-        self.sameTags = [[NSMutableDictionary alloc] init];
+        //self.sameTags = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -43,7 +43,7 @@
             [self add:c forTag:c.tags_[t] andSort:NO];
         }
     }
-    
+    // logic used to make sure contacts are placed in correct order in each array
     for (NSString *t in self.data.allKeys) {
         NSMutableArray *arr = self.data[t];
         NSMutableArray *arr2 = [[NSMutableArray alloc] init];
@@ -72,22 +72,22 @@
     [self sortForTag:tag];
 }
 
-- (BOOL)hasSameForTag:(Tag*)tag {
-    int tmp = -1;
-    for (Contact *c in self.data[tag.attributeName]) {
-        Tag *t = c.tags_[tag.attributeName];
-        if (tmp == [t.rank integerValue]) {
-            self.sameTags[t.attributeName] = t;
-            return true;
-        } else {
-            tmp = [t.rank integerValue];
-        }
-    }
-    if (self.sameTags[tag.attributeName] != nil) {
-        [self.sameTags removeObjectForKey:tag.attributeName];
-    }
-    return NO;
-}
+//- (BOOL)hasSameForTag:(Tag*)tag {
+//    int tmp = -1;
+//    for (Contact *c in self.data[tag.attributeName]) {
+//        Tag *t = c.tags_[tag.attributeName];
+//        if (tmp == [t.rank integerValue]) {
+//            self.sameTags[t.attributeName] = t;
+//            return true;
+//        } else {
+//            tmp = [t.rank integerValue];
+//        }
+//    }
+//    if (self.sameTags[tag.attributeName] != nil) {
+//        [self.sameTags removeObjectForKey:tag.attributeName];
+//    }
+//    return NO;
+//}
 
 - (NSArray*)findTwoSameForTag:(NSString*)tag {
     NSMutableArray *arr = self.data[tag];
@@ -110,18 +110,18 @@
     NSMutableArray *pushTags = [[NSMutableArray alloc] init];
     NSMutableArray *arr = self.data[tag.attributeName];
     NSLog(@"setting new vals for tag %@", tag.attributeName);
+    
+    //update each users tag rank to their position in the array
     for (int i = 0; i < arr.count; i++) {
         Contact *c = (Contact*)arr[i];
         Tag *t = [c.tags_ objectForKey:tag.attributeName];
         [t setRank:[NSNumber numberWithInt:i]];
         PFObject *pfTag = [t pfObject];
-        
         [pushTags addObject:pfTag];
     }
-    [self printForTag:tag];
-    [PFObject saveAllInBackground:pushTags];
     
-    [[FBManager singleton] saveContext];
+    //push all to parse
+    [PFObject saveAllInBackground:pushTags];
 }
 
 - (void)printTagIndex {
@@ -141,6 +141,7 @@
     NSArray *allTags = self.data.allKeys;
     NSMutableArray *possibleOptions = [[NSMutableArray alloc] init];
     int i = 0;
+    // only grab tags that have at least two associated contacts
     for (Tag *t in allTags) {
         if ([self.data[t] count] > 1) {
             [possibleOptions addObject:@(i)];
@@ -153,23 +154,6 @@
     NSLog(@"possible options: %i", possibleOptions.count);
     int idx = [possibleOptions[rand() % possibleOptions.count] integerValue];
     return allTags[idx];
-}
-
-- (void)printRandomSame:(int)i {
-    NSLog(@"printing random contacts");
-    NSArray *keys = self.sameTags.allKeys;
-    while (i > 0) {
-        Tag *tag = self.sameTags[keys[rand()%keys.count]];
-        NSLog(@"%@", tag.attributeName);
-        NSArray *p = [self findTwoSameForTag:tag];
-        Contact *c = p[0];
-        Tag *t = c.tags_[tag.attributeName];
-        Contact *c2 = p[1];
-        Tag *t2 = c2.tags_[tag.attributeName];
-        NSLog(@"%@ %@ %@ %i %@ %@ %i", tag.attributeName, c.first_name, c.last_name, t.rank.integerValue, c2.first_name, c2.last_name, t2.rank.integerValue );
-        i--;
-        
-    }
 }
 
 @end

@@ -123,6 +123,7 @@
 
 /* Login to facebook method */
 - (IBAction)loginButtonTouchHandler:(id)sender  {
+    [[FBManager singleton] clearDB]; //extra precaution to clear database before someone signs in
     NSLog(@"go");
    // [self startActivity];
     self.loginBtn.alpha = 0;
@@ -201,6 +202,8 @@
 
 }
 
+
+//grab 1000 friends at a time and save to core data
 - (void)fetchFriendsFromParse:(int)skip {
     PFQuery *query = [PFQuery queryWithClassName:@"UserModel"];
     [query setLimit:1000];
@@ -221,6 +224,7 @@
     
 }
 
+//logic needed to associate users with tags
 - (void)createTmpUserDict {
     self.tmpUserDict = [[NSMutableDictionary alloc] init];
     [[FBManager singleton] fetchContacts];
@@ -232,6 +236,8 @@
     [self fetchTags:0];
 }
 
+
+//grab tags 1000 (parse limit) at a time and associate with user
 - (void)fetchTags:(int)skip {
     NSLog(@"fetching tags");
     PFQuery *query = [PFQuery queryWithClassName:@"Tag"];
@@ -259,6 +265,8 @@
 
 }
 
+
+//grab facebook friends to push to parse
 - (void)fetchFBFriends
 {
     FBRequest *friends = [FBRequest requestForGraphPath:@"me/friends?fields=about,bio,birthday,education,email,first_name,gender,id,hometown,last_name,name,relationship_status,work"];

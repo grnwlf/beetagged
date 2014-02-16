@@ -53,6 +53,8 @@ static const float tfHeight = 54.0;
     [self.tagsCollectionView registerClass:[TagCell class] forCellWithReuseIdentifier:@"TagCollectionCell"];
 }
 
+
+//renders the contact and performs logic to decide if it is you or another contact
 - (void)renderContact:(Contact *)c {
     if (c == nil) {
         NSLog(@"current user");

@@ -26,6 +26,8 @@ static FBManager *fb = nil;
     return fb;
 }
 
+
+//grabs current user from core data where fbId == Parse.current_user.fbID
 - (void)fetchCurUser {
     NSFetchRequest *req = [[NSFetchRequest alloc] init];
     NSEntityDescription *desc = [NSEntityDescription entityForName:@"Contact" inManagedObjectContext:self.managedObjectContext];
@@ -40,6 +42,7 @@ static FBManager *fb = nil;
     }
 }
 
+//save parse current user to core data
 - (void)cacheParseUser:(PFUser*)user reformat:(BOOL)reformat {
     if (reformat) {
         [FBManager reformatEducation:user];
@@ -56,6 +59,8 @@ static FBManager *fb = nil;
     }
 }
 
+
+// save all the contacts to core data (use sparingly, can freeze ui temporarily)
 - (void)saveContext {
     for (Contact *c in self.fetchedResultsController.fetchedObjects) {
         [c save];
@@ -76,6 +81,7 @@ static FBManager *fb = nil;
     if (self) {
         self.tagIndex = [[TagIndex alloc] init];
         
+        //initiate core data connections
         NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"BeesChestData" withExtension:@"momd"];
         self.managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
         NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Tag.sqlite"];
@@ -171,6 +177,8 @@ static FBManager *fb = nil;
     }
 }
 
+
+//take array of fb friends and reformats data for parse
 - (void)importContacts:(NSArray*)contacts cb:(void(^)(void))callback {
     NSLog(@"importing %i contacts", contacts.count);
     NSMutableArray *pfUsers = [NSMutableArray arrayWithCapacity:[contacts count]];
@@ -187,15 +195,11 @@ static FBManager *fb = nil;
     
     [self uploadContacts:pfUsers meId:meId from:0 to:100 cb:callback];
     
-    
-    
-//    for (NSDictionary *c in contacts) {
-//        Contact *contact = [Contact contactFromFB:c];
-//        
-//        [self.managedObjectContext save:nil];
-//    }
 }
 
+
+//uploads reformated fb friends to parse at x amount at a time (feel free to play around with the amount)
+//I found 100 at a time worked best with parse
 - (void)uploadContacts:(NSArray*)contacts meId:(NSString*)meId from:(int)from to:(int)to cb:(void(^)(void))cb {
     NSLog(@"%i %i", from, contacts.count);
     if (from >= contacts.count) {
@@ -261,6 +265,8 @@ static FBManager *fb = nil;
 }
 
 
+//grab all contacts from core data and store in fetchedResultsController
+// also creates tagIndex
 - (void)fetchContacts {
     NSFetchRequest *req = [[NSFetchRequest alloc] init];
     NSEntityDescription *desc = [NSEntityDescription entityForName:@"Contact" inManagedObjectContext:self.managedObjectContext];
@@ -278,43 +284,11 @@ static FBManager *fb = nil;
     BOOL success = [self.fetchedResultsController performFetch:&error];
     if (success) {
         self.hasContacts = YES;
-        //[self createFakeTags];
-        //[self printContacts];
         [self.tagIndex createIndex:self.fetchedResultsController.fetchedObjects];
         [self.tagIndex printTagIndex];
         NSLog(@"The fetch from Core Data was succcessful");
     } else {
         NSLog(@"Error fetching contacts from Core Data: %@", [error localizedDescription]);
-    }
-}
-
-- (void)createFakeTags {
-    NSString *tagStr = @"iOS Android Rails Python Java C++ ";
-//    Go JavaScript Rails HTML CSS C SQL Perl PHP Haml Node Sails Express MongoDB Postgres MySQL Oracle Assembly Sass Math Science English History Writing Web Design Frontend Backend Database FullStack Communications Law Enterpeneur Health Doctor Calc Trig Stats Psych CS CSE EECS Mechanical Medical Engineering A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 1 2 3 4 5 6 7 8 9";
-    NSArray *fakeTags = [tagStr componentsSeparatedByString:@" "];
-    int x = fakeTags.count;
-    for (Contact *c in self.fetchedResultsController.fetchedObjects) {
-        int r = rand() % x;
-        int rank = rand() % 6;
-        Tag *t = [Tag tagFromTagName:fakeTags[r] taggedUser:c.parseId byUser:[[PFUser currentUser] objectForKey:@"fbId"] withRank:rank];
-        
-        c.tags_ = [@{ t.attributeName : t } mutableCopy];
-    }
-}
-
-- (void)printContacts {
-    NSLog(@"=====================================================================");
-    NSLog(@"Printing all %i contacts", self.fetchedResultsController.fetchedObjects.count);
-    NSLog(@"=====================================================================");
-    
-    for (Contact *c in self.fetchedResultsController.fetchedObjects) {
-        NSMutableString *tags = [[NSMutableString alloc] init];
-        NSArray *keys = c.tags_.allKeys;
-        for (NSString *k in keys) {
-            Tag *t = c.tags_[k];
-            [tags appendFormat:@" %@ %@ %i", k, t.attributeName, t.rank.integerValue];
-        }
-        NSLog(@"%@ : %@", c.name, tags);
     }
 }
 
@@ -329,31 +303,7 @@ static FBManager *fb = nil;
     return tagOptions;
 }
 
-- (void)setToken:(NSString*)token {
-    [[NSUserDefaults standardUserDefaults] setObject:token forKey:kLIToken];
-}
-
-- (NSString*)token {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kLIToken];
-}
-
-- (void)setCurrentUser:(NSDictionary *)user {
-    [[NSUserDefaults standardUserDefaults] setObject:user forKey:kLICurUser];
-}
-
-- (NSString*)currentUser {
-    return [[NSUserDefaults standardUserDefaults] stringForKey:kLICurUser];
-}
-
-- (NSString *)currenUserId {
-    NSDictionary *currentUser = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kLICurUser];
-    return currentUser[kContactFBId];
-}
-
-- (NSDictionary *)currentUserAsDictionary {
-    return [[NSUserDefaults standardUserDefaults] dictionaryForKey:kLICurUser];
-}
-
+// takes in string from ContactsViewController and returns contacts with matching first and last names
 - (void)search:(NSString *)query {
     if (query.length == 0) {
         self.search = false;
@@ -375,6 +325,8 @@ static FBManager *fb = nil;
     }
 }
 
+
+//takes in tags and finds the intersection of contacts with all tags
 - (void)filterForTags:(NSArray*)tags {
     if (tags.count == 0) {
         self.tagFilter = false;
@@ -405,7 +357,7 @@ static FBManager *fb = nil;
     NSLog(@"filtered array %@", self.filterArray);
 }
 
-
+// grabs all tags from network of friends and orders by ranks
 - (void)filterForTagsFromNetwork:(NSArray *)tags cb:(void(^)(void))callback {
     PFQuery *query = [PFQuery queryWithClassName:@"Tag"];
     [query whereKey:kTagAttributeName containedIn:tags];
@@ -419,6 +371,7 @@ static FBManager *fb = nil;
             NSLog(@"objects = %@", objects);
             NSMutableDictionary *tallies = [NSMutableDictionary dictionary];
             
+            // find total tally of rank count for each contact
             Tag *tag = nil;
             for (PFObject *t in objects) {
                 tag = [Tag tagFromParse:t];
@@ -434,7 +387,7 @@ static FBManager *fb = nil;
                     [self.filterArray addObject:@{@"contact" : c, @"rank": tallies[c.fbId]}];
                 }
             }
-            
+            //sort contacts by rank
             [self.filterArray sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                 return [obj1[@"rank"] integerValue] < [obj2[@"rank"] integerValue];
             }];
@@ -446,7 +399,7 @@ static FBManager *fb = nil;
     }];
 }
 
-//deprecated with FB transition
+//completely delete database (use on logout)
 - (void)clearDB {
     for (Contact *c in self.fetchedResultsController.fetchedObjects) {
         [self.managedObjectContext deleteObject:c];
