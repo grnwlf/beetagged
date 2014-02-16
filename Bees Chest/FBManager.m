@@ -45,7 +45,6 @@ static FBManager *fb = nil;
         [FBManager reformatEducation:user];
         [FBManager reformatWork:user];
         [FBManager reformatHometown:user];
-        
     }
     
     self.currentParseUser = [Contact contactFromUserModel:user];
@@ -407,12 +406,51 @@ static FBManager *fb = nil;
 }
 
 
+- (void)filterForTagsFromNetwork:(NSArray *)tags cb:(void(^)(void))callback {
+    PFQuery *query = [PFQuery queryWithClassName:@"Tag"];
+    [query whereKey:kTagAttributeName containedIn:tags];
+    [query whereKey:kTagTaggedBy containedIn:[[PFUser currentUser] objectForKey:kUserConnections]];
+    [query whereKey:kTagUserId containedIn:[[PFUser currentUser] objectForKey:kUserConnections]];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (error) {
+            NSLog(@"error doing network query %@", error);
+        } else {
+            NSLog(@"objects = %@", objects);
+            NSMutableDictionary *tallies = [NSMutableDictionary dictionary];
+            
+            Tag *tag = nil;
+            for (PFObject *t in objects) {
+                tag = [Tag tagFromParse:t];
+                if (!tallies[tag.tagUserId]) {
+                    tallies[tag.tagUserId] = @(0);
+                }
+                tallies[tag.tagUserId] = @([tallies[tag.tagUserId] integerValue] + [tag.rank integerValue]);
+            }
+            
+            [self.filterArray removeAllObjects];
+            for (Contact *c in self.fetchedResultsController.fetchedObjects) {
+                if (tallies[c.fbId]) {
+                    [self.filterArray addObject:@{@"contact" : c, @"rank": tallies[c.fbId]}];
+                }
+            }
+            
+            [self.filterArray sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                return [obj1[@"rank"] integerValue] < [obj2[@"rank"] integerValue];
+            }];
+            
+            callback();
+            NSLog(@"filtered array %@", self.filterArray);
+            
+        }
+    }];
+}
+
 //deprecated with FB transition
 - (void)clearDB {
     for (Contact *c in self.fetchedResultsController.fetchedObjects) {
         [self.managedObjectContext deleteObject:c];
     }
-    
     
     [NSFetchedResultsController deleteCacheWithName:kCacheAllContacts];
     self.fetchedResultsController = nil;

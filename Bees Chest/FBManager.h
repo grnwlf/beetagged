@@ -53,6 +53,7 @@
 + (void)reformatHometown:(NSMutableDictionary*)c;
 + (void)reformatWork:(NSMutableDictionary*)c;
 + (void)reformatEducation:(NSMutableDictionary*)c;
+- (void)filterForTagsFromNetwork:(NSArray *)tags cb:(void(^)(void))callback;
 
 
 

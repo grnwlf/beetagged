@@ -11,7 +11,9 @@
 @interface UIColor (Bee)
 
 + (UIColor *)goldBeeColor;
++ (UIColor *)goldBeeColorWithAlpha:(float)alpha;
 + (UIColor *)yellowBeeColor;
 + (UIColor *)cloudsColor;
++ (UIColor *)whiteColorWithAlpha:(float)alpha;
 
 @end
