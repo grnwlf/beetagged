@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2807482C18B03E4E002EC9FF /* BASpinner.m in Sources */ = {isa = PBXBuildFile; fileRef = 2807482B18B03E4E002EC9FF /* BASpinner.m */; };
 		2813B221188E04DB00845843 /* TagIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 2813B220188E04DB00845843 /* TagIndex.m */; };
 		282F2F231877AC81004566D0 /* BeesChestData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 282F2F211877AC81004566D0 /* BeesChestData.xcdatamodeld */; };
 		282F2F251877AD7F004566D0 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 282F2F241877AD7F004566D0 /* CoreData.framework */; };
@@ -60,6 +61,8 @@
 
 /* Begin PBXFileReference section */
 		0AB626A38B19406BB8FD1558 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2807482A18B03E4E002EC9FF /* BASpinner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BASpinner.h; sourceTree = "<group>"; };
+		2807482B18B03E4E002EC9FF /* BASpinner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BASpinner.m; sourceTree = "<group>"; };
 		2813B21F188E04DB00845843 /* TagIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagIndex.h; sourceTree = "<group>"; };
 		2813B220188E04DB00845843 /* TagIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagIndex.m; sourceTree = "<group>"; };
 		282F2F221877AC81004566D0 /* BeesChestData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BeesChestData.xcdatamodel; sourceTree = "<group>"; };
@@ -264,6 +267,8 @@
 		9D3792E11878BCDF003955EF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2807482A18B03E4E002EC9FF /* BASpinner.h */,
+				2807482B18B03E4E002EC9FF /* BASpinner.m */,
 				28398D6718AC963F0016BA26 /* TagActivity.h */,
 				28398D6818AC963F0016BA26 /* TagActivity.m */,
 				9D2C713D187A6EE00022CE5F /* LessBoringFlowLayout.m */,
@@ -468,6 +473,7 @@
 				2889B0731874992200CF8580 /* ContactsViewController.m in Sources */,
 				2889B06D187456D200CF8580 /* BATypeAheadViewController.m in Sources */,
 				9D875E4518AECF84002E945B /* UIColor+Bee.m in Sources */,
+				2807482C18B03E4E002EC9FF /* BASpinner.m in Sources */,
 				282F2F281877AD9A004566D0 /* Contact.m in Sources */,
 				9D2C7142187A8D0B0022CE5F /* ContactTransition.m in Sources */,
 				2889B06A187456AA00CF8580 /* BATypeAheadView.m in Sources */,

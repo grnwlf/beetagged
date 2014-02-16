@@ -138,14 +138,14 @@
     c.parseId = user.objectId;
     c.bio = user[kContactBio];
     NSLog(@"homeotwn %@",[user[kContactHometown] class]);
-//    if ([user[kContactHometown] isKindOfClass:[NSDictionary class]]) {
-//        NSLog(@"reformat home");
-//        NSString *s = user[kContactHometown][kContactName];
-//        c.hometown = s;
-//    } else {
-//        NSLog(@"string hometown %@", user[kContactHometown]);
-//        c.hometown = user[kContactHometown];
-//    }
+    if ([user[kContactHometown] isKindOfClass:[NSDictionary class]]) {
+        NSLog(@"reformat home");
+        NSString *s = user[kContactHometown][kContactName];
+        c.hometown = s;
+    } else {
+        NSLog(@"string hometown %@", user[kContactHometown]);
+        c.hometown = user[kContactHometown];
+    }
     
     NSLog(@"c.hometown %@ %@", c.hometown, [user[kContactHometown] class]);
     c.work = user[kContactWork];

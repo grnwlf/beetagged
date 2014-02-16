@@ -11,6 +11,7 @@
 #import "Contact.h"
 #import <Parse/Parse.h>
 #import "BaseViewController.h"
+#import "BASpinner.h"
 
 @interface ViewController : BaseViewController
 
@@ -18,6 +19,8 @@
 @property (weak, nonatomic) IBOutlet UIProgressView *progressView;
 @property (weak, nonatomic) IBOutlet UIButton *loginBtn;
 @property (strong, nonatomic) NSMutableDictionary *tmpUserDict;
+@property (strong, nonatomic) BASpinner *spinner;
+@property (strong, nonatomic) UIView *dimView;
 
 - (void)setProgress:(float)value;
 - (IBAction)loginButtonTouchHandler:(id)sender;
