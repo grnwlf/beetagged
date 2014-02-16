@@ -205,7 +205,7 @@
     PFQuery *query = [PFQuery queryWithClassName:@"UserModel"];
     [query setLimit:1000];
     [query setSkip:skip];
-    [query whereKey:@"objectId" containedIn:[[PFUser currentUser] objectForKey:@"connections"]];
+    [query whereKey:@"fbId" containedIn:[[PFUser currentUser] objectForKey:@"connections"]];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         for (PFObject *o in objects) {
             Contact *c = [Contact contactFromUserModel:o];
@@ -237,7 +237,7 @@
     PFQuery *query = [PFQuery queryWithClassName:@"Tag"];
     [query setLimit:1000];
     [query setSkip:skip];
-    [query whereKey:@"taggedBy" equalTo:[PFUser currentUser].objectId];
+    [query whereKey:@"taggedBy" equalTo:[[PFUser currentUser] objectForKey:@"fbId"]];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         for (PFObject *o in objects) {
             Tag *t = [Tag tagFromParse:o];

@@ -206,7 +206,7 @@ static FBManager *fb = nil;
         //store all user id's so we have access to them on login
         NSMutableArray *userIds = [[NSMutableArray alloc] init];
         for (Contact *c in self.fetchedResultsController.fetchedObjects) {
-            [userIds addObject:c.parseId];
+            [userIds addObject:c.fbId];
         }
         NSLog(@"update pfuser %@", [[PFUser currentUser] objectForKey:@"first_name"]);
         
