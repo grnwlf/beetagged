@@ -46,13 +46,12 @@
     
     for (NSString *t in self.data.allKeys) {
         NSMutableArray *arr = self.data[t];
-        [arr sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-            Tag *t1 = [[(Contact*)obj1 tags_] objectForKey:t];
-            Tag *t2 = [[(Contact*)obj1 tags_] objectForKey:t];
-            NSLog(@"sorting %i and %i", t1.rank.integerValue, t2.rank.integerValue);
-            return t1.rank.integerValue < t2.rank.integerValue;
-        }];
-        //NSLog(@"sorted arr: %@", arr);
+       // NSMutableArray *arr2 = [[NSMutableArray alloc] initWithCapacity:arr.count];
+        for (int i = 0; i < arr.count; i++) {
+            Contact *c = arr[i];
+            [arr removeObjectAtIndex:i];
+            [arr insertObject:c atIndex:[[c.tags_[t] rank] integerValue]];
+        }
     }
 }
 
