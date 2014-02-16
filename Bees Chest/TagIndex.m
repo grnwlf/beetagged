@@ -49,9 +49,10 @@
         [arr sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             Tag *t1 = [[(Contact*)obj1 tags_] objectForKey:t];
             Tag *t2 = [[(Contact*)obj1 tags_] objectForKey:t];
+            NSLog(@"sorting %i and %i", t1.rank.integerValue, t2.rank.integerValue);
             return t1.rank.integerValue < t2.rank.integerValue;
         }];
-        NSLog(@"sorted arr: %@", arr);
+        //NSLog(@"sorted arr: %@", arr);
     }
 }
 
