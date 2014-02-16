@@ -18,7 +18,6 @@ static NetworkManager *nw = nil;
     return nw;
 }
 
-
 // takes in a STRING of tags
 - (void)getRanksForTagOptions:(NSArray *)tags {
     [self getTagsFromParse:tags];
@@ -27,14 +26,19 @@ static NetworkManager *nw = nil;
 - (void)getTagsFromParse:(NSArray *)tags {
     PFQuery *query = [PFQuery queryWithClassName:@"Tag"];
     [query whereKey:kTagAttributeName containedIn:tags];
-    [query whereKey:kTagTaggedBy containedIn:[[PFUser currentUser] objectForKey:kUserConnections]];
-    [query whereKey:kTagUserId containedIn:[[PFUser currentUser] objectForKey:kUserConnections]];
+//    [query whereKey:kTagTaggedBy containedIn:[[PFUser currentUser] objectForKey:kUserConnections]];
+//    [query whereKey:kTagUserId containedIn:[[PFUser currentUser] objectForKey:kUserConnections]];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             NSLog(@"error doing network query %@", error);
         } else {
             NSLog(@"objects = %@", objects);
+            
+            for (PFObject *object in objects) {
+                NSLog(@"%@, by %@", [object objectForKey:kTagAttributeName], [object objectForKey:kTagTaggedBy]);
+            }
+            
         }
     }];
 }

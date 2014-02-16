@@ -41,7 +41,6 @@ static const float tfHeight = 54.0;
     self.tagsCollectionView.backgroundColor = [UIColor clearColor];
     self.expandedRows = [[NSMutableDictionary alloc] init];
     
-    [self formatLayout];
     [self typeahead];
     self.deleted = [@[] mutableCopy];
     self.added = [@[] mutableCopy];
@@ -498,78 +497,6 @@ static const float tfHeight = 54.0;
     return parseTags;
 }
 
-//- (void)replaceParseTags:(NSArray *)parseTags {
-//    NSLog(@"replaceParseTags");
-//    NSMutableDictionary *tagDictionary = [NSMutableDictionary dictionaryWithCapacity:parseTags.count];
-//    
-//    for (PFObject *parseTag in parseTags) {
-//        Tag *tag = [Tag tagFromParse:parseTag];
-//        tagDictionary[tag.attributeName] = tag;
-//    }
-//    
-//    NSMutableArray *cts = [self.contact.tags_ mutableCopy];
-//    NSInteger i = 0;
-//    for (Tag *ct in cts) {
-//        if (tagDictionary[ct.attributeName] != nil) {
-//            cts[i] = tagDictionary[ct.attributeName];
-//        }
-//        i++;
-//    }
-//    
-//    NSLog(@"updating in core data");
-//    // update in core data
-//    FBManager *lim = [FBManager singleton];
-//    self.contact.tags_ = [cts copy];
-//    [lim.managedObjectContext save:nil];
-//}
-
-
-#pragma mark View Logic
-// encapsulating function that writes text in all of the fields and moves the view
-// up if no text exists.
-- (void)formatLayout {
-//    CGFloat moved = 0.0;
-    
-    // 1. set the image and make it a circle
-//    self.contactImage.layer.cornerRadius = self.contactImage.frame.size.height / 2;
-//    self.contactImage.clipsToBounds = YES;
-//	[self.contactImage setImageWithURL:[NSURL URLWithString:self.contact.pictureUrl] placeholderImage:kContactCellPlaceholderImage];
-//    
-//    // 2. set the name
-//    self.nameLabel.text = self.contact.name;
-//    
-//    // 3. set the headline
-//    self.headlineLabel.text = [self getHeadline];
-//    
-//    // 4. set the position
-//    NSString *positionTitle = [self getPositionTitle];
-//    if (positionTitle.length == 0) {
-//        moved += [self removeViewOfHeight:self.positionTitleLabel];
-//    } else {
-//        self.positionTitleLabel.text = positionTitle;
-//    }
-//    
-//    NSString *positionName = [self getPositionName];
-//    if (positionName.length == 0) {
-//        moved += [self removeViewOfHeight:self.positionNameLabel];
-//    } else {
-//        [self moveView:self.positionNameLabel upBy:moved andIncreaseHeight:0.0];
-//        self.positionNameLabel.text = positionName;
-//    }
-//    
-//    // 5. set the description
-//    NSString *description = self.contact.positionSummary;
-//    if (description && description.length > 0) {
-//        [self moveView:self.positionSummaryText upBy:moved andIncreaseHeight:0.0];
-//        self.positionSummaryText.text = description;
-//    } else {
-//        moved += [self removeViewOfHeight:self.positionSummaryText];
-//    }
-//    
-//    // 6. set up the custom tag view (to be implemented)
-//    [self moveView:self.tagsCollectionView upBy:moved andIncreaseHeight:moved];
-}
-
 // gives the headline for the Contact
 - (NSString *)getHeadline {
     NSString *headline = @"A good friend with no headline";
@@ -622,15 +549,6 @@ static const float tfHeight = 54.0;
     return self.contactTags.count + 1;
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    // if it's the last item, you can select it
-//    if (indexPath.item == self.contactTags.count) {
-//        return YES;
-//    } else if (indexPath.item == self.itemToDelete) {
-//        return YES;
-//    }
-    return YES;
-}
 
 // called when the item is selected - will only do anything if the add button
 // is selected
@@ -640,22 +558,12 @@ static const float tfHeight = 54.0;
     if (indexPath.item == self.contactTags.count) {
         if (self.itemToDelete != -1) {
             NSInteger hold = self.itemToDelete;
-            [self clearDeleteViewAtIndex:hold];
         } else {
             [self showAddTagView];
         }
     } else {
-        //NSInteger hold = self.itemToDelete;
         [self deleteTagAtIndexPath:indexPath];
-        [self clearDeleteViewAtIndex:indexPath.item];
     }
-}
-
-- (void)clearDeleteViewAtIndex:(NSInteger)index {
-//    self.itemToDelete = -1;
-//    [UIView animateWithDuration:.3 animations:^{
-//        [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
-//    }];
 }
 
 // style the collectionView cell at the indexPath
@@ -725,19 +633,6 @@ static const float tfHeight = 54.0;
 
 
 #pragma mark - Tag insert/remove
-// This is the callback function for the long press on the cell.  Basically,
-// it's job is to notify the view controller that someone is trying to delete
-// one of the cells.
-- (void)didPressCellAtItemIndex:(NSInteger)itemIndex {
-    // 1. set the deleted item to the itemIndex
-//    if (itemIndex != self.contactTags.count && self.itemToDelete == -1) {
-//        self.itemToDelete = itemIndex;
-//        [UIView animateWithDuration:.3 animations:^{
-//            [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:itemIndex inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
-//        }];
-//    }
-}
-
 - (void)addTagToCollectionView:(Tag *)tag {
     
     for (Tag *check in self.contactTags) {
@@ -751,12 +646,6 @@ static const float tfHeight = 54.0;
     [self addedTag:tag];
     //[self resetContactTags];
 }
-
-//- (void)resetContactTags {
-//    FBManager *lim = [FBManager singleton];
-//    self.contact.tags_ = [self.contactTags copy];
-//    [lim.managedObjectContext save:nil];
-//}
 
 // adds the tag to the added changeList
 - (void)addedTag:(Tag *)tag {
@@ -790,13 +679,10 @@ static const float tfHeight = 54.0;
 // deletes a Tag object at the indexPath
 // deletes a Tag object from Core Data
 - (void)deleteTagAtIndexPath:(NSIndexPath *)indexPath {
-    
     Tag *tag = [self.contactTags objectAtIndex:indexPath.item];
     [self.contactTags removeObjectAtIndex:indexPath.item];
     [self deletedTag:tag];
     [self.tagsCollectionView reloadData];
-    //[self resetContactTags];
-  //  [self.tagsCollectionView deleteItemsAtIndexPaths:@[indexPath]];
 }
 
 // This is is what brings the typeahead view onto the screen and shows the
@@ -809,16 +695,8 @@ static const float tfHeight = 54.0;
 // typeahead is chosen.  It dimisses the keyboard, moves the view offscreen,
 // and adds the tag to the collectionView
 - (void)cellClickedWithData:(id)data {
-    FBManager *lim = [FBManager singleton];
+    Tag *t = [Tag tagFromTagOption:(TagOption *)data taggedUser:self.contact.fbId byUser:[[PFUser currentUser] objectForKey:@"fbId"]];
     
-    if (self.contact.fbId == nil) {
-        [NSException raise:@"Contact has no id" format:@"%@ has no linkedinId", self.contact.name];
-//        assert(false);
-    }
-    
-    
-    Tag *t = [Tag tagFromTagOption:(TagOption *)data taggedUser:self.contact.fbId byUser:[PFUser currentUser].objectId];
-
     // 1. make the view go away.
     [self.typeAheadViewController hideView:YES];
     
