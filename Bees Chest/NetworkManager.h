@@ -7,12 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Tag.h"
+#import "TagOption.h"
 #import "FBManager.h"
 
 @interface NetworkManager : NSObject
 
 + (NetworkManager *)singleton;
-- (void)getRanksForTags:(NSArray *)tags;
+- (void)getRanksForTagOptions:(NSArray *)tags;
 
 @end

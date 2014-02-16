@@ -18,18 +18,15 @@ static NetworkManager *nw = nil;
     return nw;
 }
 
-- (void)getRanksForTags:(NSArray *)tags {
+
+// takes in a STRING of tags
+- (void)getRanksForTagOptions:(NSArray *)tags {
     [self getTagsFromParse:tags];
 }
 
 - (void)getTagsFromParse:(NSArray *)tags {
-    NSMutableArray *tagIds = [NSMutableArray arrayWithCapacity:tags.count];
-    for (Tag *tag in tags) {
-        [tagIds addObject:tag.objectId];
-    }
-    
     PFQuery *query = [PFQuery queryWithClassName:@"Tag"];
-    [query whereKey:@"objectId" containedIn:tagIds];
+    [query whereKey:kTagAttributeName containedIn:tags];
     [query whereKey:kTagTaggedBy containedIn:[[PFUser currentUser] objectForKey:kUserConnections]];
     [query whereKey:kTagUserId containedIn:[[PFUser currentUser] objectForKey:kUserConnections]];
     
