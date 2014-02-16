@@ -25,12 +25,7 @@
 //        [self performSegueWithIdentifier:kLoginSegue sender:self];
 //    }
     //[PFUser logOut];
-    self.dimView.alpha = 0;
-    [FBManager singleton].vc = self;
-    FAKZocial *fb = [FAKZocial facebookIconWithSize:15];
-    UIImage *fbImage = [fb imageWithSize:CGSizeMake(300, 50)];
-    [self.loginBtn setImage:fbImage forState:UIControlStateNormal];
-    
+    self.dimView.alpha = 0;    
     self.loginBtn.alpha = 1;
     
     self.spinner = [[BASpinner alloc] initWithFrame:CGRectMake(kWidth/2-50, kHeight/2-50, 100, 100) andColor:[UIColor goldBeeColor] andBackgroundColor:[UIColor clearColor]];
