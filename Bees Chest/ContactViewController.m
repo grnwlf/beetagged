@@ -159,7 +159,7 @@ static const float tfHeight = 30.0;
         }
         return tfHeight + margin;
     } else if (indexPath.row == 2) {
-        if (self.contact.profileAttributeKeys && self.contact.profileAttributeKeys.count > 1) {
+        if (self.contact.profileAttributeKeys && self.contact.profileAttributeKeys.count > 0) {
             
             if ([self.contact.profileAttributeKeys containsObject:kContactEducation]) {
                 NSArray *detailAttributes = [self.contact detailAttributesFor:kContactEducation];

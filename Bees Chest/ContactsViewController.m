@@ -55,6 +55,8 @@
     [self.view addSubview:self.tagFilterView];
 
     self.tagFilters = [[NSMutableArray alloc] init];
+    self.searchBar.tintColor = [UIColor goldBeeColor];
+    
     [self typeahead];
 }
 
