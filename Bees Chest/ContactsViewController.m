@@ -57,7 +57,18 @@
     self.tagFilters = [[NSMutableArray alloc] init];
     self.searchBar.tintColor = [UIColor goldBeeColor];
     
+    self.networkButton.backgroundColor = [UIColor goldBeeColor];
+    [self.networkButton setTintColor:[UIColor whiteColor]];
+    [self.networkButton addTarget:self action:@selector(networkSearch) forControlEvents:UIControlEventTouchUpInside];
+    
     [self typeahead];
+}
+
+- (void)networkSearch {
+    FBManager *fb = [FBManager singleton];
+    [fb filterForTagsFromNetwork:self.tagFilters cb:^{
+        [self.ContactTableView reloadData];
+    }];
 }
 
 - (void)typeahead {
@@ -65,7 +76,7 @@
     self.typeAheadViewController = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(left, top, 180, height) andData:[[FBManager singleton] tagOptionsArray]];
     self.typeAheadViewController.delegate = self;
     self.typeAheadViewController.view.layer.cornerRadius = 10.0;
-    self.typeAheadViewController.view.backgroundColor = [UIColor colorWithRed:236.0/255.0 green:240.0/255.0 blue:241.0/255.0 alpha:.95];
+    self.typeAheadViewController.view.backgroundColor = [UIColor whiteColorWithAlpha:.9];
     self.typeAheadViewController.view.tableView.backgroundColor = [UIColor clearColor];
     [self.typeAheadViewController hideView:NO];
     [self addChildViewController:self.typeAheadViewController];
@@ -341,103 +352,15 @@
 }
 
 - (void)renderFilter {
-
-    
-    
     FBManager *fb = [FBManager singleton];
     fb.search = NO;
     fb.tagFilter = YES;
     [fb filterForTags:self.tagFilters];
-    
-    NetworkManager *nw = [NetworkManager singleton];
-    [nw getRanksForTagOptions:self.tagFilters];
     [self.ContactTableView reloadData];
 }
 
 - (IBAction)newTag:(id)sender {
     [self.typeAheadViewController showView:YES];
 }
-
-//- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-//    return self.tagFilters.count;
-//}
-
-//- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-////    // if it's the last item, you can select it
-////    if (indexPath.item == self.contactTags.count) {
-////        return YES;
-////    } else if (indexPath.item == self.itemToDelete) {
-////        return YES;
-////    }
-//    NSLog(@"can touch");
-//    return YES;
-//}
-
-// called when the item is selected - will only do anything if the add button
-// is selected
-//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    //[collectionView deselectItemAtIndexPath:indexPath animated:YES];
-//    // if it's the last item, add a new item
-//    [self.tagFilters removeObjectAtIndex:indexPath.item];
-//    [self.tagCollectionView reloadData];
-//    
-//    [[FBManager singleton] filterForTags:self.tagFilters];
-//    
-//    [self.ContactTableView reloadData];
-//}
-//
-//- (void)clearDeleteViewAtIndex:(NSInteger)index {
-//    //    self.itemToDelete = -1;
-//    //    [UIView animateWithDuration:.3 animations:^{
-//    //        [self.tagsCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0], [NSIndexPath indexPathForItem:self.contactTags.count inSection:0]]];
-//    //    }];
-//}
-
-
-
-
-// style the collectionView cell at the indexPath
-//- (UICollectionViewCell *)collectionView:(UICollectionView *)cv cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-//    static NSString *tagCellIdentifier = @"TagCell";
-//    [self.tagCollectionView registerClass:[TagCell class] forCellWithReuseIdentifier:tagCellIdentifier];
-//    
-//    TagCell *cell = (TagCell *)[cv dequeueReusableCellWithReuseIdentifier:tagCellIdentifier forIndexPath:indexPath];
-//    //UILabel *label = (UILabel *)[cell viewWithTag:1];
-//    UILabel *label = [[UILabel alloc] init];
-//    NSInteger i = indexPath.item;
-//    cell.layer.cornerRadius = cell.frame.size.height / 4;
-//    cell.itemIndex = i;
-//    cell.delegate = self;
-//    
-//
-//        if (i < self.tagFilters.count) {
-//            [cell addLongPress];
-//            NSString *tag = self.tagFilters[i];
-//            NSLog(@"got tag %@", tag);
-//            [label setText:tag];
-//            label.textColor = [UIColor whiteColor];
-//        }
-//    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold" size:20.0], NSFontAttributeName, nil];
-//    if (indexPath.item >= self.tagFilters.count) {
-//        [label setFrame:CGRectMake(0, 0, 50, 50)];
-//    } else {
-//        CGSize s = CGSizeMake([self.tagFilters[indexPath.item] sizeWithAttributes:attributes].width, 50);
-//        [label setFrame:CGRectMake(0, 0, s.width, s.height)];
-//    }
-//    [label setTextColor:[UIColor blackColor]];
-//    label.textAlignment = NSTextAlignmentCenter;
-//    [cell.contentView addSubview:label];
-//    
-//    NSLog(@"%@", label.text);
-//    
-//    return cell;
-//}
-//
-//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica-Bold" size:20.0], NSFontAttributeName, nil];
-//    CGSize s = CGSizeMake([self.tagFilters[indexPath.item] sizeWithAttributes:attributes].width, 50);
-//    return s;
-//}
 
 @end
