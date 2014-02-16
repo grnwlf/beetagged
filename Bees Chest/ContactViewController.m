@@ -122,6 +122,10 @@ static const float tfHeight = 30.0;
 // logout the current user
 - (void)logout {
     NSLog(@"implement logout");
+    [[FBManager singleton] clearDB];
+    [PFUser logOut];
+    [self.navigationController popToRootViewControllerAnimated:YES];
+
 }
 
 
@@ -131,9 +135,6 @@ static const float tfHeight = 30.0;
     
     [self updateAddedTagsInParse];
     [self updatedDeletedTagsInParse];
-    dispatch_async(dispatch_get_global_queue(0,0), ^{
-        [[FBManager singleton] saveContext];
-    });
 }
 
 

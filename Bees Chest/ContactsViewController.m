@@ -351,12 +351,6 @@
     [self.typeAheadViewController showView:YES];
 }
 
-- (IBAction)logout:(id)sender {
-    [[FBManager singleton] clearDB];
-    [PFUser logOut];
-    [self.navigationController popToRootViewControllerAnimated:YES];
-}
-
 //- (NSInteger)collectionView:(UICollectionView *)view numberOfItemsInSection:(NSInteger)section {
 //    return self.tagFilters.count;
 //}

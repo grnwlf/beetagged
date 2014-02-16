@@ -24,7 +24,7 @@
 //    if ([[FBManager singleton] loggedIn]) {
 //        [self performSegueWithIdentifier:kLoginSegue sender:self];
 //    }
-    [PFUser logOut];
+    //[PFUser logOut];
     self.dimView.alpha = 0;
     [FBManager singleton].vc = self;
     FAKZocial *fb = [FAKZocial facebookIconWithSize:15];
@@ -109,7 +109,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 //    [PFUser logOut];
-    [PFUser logOut];
+    //[PFUser logOut];
     self.loginBtn.alpha = 1;
     self.title = @"Facebook Profile";
     // Check if user is cached and linked to Facebook, if so, bypass login
