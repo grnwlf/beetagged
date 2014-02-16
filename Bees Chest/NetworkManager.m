@@ -34,6 +34,11 @@ static NetworkManager *nw = nil;
             NSLog(@"error doing network query %@", error);
         } else {
             NSLog(@"objects = %@", objects);
+            
+            for (PFObject *object in objects) {
+                NSLog(@"%@, by %@", [object objectForKey:kTagAttributeName], [object objectForKey:kTagTaggedBy]);
+            }
+            
         }
     }];
 }
