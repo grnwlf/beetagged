@@ -33,7 +33,7 @@
     
     self.loginBtn.alpha = 1;
     
-    self.spinner = [[BASpinner alloc] initWithFrame:CGRectMake(kWidth/2-50, kHeight/2-50, 100, 100) andColor:[UIColor greenColor] andBackgroundColor:[UIColor clearColor]];
+    self.spinner = [[BASpinner alloc] initWithFrame:CGRectMake(kWidth/2-50, kHeight/2-50, 100, 100) andColor:[UIColor goldBeeColor] andBackgroundColor:[UIColor clearColor]];
     [self.view addSubview:self.spinner];
     
     self.dimView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];

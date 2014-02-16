@@ -38,6 +38,7 @@
 @synthesize work;
 @synthesize education;
 @dynamic relationshipStatus;
+@synthesize userModel;
 
 
 -(id)init {
@@ -426,5 +427,45 @@
     self.educationData = [NSKeyedArchiver archivedDataWithRootObject:self.education];
     self.workData = [NSKeyedArchiver archivedDataWithRootObject:self.work];
 }
-    
+
+- (void)updateWithCallback:(void(^)(void))callback {
+    PFQuery *query = [PFQuery queryWithClassName:@"UserModel"];
+    [query whereKey:@"fbId" equalTo:self.fbId];
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        self.userModel = object;
+        self.first_name = self.userModel[kContactFirstName];
+        self.last_name = self.userModel[kContactLastName];
+        self.pictureUrl = self.userModel[kContactPicUrl];
+        self.work = self.userModel[kContactWork];
+        self.hometown = self.userModel[kContactHometown];
+        self.education = self.userModel[kContactEducation];
+        self.relationshipStatus = self.userModel[kContactRelationship];
+        self.gender = self.userModel[kContactGender];
+        callback();
+    }];
+}
+
+- (void)saveContactToParse {
+    if (!self.userModel) {
+        PFQuery *query = [PFQuery queryWithClassName:@"UserModel"];
+        [query whereKey:@"fbId" equalTo:self.fbId];
+        [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            self.userModel = object;
+            [self uploadUpdates];
+        }];
+    } else {
+        [self uploadUpdates];
+    }
+}
+
+- (void)uploadUpdates {
+    if (self.work) {
+        self.userModel[kContactWork] = self.work;
+    }
+    if (self.education) {
+        self.userModel[kContactEducation] = self.education;
+    }
+    [self.userModel saveInBackground];
+}
+
 @end

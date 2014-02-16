@@ -47,6 +47,7 @@
 @property (nonatomic, retain) NSString *bio;
 @property (nonatomic, retain) NSString *hometown;
 @property (nonatomic, retain) NSString *relationshipStatus;
+@property (strong, nonatomic) PFObject *userModel;
 
 + (Contact*)contactFromFB:(NSDictionary*)user;
 + (Contact*)contactFromUserModel:(PFObject*)user;
@@ -60,5 +61,8 @@
 - (void)updateEducationAtIndex:(NSInteger)index withHeader:(NSString *)header andValue:(NSString *)value;
 - (void)updateWorkAtIndex:(NSInteger)index withHeader:(NSString *)header andValue:(NSString *)value;
 - (void)save;
+
+- (void)saveContactToParse;
+- (void)updateWithCallback:(void(^)(void))callback;
 
 @end

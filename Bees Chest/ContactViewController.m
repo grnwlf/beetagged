@@ -62,6 +62,9 @@ static const float tfHeight = 46.0;
         self.navigationController.navigationBar.hidden = YES;
     } else {
         self.contact = c;
+        [self.contact updateWithCallback:^{
+            [self.profileTableView reloadData];
+        }];
     }
     [self.profileTableView reloadData];
     
@@ -132,6 +135,9 @@ static const float tfHeight = 46.0;
     
     [self updateAddedTagsInParse];
     [self updatedDeletedTagsInParse];
+    if ([PFUser currentUser]) {
+        [self.contact saveContactToParse];
+    }
 }
 
 #pragma mark TableView
@@ -823,6 +829,7 @@ static const float tfHeight = 46.0;
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
+
 
 
 @end
