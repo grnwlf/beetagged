@@ -12,6 +12,7 @@
 #import "BATypeAheadViewController.h"
 #import "BeeButton.h"
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import "NetworkManager.h"
 
 @interface ContactsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIActionSheetDelegate, BATypeAheadDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;

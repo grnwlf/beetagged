@@ -378,11 +378,16 @@
 }
 
 - (void)renderFilter {
-    NSLog(@"render tag filters");
+
+    
+    
     FBManager *fb = [FBManager singleton];
     fb.search = NO;
     fb.tagFilter = YES;
     [fb filterForTags:self.tagFilters];
+    
+    NetworkManager *nw = [NetworkManager singleton];
+    [nw getRanksForTags:self.tagFilters];
     [self.ContactTableView reloadData];
 }
 
