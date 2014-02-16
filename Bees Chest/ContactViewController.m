@@ -125,6 +125,7 @@ static const float tfHeight = 30.0;
 // logout the current user
 - (void)logout {
     NSLog(@"implement logout");
+    [self.contact saveContactToParse];
     [[FBManager singleton] clearDB];
     [PFUser logOut];
     [self.navigationController popToRootViewControllerAnimated:YES];
@@ -138,7 +139,9 @@ static const float tfHeight = 30.0;
     
     [self updateAddedTagsInParse];
     [self updatedDeletedTagsInParse];
-    [self.contact saveContactToParse];
+    if ([PFUser currentUser]) {
+        [self.contact saveContactToParse];
+    }
 }
 
 
