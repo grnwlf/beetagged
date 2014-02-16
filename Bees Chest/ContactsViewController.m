@@ -60,11 +60,10 @@
 
 - (void)typeahead {
     float top = 70.0, left = 20.0, height = 180.0;
-    
     self.typeAheadViewController = [[BATypeAheadViewController alloc] initWithFrame:CGRectMake(left, top, 180, height) andData:[[FBManager singleton] tagOptionsArray]];
     self.typeAheadViewController.delegate = self;
-    self.typeAheadViewController.view.layer.cornerRadius = 40.0;
-    self.typeAheadViewController.view.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:.6];
+    self.typeAheadViewController.view.layer.cornerRadius = 10.0;
+    self.typeAheadViewController.view.backgroundColor = [UIColor colorWithRed:236.0/255.0 green:240.0/255.0 blue:241.0/255.0 alpha:.95];
     self.typeAheadViewController.view.tableView.backgroundColor = [UIColor clearColor];
     [self.typeAheadViewController hideView:NO];
     [self addChildViewController:self.typeAheadViewController];

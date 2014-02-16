@@ -108,7 +108,7 @@
                                 <rect key="frame" x="0.0" y="21" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <items>
-                                    <navigationItem title="BeeTagged" id="B4Q-qt-3nU">
+                                    <navigationItem title="Bee Tagged" id="B4Q-qt-3nU">
                                         <barButtonItem key="rightBarButtonItem" title="Tags" style="done" id="1Vl-8a-WIW">
                                             <connections>
                                                 <action selector="filterTags:" destination="r8R-Mi-FIm" id="hnm-u1-hXA"/>
@@ -180,7 +180,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jor-9e-TEV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1452" y="-686"/>
+            <point key="canvasLocation" x="1372" y="-782"/>
         </scene>
         <!--Contact View Controller - Profile-->
         <scene sceneID="7MX-Jk-VKp">
@@ -494,6 +494,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="OQZ-hE-J5w"/>
+        <segue reference="asT-BL-7a4"/>
     </inferredMetricsTieBreakers>
 </document>
