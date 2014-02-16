@@ -480,7 +480,7 @@ static const float tfHeight = 54.0;
                 }
                 self.contact.tags_[t.attributeName] = t;
                 
-                [[[FBManager singleton] tagIndex] add:self.contact forTag:t];
+                [[[FBManager singleton] tagIndex] add:self.contact forTag:t andSort:YES];
             }
             self.added = [@[] mutableCopy];
         }

@@ -40,17 +40,27 @@
     for (Contact *c in contacts) {
         NSArray *keys = c.tags_.allKeys;
         for (NSString *t in keys) {
-            [self add:c forTag:c.tags_[t]];
+            [self add:c forTag:c.tags_[t] andSort:NO];
+        }
+    }
+    
+    for (NSString *t in self.data.allKeys) {
+        NSMutableArray *arr = self.data[t];
+       // NSMutableArray *arr2 = [[NSMutableArray alloc] initWithCapacity:arr.count];
+        for (int i = 0; i < arr.count; i++) {
+            Contact *c = arr[i];
+            [arr removeObjectAtIndex:i];
+            [arr insertObject:c atIndex:[[c.tags_[t] rank] integerValue]];
         }
     }
 }
 
-- (void)add:(Contact*)contact forTag:(Tag *)tag {
+- (void)add:(Contact*)contact forTag:(Tag *)tag andSort:(BOOL)sort {
     if (self.data[tag.attributeName] == nil) {
         self.data[tag.attributeName] =  [[NSMutableArray alloc] init];
     }
     [self.data[tag.attributeName] insertObject:contact atIndex:0];
-    [self sortForTag:tag];
+    if (sort) [self sortForTag:tag];
 }
 
 - (void)remove:(Contact*)contact forTag:(Tag *)tag {

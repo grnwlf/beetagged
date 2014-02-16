@@ -282,7 +282,7 @@ static FBManager *fb = nil;
         //[self createFakeTags];
         //[self printContacts];
         [self.tagIndex createIndex:self.fetchedResultsController.fetchedObjects];
-        //[self.tagIndex printTagIndex];
+        [self.tagIndex printTagIndex];
         NSLog(@"The fetch from Core Data was succcessful");
     } else {
         NSLog(@"Error fetching contacts from Core Data: %@", [error localizedDescription]);
