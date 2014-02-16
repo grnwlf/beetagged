@@ -46,12 +46,15 @@
     
     for (NSString *t in self.data.allKeys) {
         NSMutableArray *arr = self.data[t];
-       // NSMutableArray *arr2 = [[NSMutableArray alloc] initWithCapacity:arr.count];
+        NSMutableArray *arr2 = [[NSMutableArray alloc] init];
+        for (int j = 0; j < arr.count; j++) {
+            [arr2 addObject:[NSNull null]];
+        }
         for (int i = 0; i < arr.count; i++) {
             Contact *c = arr[i];
-            [arr removeObjectAtIndex:i];
-            [arr insertObject:c atIndex:[[c.tags_[t] rank] integerValue]];
+            [arr2 replaceObjectAtIndex:[[c.tags_[t] rank] integerValue] withObject:c];
         }
+        self.data[t] = arr2;
     }
 }
 

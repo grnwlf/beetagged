@@ -51,6 +51,8 @@
     BOOL shouldPlay = false;
     if (t.data.count == 0) {
         NSLog(@"display some message");
+        self.tagMoreLabel.alpha = 1;
+        self.preferLabel.alpha = 0;
     } else {
         NSArray *vals = t.data.allValues;
         for (NSArray *a in vals) {
@@ -59,6 +61,8 @@
                 break;
             }
         }
+        self.tagMoreLabel.alpha = 0;
+        self.preferLabel.alpha = 1;
     }
     
     if (!self.p1 && shouldPlay) [self startTurn];

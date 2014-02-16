@@ -26,6 +26,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *p1NameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *p2NameLabel;
 @property (strong, nonatomic) NSString *tagName;
+@property (weak, nonatomic) IBOutlet UILabel *preferLabel;
+@property (weak, nonatomic) IBOutlet UILabel *tagMoreLabel;
 
 @property (weak, nonatomic) Contact *p1;
 @property (weak, nonatomic) Contact *p2;
