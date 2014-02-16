@@ -30,7 +30,6 @@
 		2889B06618706EAE00CF8580 /* FBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06518706EAE00CF8580 /* FBManager.m */; };
 		2889B06A187456AA00CF8580 /* BATypeAheadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B069187456AA00CF8580 /* BATypeAheadView.m */; };
 		2889B06D187456D200CF8580 /* BATypeAheadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06C187456D200CF8580 /* BATypeAheadViewController.m */; };
-		2889B0701874991500CF8580 /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B06F1874991500CF8580 /* ProfileViewController.m */; };
 		2889B0731874992200CF8580 /* ContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0721874992200CF8580 /* ContactsViewController.m */; };
 		2889B0761874992C00CF8580 /* ContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0751874992C00CF8580 /* ContactViewController.m */; };
 		2889B0791874993500CF8580 /* BeesChestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2889B0781874993500CF8580 /* BeesChestViewController.m */; };
@@ -98,8 +97,6 @@
 		2889B069187456AA00CF8580 /* BATypeAheadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BATypeAheadView.m; sourceTree = "<group>"; };
 		2889B06B187456D200CF8580 /* BATypeAheadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BATypeAheadViewController.h; sourceTree = "<group>"; };
 		2889B06C187456D200CF8580 /* BATypeAheadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BATypeAheadViewController.m; sourceTree = "<group>"; };
-		2889B06E1874991500CF8580 /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
-		2889B06F1874991500CF8580 /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
 		2889B0711874992200CF8580 /* ContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsViewController.h; sourceTree = "<group>"; };
 		2889B0721874992200CF8580 /* ContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsViewController.m; sourceTree = "<group>"; };
 		2889B0741874992C00CF8580 /* ContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactViewController.h; sourceTree = "<group>"; };
@@ -299,8 +296,6 @@
 				2889B0451870651700CF8580 /* ViewController.m */,
 				2889B06B187456D200CF8580 /* BATypeAheadViewController.h */,
 				2889B06C187456D200CF8580 /* BATypeAheadViewController.m */,
-				2889B06E1874991500CF8580 /* ProfileViewController.h */,
-				2889B06F1874991500CF8580 /* ProfileViewController.m */,
 				2889B0711874992200CF8580 /* ContactsViewController.h */,
 				2889B0721874992200CF8580 /* ContactsViewController.m */,
 				2889B0741874992C00CF8580 /* ContactViewController.h */,
@@ -487,7 +482,6 @@
 				2889B0761874992C00CF8580 /* ContactViewController.m in Sources */,
 				9D2C71351879DF170022CE5F /* Tag.m in Sources */,
 				2889B06618706EAE00CF8580 /* FBManager.m in Sources */,
-				2889B0701874991500CF8580 /* ProfileViewController.m in Sources */,
 				282F2F231877AC81004566D0 /* BeesChestData.xcdatamodeld in Sources */,
 				2889B0401870651700CF8580 /* AppDelegate.m in Sources */,
 				3597FA0418ACA52A00EC7DF5 /* BaseViewController.m in Sources */,

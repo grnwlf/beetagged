@@ -84,12 +84,13 @@
     self.navigationController.navigationBar.hidden = YES;
 }
 
+//code below is used to query contacts on the phone by first and last name
 #pragma mark - UISearchBarDelegate
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    //handle basecase of empty string
     if ([searchText isEqualToString:@""]) {
         [[FBManager singleton] search:@""];
         [self.ContactTableView reloadData];
-        
     }
 }
 
@@ -97,7 +98,7 @@
     NSLog(@"%@", text);
     NSString *query = [NSString stringWithFormat:@"%@%@", searchBar.text, text];
     if ([text isEqualToString:@""]) {
-        NSLog(@"backspace");
+        //handle backspace
         query = [query substringToIndex:query.length-1];
     } else if ([text isEqualToString:@"\n"]) {
         // Search Pressed
@@ -119,9 +120,9 @@
     searchBar.showsCancelButton = ![searchBar.text isEqualToString:@""];
 }
 
+//when canceled, clear search, hide keyboard
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     searchBar.text = @"";
-    
     [searchBar resignFirstResponder];
     [[FBManager singleton] search:@""];
     [self.ContactTableView reloadData];
@@ -162,6 +163,7 @@
     }
     return self.tagFilters.count;
 }
+
 
 - (IBAction)removeTag:(UIButton *)sender {
     UITableViewCell *cell = (UITableViewCell *)sender.superview.superview.superview;

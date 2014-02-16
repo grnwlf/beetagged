@@ -6,6 +6,11 @@
 //  Copyright (c) 2014 Arbrr. All rights reserved.
 //
 
+
+//The apps main view
+//Responsible for rendering all of the contacts and searching/filtering
+
+
 #import <UIKit/UIKit.h>
 #import "ContactViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
@@ -27,8 +32,10 @@
 @property (strong, nonatomic) IBOutlet UITableView *tagTableView;
 @property (strong, nonatomic) NSMutableArray *tagFilters;
 
+//filter contacts by preset tags
 - (IBAction)filterTags:(id)sender;
-- (IBAction)logout:(id)sender;
+
+//choose a new tag to filter by
 - (IBAction)newTag:(id)sender;
 
 @end

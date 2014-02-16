@@ -137,16 +137,17 @@
     [self.delegate cellClickedWithData:self.searchData[indexPath.row]];
 }
 
+
+//logic required to find tags within a preset data array and populate them in a tableview
 #pragma mark UITextField Delegate
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    NSLog(@"%i %i", self.data.count, [[[FBManager singleton] tagOptionsArray] count]);
     NSString *query = [NSString stringWithFormat:@"%@%@", self.view.inputTextField.text, string];
     if ([string isEqualToString:@""]) {
-        NSLog(@"backspace");
+        //handle backspace
         query = [query substringToIndex:query.length-1];
     }
+    //else prepend character and search
     query = [[query stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] lowercaseString];
-    NSLog(@"%@", query);
     
     if (query.length == 0) {
         self.isTyping = false;
@@ -158,7 +159,6 @@
             return [[evaluatedObject.attributeName lowercaseString] rangeOfString:query].location != NSNotFound;
         }];
         self.searchData = (NSMutableArray*)[[[FBManager singleton] tagOptionsArray] filteredArrayUsingPredicate:queryName];
-        NSLog(@"search data: %@", self.searchData);
         [self showTableView];
     }
     [self.view.tableView reloadData];
