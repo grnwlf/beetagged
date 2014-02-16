@@ -58,6 +58,7 @@
     self.searchBar.tintColor = [UIColor goldBeeColor];
     
     [self typeahead];
+    [self styleTabBar];
 }
 
 - (void)typeahead {
@@ -71,6 +72,42 @@
     [self addChildViewController:self.typeAheadViewController];
     self.typeAheadViewController.delegate = self;
     [self.tagFilterView addSubview:self.typeAheadViewController.view];
+}
+
+// set the images and the one name that can't be set in the story board.
+- (void)styleTabBar {
+    
+    
+    UITabBarItem *contacts = self.tabBarController.tabBar.items[0];
+    UITabBarItem *beeTagged = self.tabBarController.tabBar.items[1];
+    UITabBarItem *myProfile = self.tabBarController.tabBar.items[2];
+    
+    contacts.title = @"Contacts";
+    beeTagged.title = @"Bee Tagged";
+    myProfile.title = @"My Profile";
+    
+    float imageSize = 40.0;
+    float iconSize = imageSize * .6;
+    FAKIonIcons *contactsIcon = [FAKIonIcons ios7PeopleIconWithSize:iconSize];
+    UIImage *contactsImage = [contactsIcon imageWithSize:CGSizeMake(imageSize, imageSize)];
+    
+    FAKIonIcons *gameIcon = [FAKIonIcons gameControllerAIconWithSize:iconSize];
+    UIImage *gameImage = [gameIcon imageWithSize:CGSizeMake(imageSize, imageSize)];
+    
+    FAKIonIcons *profileIcon = [FAKIonIcons cardIconWithSize:iconSize];
+    UIImage *profileImage = [profileIcon imageWithSize:CGSizeMake(imageSize, imageSize)];
+    
+    [contacts setImage:contactsImage];
+    [contacts setSelectedImage:contactsImage];
+    
+    [beeTagged setImage:gameImage];
+    [beeTagged setSelectedImage:gameImage];
+    
+    [myProfile setImage:profileImage];
+    [myProfile setSelectedImage:profileImage];
+    
+    // customize the tint colors
+    [[UITabBar appearance] setTintColor:[UIColor goldBeeColor]];
 }
 
 - (void)didReceiveMemoryWarning

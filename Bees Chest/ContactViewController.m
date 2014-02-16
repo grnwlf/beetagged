@@ -23,7 +23,7 @@
 @implementation ContactViewController
 
 static const float margin = 15.0;
-static const float tfHeight = 30.0;
+static const float tfHeight = 46.0;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -99,7 +99,7 @@ static const float tfHeight = 30.0;
     } else {
         self.navigationController.navigationBar.hidden = NO;
     }
-
+    
 }
 
 // handles the logic for adding the toolbar that allows the logout functionality.
@@ -118,16 +118,13 @@ static const float tfHeight = 30.0;
     [self.toolbar setItems:buttons];
 }
 
-
 // logout the current user
 - (void)logout {
-    NSLog(@"implement logout");
     [[FBManager singleton] clearDB];
     [PFUser logOut];
     [self.navigationController popToRootViewControllerAnimated:YES];
 
 }
-
 
 // save the data to parse before we leave
 - (void)viewWillDisappear:(BOOL)animated {
@@ -136,7 +133,6 @@ static const float tfHeight = 30.0;
     [self updateAddedTagsInParse];
     [self updatedDeletedTagsInParse];
 }
-
 
 #pragma mark TableView
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
