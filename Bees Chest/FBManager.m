@@ -47,6 +47,7 @@ static FBManager *fb = nil;
         //[self reformatHometown:user];
         
     }
+    
     self.currentParseUser = [Contact contactFromUserModel:user];
     NSError *error;
     [self.managedObjectContext save:&error];

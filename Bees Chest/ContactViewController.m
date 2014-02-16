@@ -17,6 +17,7 @@
 @property (nonatomic, strong) NSMutableArray *added;
 @property (nonatomic, assign) NSInteger itemToDelete;
 @property (nonatomic, assign) BOOL isCurrentlyDeleting;
+@property (nonatomic, strong) UIToolbar *toolbar;
 @end
 
 @implementation ContactViewController
@@ -53,7 +54,7 @@ static const float tfHeight = 30.0;
     [self.tagsCollectionView registerClass:[TagCell class] forCellWithReuseIdentifier:@"TagCollectionCell"];
 }
 
-- (void)renderContact:(Contact*)c {
+- (void)renderContact:(Contact *)c {
     if (c == nil) {
         NSLog(@"current user");
         self.isCurrentUser = YES;
@@ -61,7 +62,6 @@ static const float tfHeight = 30.0;
         self.navigationController.navigationBar.hidden = YES;
     } else {
         self.contact = c;
-        self.navigationController.navigationBar.hidden = NO;
     }
     [self.profileTableView reloadData];
     
@@ -83,15 +83,47 @@ static const float tfHeight = 30.0;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if (self.isCurrentUser) self.navigationController.navigationBar.hidden = YES;
-    else self.navigationController.navigationBar.hidden = NO;
-    NSLog(@"show");
-    if (!self.contact) [self renderContact:nil]; //render current user for profile
+    
+    if (!self.contact) {
+        [self renderContact:nil]; //render current user for profile
+    }
+    
+    if (self.isCurrentUser) {
+        self.navigationController.navigationBar.hidden = YES;
+        [self useToolbar];
+    } else {
+        self.navigationController.navigationBar.hidden = NO;
+    }
+
 }
+
+// handles the logic for adding the toolbar that allows the logout functionality.
+- (void)useToolbar {
+    float height = 60;
+    self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, kWidth, height)];
+    [self.view addSubview:self.toolbar];
+    [self.profileTableView setFrame:CGRectMake(0, height, kWidth, kHeight - height)];
+    
+    UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self
+                                                                    action:@selector(logout)];
+    [logoutButton setTintColor:[UIColor goldBeeColor]];
+    NSArray *buttons = @[logoutButton];
+    [self.toolbar setItems:buttons];
+}
+
+
+// logout the current user
+- (void)logout {
+    NSLog(@"implement logout");
+}
+
 
 // save the data to parse before we leave
 - (void)viewWillDisappear:(BOOL)animated {
@@ -106,7 +138,6 @@ static const float tfHeight = 30.0;
 
 
 #pragma mark TableView
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -175,8 +206,6 @@ static const float tfHeight = 30.0;
         return cell;
     
     // last cell, statically formatted with a collectionView
-        
-        
     } else if (indexPath.row == 1) {
         ProfileDetailCell *cell = (ProfileDetailCell *)[tableView dequeueReusableCellWithIdentifier:kProfileDetailCell forIndexPath:indexPath];
         UILabel *l = (UILabel*)[cell viewWithTag:1];

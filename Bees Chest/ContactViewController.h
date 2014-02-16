@@ -30,6 +30,6 @@
 @property (weak, nonatomic) IBOutlet UITableView *profileTableView;
 @property (strong, nonatomic) IBOutlet UICollectionView *tagsCollectionView;
 
-- (void)renderContact:(Contact*)c;
 
+- (void)renderContact:(Contact*)c;
 @end
