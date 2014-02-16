@@ -18,7 +18,7 @@
 
 - (void)createIndex:(NSArray*)contacts;
 - (void)printTagIndex;
-- (void)add:(Contact*)contact forTag:(Tag*)tag;
+- (void)add:(Contact*)contact forTag:(Tag*)tag andSort:(BOOL)sort;
 - (void)move:(Contact*)contact forTag:(Tag*)tag toIndex:(int)index;
 - (void)remove:(Contact*)contact forTag:(Tag*)tag;
 - (BOOL)hasSameForTag:(Tag*)tag;
