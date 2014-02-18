@@ -124,6 +124,23 @@
     [PFObject saveAllInBackground:pushTags];
 }
 
+- (void)sortForTagName:(NSString*)tagName {
+    NSMutableArray *pushTags = [[NSMutableArray alloc] init];
+    NSMutableArray *arr = self.data[tagName];
+    
+    //update each users tag rank to their position in the array
+    for (int i = 0; i < arr.count; i++) {
+        Contact *c = (Contact*)arr[i];
+        Tag *t = [c.tags_ objectForKey:tagName];
+        [t setRank:[NSNumber numberWithInt:i]];
+        PFObject *pfTag = [t pfObject];
+        [pushTags addObject:pfTag];
+    }
+    
+    //push all to parse
+    [PFObject saveAllInBackground:pushTags];
+}
+
 - (void)printTagIndex {
     NSArray *keys = [self.data allKeys];
     for (NSString *k in keys) {

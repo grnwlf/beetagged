@@ -58,7 +58,7 @@
     [pfObject setObject:self.attributeName forKey:kTagAttributeName];
     [pfObject setObject:self.taggedBy forKey:kTagTaggedBy];
     [pfObject setObject:self.tagUserId forKey:kTagUserId];
-    [pfObject setObject:self.tagOptionId forKey:kTagOptionId];
+    //[pfObject setObject:self.tagOptionId forKey:kTagOptionId];
     [pfObject setObject:self.rank forKey:kTagRank];
     
     if (self.createdAt) {

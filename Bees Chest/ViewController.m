@@ -55,56 +55,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-//- (IBAction)login:(id)sender {
-//    [self performSegueWithIdentifier:kLoginSegue sender:self];
-//}
-//
-//- (IBAction)loginWithLinkedIn:(id)sender {
-//    FBManager *li = [FBManager singleton];
-//    
-//    // Get the authorization code.
-//    [li.client getAuthorizationCode:^(NSString * code) {
-//        
-//        // the the access token
-//        [li.client getAccessToken:code success:^(NSDictionary *accessTokenData) {
-//            NSString *accessToken = [accessTokenData objectForKey:@"access_token"];
-//            [li setToken:accessToken];
-//            
-//            // Get the current user
-//            [li.client getPath:[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~:(id,first-name,last-name,formatted-name,headline,location,industry,positions,picture-url,site-standard-profile-request)?oauth2_access_token=%@&format=json", accessToken] parameters:nil success:^(AFHTTPRequestOperation * operation, NSDictionary *result) {
-//
-//                    // Set the current user
-//                    [li setCurrentUser:result];
-//                
-//                    // Save the current user to Parse
-//                    // starfish - make sure that you create a user here.
-////                    NSLog(@"current user %@", result);
-//                
-//                    // get the connections
-//                    [li.client getPath:[NSString stringWithFormat:@"https://api.linkedin.com/v1/people/~/connections:(id,first-name,last-name,formatted-name,headline,location,industry,positions,picture-url,site-standard-profile-request)?oauth2_access_token=%@&format=json", accessToken] parameters:nil success:^(AFHTTPRequestOperation * operation, NSDictionary *result) {
-////                    NSLog(@"connections %@", result);
-//                        
-//                        // Import all of the contacts
-//                        [[FBManager singleton] importContacts:result[@"values"]];
-//                        
-//                        // Go to the next view.
-//                        [self performSegueWithIdentifier:kLoginSegue sender:self];
-//                } failure:^(AFHTTPRequestOperation * operation, NSError *error) {
-//                    NSLog(@"failed to fetch current user %@", error);
-//                }];
-//            } failure:^(AFHTTPRequestOperation * operation, NSError *error) {
-//                NSLog(@"failed to fetch current user %@", error);
-//            }];
-//        } failure:^(NSError *error) {
-//            NSLog(@"Quering accessToken failed %@", error);
-//        }];
-//    } cancel:^{
-//        NSLog(@"Authorization was cancelled by user");
-//    } failure:^(NSError *error) {
-//        NSLog(@"Authorization failed %@", error);
-//    }];
-//
-//}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -278,8 +228,27 @@
             //should logout user and have them restart
         } else {
             NSLog(@"friends: %@", result[@"data"]);
+            NSArray *tags = @[@"Talkative", @"Stubborn", @"Passionate", @"Cute", @"Friendly"];
             [[FBManager singleton] importContacts:result[@"data"] cb:^(void) {
-               [self loginToApp];
+                FBManager *fb = [FBManager singleton];
+                for (Contact *c in fb.fetchedResultsController.fetchedObjects) {
+                    Tag *tag = [[Tag alloc] init];
+                    tag.tagUserId = c.fbId;
+                    tag.taggedBy = [[PFUser currentUser] objectForKey:@"fbId"];
+                    tag.attributeName = tags[arc4random()%tags.count];
+                    if (!c.tags_) {
+                        c.tags_ = [[NSMutableDictionary alloc] init];
+                    }
+                    [c.tags_ setObject:tag forKey:tag.attributeName];
+                    [fb.tagIndex add:c forTag:tag andSort:NO];
+                }
+                
+                for (NSString *t in fb.tagIndex.data.allKeys) {
+                    [fb.tagIndex sortForTagName:t];
+                }
+                
+                
+                [self loginToApp];
             }];
         }
     }];

@@ -43,6 +43,7 @@
 
 // sorts contacts for tag and reupdates the tags on parse
 - (void)sortForTag:(Tag*)tag;
+- (void)sortForTagName:(NSString*)tagName;
 
 
 - (int)countForTag:(Tag*)tag;
