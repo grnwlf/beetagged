@@ -198,7 +198,7 @@
         for (PFObject *o in objects) {
             Tag *t = [Tag tagFromParse:o];
             Contact *c = self.tmpUserDict[t.tagUserId];
-            //NSLog(@"%@ %@", c.name, t.attributeName);
+            NSLog(@"%@ %@", c.name, t.attributeName);
             [c.tags_ setObject:t forKey:t.attributeName];
         }
         

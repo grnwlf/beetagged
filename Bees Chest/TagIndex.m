@@ -52,8 +52,12 @@
         }
         for (int i = 0; i < arr.count; i++) {
             Contact *c = arr[i];
+            NSLog(@"%i %i", arr.count, [[c.tags_[t] rank] integerValue]);
             [arr2 replaceObjectAtIndex:[[c.tags_[t] rank] integerValue] withObject:c];
         }
+        
+        [arr2 removeObject:[NSNull null]];
+        
         self.data[t] = arr2;
     }
 }
