@@ -254,6 +254,13 @@
         UILabel *homeLabel = (UILabel *)[cell viewWithTag:3];
         homeLabel.text = contact.hometown;
         
+        
+        NSArray *workArray = [contact detailAttributesFor:kContactWork];
+        NSArray *educationArray = [contact detailAttributesFor:kContactEducation];
+        
+        
+        NSLog(@"%i %i", workArray.count, educationArray.count);
+        
         UILabel *workLabel = (UILabel *)[cell viewWithTag:4];
         if (contact.work.count > 0) {
             NSDictionary *d = contact.work[0];
@@ -261,11 +268,11 @@
         } else {
             workLabel.text = nil;
         }
-        
-        UILabel *schoolLabel = (UILabel *)[cell viewWithTag:4];
+        UILabel *schoolLabel = (UILabel *)[cell viewWithTag:5];
         if (contact.education.count > 0) {
             NSDictionary *d = contact.education[0];
             schoolLabel.text = [NSString stringWithFormat:@"%@", d[kContactSchool]];
+            NSLog(@"%i %@", contact.education.count, d);
         } else {
             schoolLabel.text = nil;
         }
@@ -332,6 +339,10 @@
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 125;
+}
+
 //show or hide tag filter view
 - (IBAction)filterTags:(id)sender {
     if (!self.typeAheadViewController.data) {
@@ -370,6 +381,10 @@
 
 - (IBAction)newTag:(id)sender {
     [self.typeAheadViewController showView:YES];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self backgroundTouched:nil];
 }
 
 @end

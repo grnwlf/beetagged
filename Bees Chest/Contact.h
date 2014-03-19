@@ -61,6 +61,7 @@
 - (void)updateEducationAtIndex:(NSInteger)index withHeader:(NSString *)header andValue:(NSString *)value;
 - (void)updateWorkAtIndex:(NSInteger)index withHeader:(NSString *)header andValue:(NSString *)value;
 - (void)save;
+- (void)load;
 
 - (void)saveContactToParse;
 - (void)updateWithCallback:(void(^)(void))callback;

@@ -111,12 +111,14 @@ static FBManager *fb = nil;
 // grab all of the contact options from the server
 - (void)fetchTagOptions {
     PFQuery *query = [PFQuery queryWithClassName:kTagOptionClass];
+    [query setLimit:1000];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             NSLog(@"Error fetching TagOptions: %@", error);
             self.tagOptions = [@[] mutableCopy]; // set tag options to empty array
         } else {
             self.tagOptions = [NSMutableDictionary dictionaryWithCapacity:objects.count];
+            NSLog(@"found %i tag options", objects.count);
             for (PFObject *object in objects) {
                 TagOption *t = [TagOption tagOptionFromParse:object];
                 [self.tagOptions setObject:t forKey:[t.attributeName lowercaseString]];

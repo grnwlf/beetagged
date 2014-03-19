@@ -13,6 +13,7 @@
 		282F2F251877AD7F004566D0 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 282F2F241877AD7F004566D0 /* CoreData.framework */; };
 		282F2F281877AD9A004566D0 /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 282F2F271877AD9A004566D0 /* Contact.m */; };
 		28398D6918AC963F0016BA26 /* TagActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 28398D6818AC963F0016BA26 /* TagActivity.m */; };
+		2876C72818DA1AE1003DD2FD /* GCPlaceholderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2876C72718DA1AE1003DD2FD /* GCPlaceholderTextView.m */; };
 		2889B0301870651700CF8580 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2889B02F1870651700CF8580 /* Foundation.framework */; };
 		2889B0321870651700CF8580 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2889B0311870651700CF8580 /* CoreGraphics.framework */; };
 		2889B0341870651700CF8580 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2889B0331870651700CF8580 /* UIKit.framework */; };
@@ -70,6 +71,8 @@
 		282F2F271877AD9A004566D0 /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contact.m; sourceTree = "<group>"; };
 		28398D6718AC963F0016BA26 /* TagActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagActivity.h; sourceTree = "<group>"; };
 		28398D6818AC963F0016BA26 /* TagActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagActivity.m; sourceTree = "<group>"; };
+		2876C72618DA1AE1003DD2FD /* GCPlaceholderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCPlaceholderTextView.h; sourceTree = "<group>"; };
+		2876C72718DA1AE1003DD2FD /* GCPlaceholderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCPlaceholderTextView.m; sourceTree = "<group>"; };
 		2889B02C1870651700CF8580 /* Bees Chest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bees Chest.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2889B02F1870651700CF8580 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2889B0311870651700CF8580 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -264,6 +267,8 @@
 		9D3792E11878BCDF003955EF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2876C72618DA1AE1003DD2FD /* GCPlaceholderTextView.h */,
+				2876C72718DA1AE1003DD2FD /* GCPlaceholderTextView.m */,
 				2807482A18B03E4E002EC9FF /* BASpinner.h */,
 				2807482B18B03E4E002EC9FF /* BASpinner.m */,
 				28398D6718AC963F0016BA26 /* TagActivity.h */,
@@ -470,6 +475,7 @@
 				9D875E4518AECF84002E945B /* UIColor+Bee.m in Sources */,
 				2807482C18B03E4E002EC9FF /* BASpinner.m in Sources */,
 				282F2F281877AD9A004566D0 /* Contact.m in Sources */,
+				2876C72818DA1AE1003DD2FD /* GCPlaceholderTextView.m in Sources */,
 				9D2C7142187A8D0B0022CE5F /* ContactTransition.m in Sources */,
 				2889B06A187456AA00CF8580 /* BATypeAheadView.m in Sources */,
 				9D2C71321879DEFC0022CE5F /* TagOption.m in Sources */,

@@ -8,6 +8,7 @@
 
 #import "ContactViewController.h"
 #import "ProfileDetailCell.h"
+#import "GCPlaceholderTextView.h"
 
 #define infoFrame(y) CGRectMake(120, y, 180, 40)
 
@@ -136,6 +137,10 @@ static const float tfHeight = 54.0;
     
     [self updateAddedTagsInParse];
     [self updatedDeletedTagsInParse];
+    
+    if (self.tmpLocation) {
+        self.contact.locationName = self.tmpLocation;
+    }
     if ([PFUser currentUser]) {
         [self.contact saveContactToParse];
     }
@@ -184,6 +189,17 @@ static const float tfHeight = 54.0;
     }
 }
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    NSLog(@"dsfsd");
+    if (textField.tag == 6) {
+        NSString *s = [textField.text stringByAppendingString:string];
+        self.tmpLocation = s;
+        NSLog(@"updating");
+    }
+    
+    return YES;
+}
+
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     // top cell, well formatted
     if (indexPath.row == 0) {
@@ -204,9 +220,11 @@ static const float tfHeight = 54.0;
         UILabel *hometownLabel = (UILabel*)[cell viewWithTag:5];
         hometownLabel.text = [self getLabelText:self.contact.hometown];
         
-        UILabel *locationLabel = (UILabel*)[cell viewWithTag:6];
+        UITextField *locationLabel = (UITextField*)[cell viewWithTag:6];
         locationLabel.text = [self getLabelText:self.contact.locationName];
+        locationLabel.delegate = self;
         
+        NSLog(@"location %@", [self getLabelText:self.contact.locationName]);
         return cell;
     
     // last cell, statically formatted with a collectionView
@@ -258,6 +276,7 @@ static const float tfHeight = 54.0;
 
 }
 
+
 - (ProfileDetailCell *)updateProfileViewCell:(ProfileDetailCell *)cell atIndexPath:(NSIndexPath *)indexPath withKey:(NSString *)key {
 
     // make sure we don't get null errors
@@ -280,10 +299,15 @@ static const float tfHeight = 54.0;
     for (int i = 1; i < rows; i++) {
         NSDictionary *d = detail[i];
         
-        UITextView *t1 = [[UITextView alloc] initWithFrame:CGRectMake(margin, h, kWidth / 2 - margin, tfHeight)];
+        GCPlaceholderTextView *t1 = [[GCPlaceholderTextView alloc] initWithFrame:CGRectMake(margin, h, kWidth / 2 - margin, tfHeight)];
         t1.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:15.0];
         t1.backgroundColor = [UIColor clearColor];
-        t1.text = d[@"header"];
+        if ([d[@"header"] isEqualToString:@"Enter Education Level"] ||
+             [d[@"header"] isEqualToString:@"Enter Employer"]) {
+            t1.placeholder = d[@"header"];
+        } else {
+            t1.text = d[@"header"];
+        }
         t1.delegate = self;
         t1.scrollEnabled = NO;
         t1.editable = YES;
@@ -291,10 +315,15 @@ static const float tfHeight = 54.0;
         [cell addSubview:t1];
         [cell.textFields addObject:t1];
         
-        UITextView *t2 = [[UITextView alloc] initWithFrame:CGRectMake(kWidth / 2, h, kWidth / 2 - margin, tfHeight)];
+        GCPlaceholderTextView *t2 = [[GCPlaceholderTextView alloc] initWithFrame:CGRectMake(kWidth / 2, h, kWidth / 2 - margin, tfHeight)];
         t2.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:15.0];
         t2.backgroundColor = [UIColor clearColor];
-        t2.text = d[@"value"];
+        if ([d[@"value"] isEqualToString:@"Enter School"] ||
+            [d[@"value"] isEqualToString:@"Enter Position"]) {
+            t2.placeholder = d[@"value"];
+        } else {
+            t2.text = d[@"value"];
+        }
         t2.delegate = self;
         t2.scrollEnabled = NO;
         t2.editable = YES;
@@ -304,6 +333,7 @@ static const float tfHeight = 54.0;
         
         // on to the next one
         h += tfHeight;
+
     }
     
     return cell;
@@ -392,6 +422,10 @@ static const float tfHeight = 54.0;
         [self.contact updateEducationAtIndex:count/2 withHeader:headerTV.text andValue:valueTV.text];
     } else if ([key isEqualToString:kContactWork]) {
         [self.contact updateWorkAtIndex:count/2 withHeader:headerTV.text andValue:valueTV.text];
+    }
+    
+    if (textView.tag == 6) {
+        self.tmpLocation = textView.text;
     }
 }
 

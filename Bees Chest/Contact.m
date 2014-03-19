@@ -373,6 +373,7 @@
 - (NSMutableArray*)detailAttributesFor:(NSString *)key {
     NSMutableArray *n = [[NSMutableArray alloc] init];
     if ([key isEqualToString:kContactWork]) {
+        
         [n addObject:kContactWork];
         for (NSMutableDictionary *d in self.work) {
             [n addObject:@{ @"header" : [self noNil:d[kContactEmployer]], @"value" : [self noNil:d[kContactPosition]] }];

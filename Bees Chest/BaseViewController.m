@@ -21,23 +21,7 @@
         self.onFrame = onFrame;
         self.offFrame = offFrame;
         self.isOnScreen = false;
-        self.keyboardVisible = false;
-    
-        
 
-        self.tagActivity = [[TagActivity alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 40, self.view.frame.size.height/2 - 40, 80, 80)];
-        self.tagActivity.alpha = 0.8;
-//        self.dimView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-//        self.dimView.backgroundColor = kWhite(0.7);
-//        self.dimView.alpha = 0;
-        
-//        [self.dimView addSubview:self.tagActivity];
-        [self.view addSubview:self.tagActivity];
-
-        
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-		[center addObserver:self selector:@selector(noticeShowKeyboard:) name:UIKeyboardDidShowNotification object:nil];
-		[center addObserver:self selector:@selector(noticeHideKeyboard:) name:UIKeyboardWillHideNotification object:nil];
         
     }
     return self;
@@ -50,6 +34,12 @@
     tap.delegate = self;
     [self.view addGestureRecognizer:tap];
 	// Do any additional setup after loading the view.
+    self.keyboardVisible = false;
+    
+
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(noticeShowKeyboard:) name:UIKeyboardDidShowNotification object:nil];
+    [center addObserver:self selector:@selector(noticeHideKeyboard:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -60,14 +50,9 @@
 
 - (IBAction)backgroundTouched:(id)sender
 {
-    NSLog(@"bg touched");
-//    if (self.keyboardVisible) {
-//        BaseView *v = (BaseView*)self.view;
-//        NSLog(@"bg touched turn off %i textFields", v.allTextFields.count);
-//        for (UITextField *t in v.allTextFields) {
-//            [t resignFirstResponder];
-//        }
-//    }
+    if (self.keyboardVisible) {
+        [self removeAllResponder:self.view];
+    }
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
@@ -77,19 +62,19 @@
     return self.keyboardVisible;
 }
 
-//- (BOOL)removeAllResponder:(UIView*)v
-//{
-//    if ([v isFirstResponder]) {
-//        [v resignFirstResponder];
-//        return YES;
-//    }
-//    for (UIView *v2 in v.subviews) {
-//        if ([self removeAllResponder:v2]) {
-//            return YES;
-//        }
-//    }
-//    return NO;
-//}
+- (BOOL)removeAllResponder:(UIView*)v
+{
+    if ([v isFirstResponder]) {
+        [v resignFirstResponder];
+        return YES;
+    }
+    for (UIView *v2 in v.subviews) {
+        if ([self removeAllResponder:v2]) {
+            return YES;
+        }
+    }
+    return NO;
+}
 
 - (void)flashMessage:(NSString *)message isError:(BOOL)err {
 }
