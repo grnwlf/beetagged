@@ -433,7 +433,9 @@
 
 // save contact to parse when updated
 - (void)saveContactToParse {
+    NSLog(@"here");
     if (!self.userModel) {
+        NSLog(@"here again %@", self.fbId);
         PFQuery *query = [PFQuery queryWithClassName:@"UserModel"];
         [query whereKey:@"fbId" equalTo:self.fbId];
         [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {

@@ -134,6 +134,7 @@ static const float tfHeight = 54.0;
 // save the data to parse before we leave
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    NSLog(@"callingnow");
     
     [self updateAddedTagsInParse];
     [self updatedDeletedTagsInParse];
@@ -142,6 +143,7 @@ static const float tfHeight = 54.0;
         self.contact.locationName = self.tmpLocation;
     }
     if ([PFUser currentUser]) {
+        NSLog(@"call");
         [self.contact saveContactToParse];
     }
 }
@@ -304,9 +306,9 @@ static const float tfHeight = 54.0;
         t1.backgroundColor = [UIColor clearColor];
         if ([d[@"header"] isEqualToString:@"Enter Education Level"] ||
              [d[@"header"] isEqualToString:@"Enter Employer"]) {
-            t1.placeholder = d[@"header"];
+            t1.placeholder = [d[@"header"] capitalizedString];
         } else {
-            t1.text = d[@"header"];
+            t1.text = [d[@"header"] capitalizedString];
         }
         t1.delegate = self;
         t1.scrollEnabled = NO;
@@ -320,9 +322,9 @@ static const float tfHeight = 54.0;
         t2.backgroundColor = [UIColor clearColor];
         if ([d[@"value"] isEqualToString:@"Enter School"] ||
             [d[@"value"] isEqualToString:@"Enter Position"]) {
-            t2.placeholder = d[@"value"];
+            t2.placeholder = [d[@"value"] capitalizedString];
         } else {
-            t2.text = d[@"value"];
+            t2.text = [d[@"value"] capitalizedString];
         }
         t2.delegate = self;
         t2.scrollEnabled = NO;
