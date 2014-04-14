@@ -50,13 +50,18 @@ static FBManager *fb = nil;
         [FBManager reformatHometown:user];
     }
     
-    self.currentParseUser = [Contact contactFromUserModel:user];
-    NSError *error;
-    [self.managedObjectContext save:&error];
-    if (error) {
-        NSLog(@"couldn't cache user: %@", error);
-        [[PFUser currentUser] deleteInBackground];
-    }
+    PFQuery *query = [PFQuery queryWithClassName:@"UserModel"];
+    [query whereKey:@"fbId" equalTo:[user objectForKey:@"fbId"]];
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        self.currentParseUser = [Contact contactFromUserModel:object];
+        NSError *error2;
+        [self.managedObjectContext save:&error2];
+        if (error) {
+            NSLog(@"couldn't cache user: %@", error2);
+            [[PFUser currentUser] deleteInBackground];
+        }
+    }];
+    
 }
 
 

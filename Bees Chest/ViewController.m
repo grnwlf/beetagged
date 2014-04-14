@@ -144,13 +144,14 @@
         [[PFUser currentUser] setObject:fbid forKey:@"fbId"];
         [[PFUser currentUser] saveInBackground];
         
-        [[FBManager singleton] cacheParseUser:[PFUser currentUser] reformat:NO];
-        
         PFObject *userModel = [PFObject objectWithClassName:@"UserModel"];
         [userModel setValuesForKeysWithDictionary:userData];
         [userModel setValue:fbid forKey:@"fbId"];
-        [userModel saveInBackground];
-        [self fetchFBFriends];
+        [userModel saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            [[FBManager singleton] cacheParseUser:[PFUser currentUser] reformat:NO];
+            [self fetchFBFriends];
+        }];
+        
     }];
 
 }
