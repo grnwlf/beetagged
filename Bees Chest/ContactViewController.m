@@ -110,9 +110,10 @@ static const float tfHeight = 54.0;
 // handles the logic for adding the toolbar that allows the logout functionality.
 - (void)useToolbar {
     float height = 60;
+    float tabBarHeight = 49.0;
     self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, kWidth, height)];
     [self.view addSubview:self.toolbar];
-    [self.profileTableView setFrame:CGRectMake(0, height, kWidth, kHeight - height)];
+    [self.profileTableView setFrame:CGRectMake(0, height, kWidth, kHeight - height - tabBarHeight)];
     
     UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
                                                                      style:UIBarButtonItemStylePlain
