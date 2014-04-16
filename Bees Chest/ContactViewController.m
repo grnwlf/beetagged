@@ -234,7 +234,7 @@ static const float tfHeight = 54.0;
     } else if (indexPath.row == 1) {
         ProfileDetailCell *cell = (ProfileDetailCell *)[tableView dequeueReusableCellWithIdentifier:kProfileDetailCell forIndexPath:indexPath];
         UILabel *l = (UILabel*)[cell viewWithTag:1];
-        l.text = kContactWork;
+        l.text = [kContactWork capitalizedString];
         UIButton *button = (UIButton *)[cell viewWithTag:2];
         [button setTintColor:[UIColor goldBeeColor]];
         [button addTarget:self action:@selector(addOrDelete:) forControlEvents:UIControlEventTouchUpInside];
@@ -252,7 +252,7 @@ static const float tfHeight = 54.0;
     } else if (indexPath.row == 2) {
         ProfileDetailCell *cell = (ProfileDetailCell*)[tableView dequeueReusableCellWithIdentifier:kProfileDetailCell forIndexPath:indexPath];
         UILabel *l = (UILabel*)[cell viewWithTag:1];
-        l.text = kContactEducation;
+        l.text = [kContactEducation capitalizedString];
         
         UIButton *button = (UIButton *)[cell viewWithTag:2];
         [button setTintColor:[UIColor goldBeeColor]];
@@ -354,13 +354,13 @@ static const float tfHeight = 54.0;
     ProfileDetailCell *cell = [self getProfileDetailCellFromView:sender];
     UILabel *label = (UILabel *)[cell viewWithTag:1];
     if ([sender.titleLabel.text isEqualToString:@"+"]) {
-        if ([label.text isEqualToString:kContactWork]) {
+        if ([[label.text lowercaseString] isEqualToString:kContactWork]) {
             if (self.contact.work == nil) {
                 self.contact.work = [NSMutableArray array];
             }
             [self.contact.work addObject:[@{kContactEmployer : @"Enter Employer", kContactPosition : @"Enter Position"} mutableCopy]];
             NSLog(@"work = %@", self.contact.work);
-        } else if ([label.text isEqualToString:kContactEducation]) {
+        } else if ([[label.text lowercaseString] isEqualToString:kContactEducation]) {
             if (self.contact.education == nil) {
                 self.contact.education = [NSMutableArray array];
             }
@@ -372,9 +372,9 @@ static const float tfHeight = 54.0;
     } else if ([sender.titleLabel.text  isEqualToString:@"-"]) {
         self.isCurrentlyDeleting = YES;
         NSInteger toDelete = [self selectedRowInCell:cell];
-        if ([label.text isEqualToString:kContactWork]) {
+        if ([[label.text lowercaseString] isEqualToString:kContactWork]) {
             [self.contact.work removeObjectAtIndex:toDelete];
-        } else if ([label.text isEqualToString:kContactEducation]) {
+        } else if ([[label.text lowercaseString] isEqualToString:kContactEducation]) {
             [self.contact.education removeObjectAtIndex:toDelete];
         } else {
             NSLog(@"we should be deleting the text field that we are currently on");
@@ -421,9 +421,9 @@ static const float tfHeight = 54.0;
     }
     
     
-    if ([key isEqualToString:kContactEducation]) {
+    if ([[key lowercaseString] isEqualToString:kContactEducation]) {
         [self.contact updateEducationAtIndex:count/2 withHeader:headerTV.text andValue:valueTV.text];
-    } else if ([key isEqualToString:kContactWork]) {
+    } else if ([[key lowercaseString] isEqualToString:kContactWork]) {
         [self.contact updateWorkAtIndex:count/2 withHeader:headerTV.text andValue:valueTV.text];
     }
     
